@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1129C0F7-2F08-48E7-9660-3E22EF8F3B34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Api", "src\CodeReviewAnalyzer.Api\CodeReviewAnalyzer.Api.csproj", "{EE10AE33-BE48-424A-B1A4-02A40BD65E1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Database", "src\CodeReviewAnalyzer.Database\CodeReviewAnalyzer.Database.csproj", "{FB4DD2F0-62C7-40DA-881F-0909DDD7401F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__tests__", "__tests__", "{2E389CE0-D5A7-4D1A-AD33-05785E5D4F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Database.Tests", "__tests__\CodeReviewAnalyzer.Database.Tests\CodeReviewAnalyzer.Database.Tests.csproj", "{4916BC18-441A-4DA1-A393-DA60D1C6B66F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Api.Tests", "__tests__\CodeReviewAnalyzer.Api.Tests\CodeReviewAnalyzer.Api.Tests.csproj", "{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.AzureDevopsItg", "src\CodeReviewAnalyzer.AzureDevopsItg\CodeReviewAnalyzer.AzureDevopsItg.csproj", "{5E904E93-F76D-43C9-BCDD-E76424E3D624}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.AzureDevopsItg.Tests", "__tests__\CodeReviewAnalyzer.AzureDevopsItg.Tests\CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj", "{7E6F7008-7B13-4043-A176-2164D3319F46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Application", "src\CodeReviewAnalyzer.Application\CodeReviewAnalyzer.Application.csproj", "{C219220D-E9F7-42DE-AACF-D17E84E6FAC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeReviewAnalyzer.Application.Tests", "__tests__\CodeReviewAnalyzer.Application.Tests\CodeReviewAnalyzer.Application.Tests.csproj", "{B8FF7873-A8B8-40FC-8C5D-37132565B224}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE10AE33-BE48-424A-B1A4-02A40BD65E1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE10AE33-BE48-424A-B1A4-02A40BD65E1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE10AE33-BE48-424A-B1A4-02A40BD65E1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE10AE33-BE48-424A-B1A4-02A40BD65E1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB4DD2F0-62C7-40DA-881F-0909DDD7401F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB4DD2F0-62C7-40DA-881F-0909DDD7401F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB4DD2F0-62C7-40DA-881F-0909DDD7401F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB4DD2F0-62C7-40DA-881F-0909DDD7401F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4916BC18-441A-4DA1-A393-DA60D1C6B66F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4916BC18-441A-4DA1-A393-DA60D1C6B66F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4916BC18-441A-4DA1-A393-DA60D1C6B66F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4916BC18-441A-4DA1-A393-DA60D1C6B66F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E904E93-F76D-43C9-BCDD-E76424E3D624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E904E93-F76D-43C9-BCDD-E76424E3D624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E904E93-F76D-43C9-BCDD-E76424E3D624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E904E93-F76D-43C9-BCDD-E76424E3D624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E6F7008-7B13-4043-A176-2164D3319F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E6F7008-7B13-4043-A176-2164D3319F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E6F7008-7B13-4043-A176-2164D3319F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E6F7008-7B13-4043-A176-2164D3319F46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C219220D-E9F7-42DE-AACF-D17E84E6FAC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C219220D-E9F7-42DE-AACF-D17E84E6FAC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C219220D-E9F7-42DE-AACF-D17E84E6FAC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C219220D-E9F7-42DE-AACF-D17E84E6FAC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FF7873-A8B8-40FC-8C5D-37132565B224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8FF7873-A8B8-40FC-8C5D-37132565B224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8FF7873-A8B8-40FC-8C5D-37132565B224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FF7873-A8B8-40FC-8C5D-37132565B224}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE10AE33-BE48-424A-B1A4-02A40BD65E1C} = {1129C0F7-2F08-48E7-9660-3E22EF8F3B34}
+		{FB4DD2F0-62C7-40DA-881F-0909DDD7401F} = {1129C0F7-2F08-48E7-9660-3E22EF8F3B34}
+		{4916BC18-441A-4DA1-A393-DA60D1C6B66F} = {2E389CE0-D5A7-4D1A-AD33-05785E5D4F2A}
+		{A1D0E27C-B38B-4C57-8F13-1D28FBA4D373} = {2E389CE0-D5A7-4D1A-AD33-05785E5D4F2A}
+		{5E904E93-F76D-43C9-BCDD-E76424E3D624} = {1129C0F7-2F08-48E7-9660-3E22EF8F3B34}
+		{7E6F7008-7B13-4043-A176-2164D3319F46} = {2E389CE0-D5A7-4D1A-AD33-05785E5D4F2A}
+		{C219220D-E9F7-42DE-AACF-D17E84E6FAC5} = {1129C0F7-2F08-48E7-9660-3E22EF8F3B34}
+		{B8FF7873-A8B8-40FC-8C5D-37132565B224} = {2E389CE0-D5A7-4D1A-AD33-05785E5D4F2A}
+	EndGlobalSection
+EndGlobal

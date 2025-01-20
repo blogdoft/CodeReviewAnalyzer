@@ -1,0 +1,23 @@
+volumes:
+  pg-data:
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    env_file:
+      - ./postgres/database.env
+    network_mode: "host"
+
+  init-db:
+    build:
+      context: ./postgres
+      dockerfile: ./Dockerfile-psql
+    env_file:
+      - ./postgres/database.env
+    volumes:
+      - ./postgres/init.sql:/init.sql
+      - ./postgres/init.sh:/init.sh
+    entrypoint: ["/init.sh"]
+    network_mode: "host"        
