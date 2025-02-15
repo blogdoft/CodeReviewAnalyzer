@@ -1,0 +1,61 @@
+volumes:
+  pg-data:
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    env_file:
+      - ./postgres/database.env
+    network_mode: "host"
+
+  init-db:
+    build:
+      context: ./postgres
+      dockerfile: ./Dockerfile-psql
+    env_file:
+      - ./postgres/database.env
+    volumes:
+      - ./postgres/init.sql:/init.sql
+      - ./postgres/init.sh:/init.sh
+    entrypoint: ["/init.sh"]
+    network_mode: "host"    
+    depends_on:
+      - postgres      
+
+  backend:
+    build:
+      context: ../../backend/
+      dockerfile: ./eng/docker/dockerfile
+      args:
+        - PUBLISH_FOLDER=app/
+        - COMMIT="${COMMIT_SHA:-default_sha}"
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5031
+      - ASPNETCORE_HTTP_PORTS=5031
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_BASEURL=/code-review
+    env_file:
+      - dev.env
+    network_mode: "host"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ../../frontend/
+      dockerfile: ./eng/docker/dockerfile
+    network_mode: host
+    depends_on:
+      - backend
+
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: ./nginx.dockerfile
+    network_mode: "host"
+    depends_on:
+      - backend
+      - frontend
+  

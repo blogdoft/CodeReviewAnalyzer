@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+ARG PUBLISH_FOLDER=app/
+WORKDIR /app
+COPY ${PUBLISH_FOLDER} .
+EXPOSE 5031
+ENTRYPOINT ["dotnet", "CodeReviewAnalyzer.Api.dll"]

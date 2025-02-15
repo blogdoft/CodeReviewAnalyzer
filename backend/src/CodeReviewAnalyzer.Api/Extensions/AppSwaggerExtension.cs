@@ -34,8 +34,6 @@ public static class AppSwaggerExtension
             .UseSwaggerUI(o => provider.ApiVersionDescriptions
                 .ToList()
                 .ForEach(d =>
-                    o.SwaggerEndpoint(
-                        $"{pathBase}{(string.IsNullOrEmpty(pathBase) ? string.Empty : "/api")}/swagger/{d.GroupName}/swagger.json",
-                        d.GroupName.ToUpper())));
+                    o.SwaggerEndpoint($"{pathBase}/swagger/{d.GroupName}/swagger.json", d.GroupName.ToUpper())));
 }
 #pragma warning restore S5332 // Using http protocol is insecure. Use https instead.

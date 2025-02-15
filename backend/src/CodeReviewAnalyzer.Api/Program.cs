@@ -19,6 +19,7 @@ if (app.Environment.IsDevelopment())
 {
     var apiVersionDescription = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     var pathBase = Environment.GetEnvironmentVariable("ASPNETCORE_BASEURL");
+    app.UsePathBase(pathBase);
     app.ConfigureSwagger(apiVersionDescription, pathBase);
 }
 
