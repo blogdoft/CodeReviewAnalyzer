@@ -1,4 +1,5 @@
 using CodeReviewAnalyzer.Application.Reports;
+using CodeReviewAnalyzer.Application.Models.PullRequestReport;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeReviewAnalyzer.Api.Controllers;
@@ -29,7 +30,7 @@ public class ReportsController : ControllerBase
     /// <response code="404">Not Found</response>
     /// <response code="500">Server error</response>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PullRequestTimeReport), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

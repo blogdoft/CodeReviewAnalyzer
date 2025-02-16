@@ -4,7 +4,7 @@
 ## Every thing down
 echo "############# Down services"
 cd eng/docker 
-docker compose down -v
+docker compose down 
 cd ..
 cd ..
 
