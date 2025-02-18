@@ -18,13 +18,13 @@ export class PullRequestReportService {
    * @param apiVersion Versão da API (padrão: '1.0').
    */
   getReports(
-    begin: string,
-    end: string,
+    begin: Date,
+    end: Date,
     apiVersion: string = '1.0'
   ): Observable<PullRequestTimeReport> {
     const params = new HttpParams()
-      .set('begin', begin)
-      .set('end', end)
+      .set('begin', begin.toISOString().split('T')[0])
+      .set('end', end.toISOString().split('T')[0])
       .set('api-version', apiVersion);
 
     return this.http.get<PullRequestTimeReport>(`${this.baseUrl}/api/Reports`, {

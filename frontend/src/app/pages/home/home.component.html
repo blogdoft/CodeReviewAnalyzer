@@ -1,10 +1,7 @@
 <div class="pull-request-chart">
-  <canvas class="demo-chart" baseChart [type]="'line'" [data]="lineChartData" [options]="lineChartOptions"
-    [legend]="lineChartLegend">
-  </canvas>
-</div>
-<div>
-  <canvas baseChart [data]="barChartData" [options]="barChartOptions" [plugins]="barChartPlugins"
-    [legend]="barChartLegend" [type]="'bar'">
-  </canvas>
+  <app-pull-request-graph
+    [pullRequestTimeReport]="report"
+    [rangeDates]="rangeDates"
+    (onSearchClick)="searchPullRequests($event)"
+  ></app-pull-request-graph>
 </div>
