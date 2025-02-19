@@ -1,4 +1,5 @@
 using CodeReviewAnalyzer.Application.Models.PullRequestReport;
+using CodeReviewAnalyzer.Application.Models.UserDensity;
 using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Database.Contexts;
 
@@ -65,6 +66,27 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
                        
         """;
 
+    private const string ReviewerDensity =
+    """
+        with reviewers as (
+            select distinct pr."ID" as "PR_ID"
+                , u."ID" as "UserId"
+                , u."NAME" as "UserName"
+                , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
+            from "PULL_REQUEST" pr 
+                join "PULL_REQUEST_COMMENTS" prc on prc."PULL_REQUEST_ID"  = pr."ID" and prc."COMMENT_INDEX" = 1 
+                join "USERS" u on u."ID" = prc."USER_ID" and u."ACTIVE"
+            where pr."CLOSED_DATE" between @from  and @to)
+        select count(r."PR_ID") as "CommentCount"
+            , r."UserId" 
+            , r."UserName"
+            , r."ReferenceDate"
+        from reviewers r
+        group by 2, 3, 4
+        order by 4, 1 desc
+
+        """;
+
     public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(DateOnly from, DateOnly to)
     {
         using var resultSets = await databaseFacade.QueryMultipleAsync(
@@ -89,5 +111,18 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
             PullRequestWithoutCommentCount = nonCommentedPullRequest,
             PullRequestSize = [],
         };
+    }
+
+    public async Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(DateOnly from, DateOnly to)
+    {
+        var userDensity = await databaseFacade.QueryAsync<UserReviewerDensity>(
+            ReviewerDensity,
+            new
+            {
+                from,
+                to,
+            });
+
+        return userDensity ?? [];
     }
 }

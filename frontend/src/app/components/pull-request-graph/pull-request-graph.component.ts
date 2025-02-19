@@ -1,22 +1,15 @@
-import { PullRequestTimeReport } from './../../services/report/models/pull-request-report.model';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
-import { TimeIndex } from '../../services/report/models/pull-request-report.model';
+import { Component, Input } from '@angular/core';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FormsModule } from '@angular/forms';
-import { BaseChartDirective } from 'ng2-charts';
+import { ChartModule } from 'primeng/chart';
+
+import { TimeIndex } from '../../services/report/models/pull-request-report.model';
+import { monthNames } from '../constants/month-names';
+import { PullRequestTimeReport } from './../../services/report/models/pull-request-report.model';
 
 @Component({
   selector: 'app-pull-request-graph',
-  imports: [
-    BaseChartDirective,
-    CardModule,
-    ButtonModule,
-    DatePickerModule,
-    FormsModule,
-  ],
+  imports: [CardModule, ChartModule],
   templateUrl: './pull-request-graph.component.html',
   styleUrl: './pull-request-graph.component.scss',
 })
@@ -31,14 +24,7 @@ export class PullRequestGraphComponent {
     return this._pullRequestTimeReport;
   }
 
-  @Input()
-  rangeDates: Date[] | null = null;
-
-  @Output()
-  onSearchClick = new EventEmitter<Date[] | null>();
-
   lineChartData!: ChartConfiguration<'line'>['data'];
-
   lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
@@ -60,10 +46,6 @@ export class PullRequestGraphComponent {
   };
 
   constructor() {}
-
-  onSearch() {
-    this.onSearchClick.emit(this.rangeDates);
-  }
 
   private renderReport(report: PullRequestTimeReport): void {
     const labels = this.extractLabels(report);
@@ -87,8 +69,6 @@ export class PullRequestGraphComponent {
       report.pullRequestWithoutCommentCount ?? [],
       labels
     );
-
-    console.log(prWithoutComment);
 
     this.lineChartData = {
       labels: labels,
@@ -142,21 +122,10 @@ export class PullRequestGraphComponent {
     };
   }
 
-  createTimeDataSeries(timeIndices: TimeIndex[], labels: string[]): number[] {
-    const monthNames = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ];
+  private createTimeDataSeries(
+    timeIndices: TimeIndex[],
+    labels: string[]
+  ): number[] {
     const dataMap: { [label: string]: number } = {};
     timeIndices.forEach((item) => {
       const date = new Date(item.referenceDate);
@@ -169,24 +138,10 @@ export class PullRequestGraphComponent {
     return labels.map((label) => dataMap[label] ?? 0);
   }
 
-  createCounterDataSeries(
+  private createCounterDataSeries(
     timeIndices: TimeIndex[],
     labels: string[]
   ): number[] {
-    const monthNames = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ];
     const dataMap: { [label: string]: number } = {};
     timeIndices.forEach((item) => {
       const date = new Date(item.referenceDate);
@@ -212,22 +167,6 @@ export class PullRequestGraphComponent {
     // Remove duplicatas e ordena as datas
     const uniqueDates = Array.from(new Set(dates)).sort();
 
-    // Define os nomes dos meses em português
-    const monthNames = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ];
-
     // Mapeia cada data para o formato desejado: "MMM/YY"
     const labels = uniqueDates.map((dateStr) => {
       const date = new Date(dateStr);
@@ -235,9 +174,7 @@ export class PullRequestGraphComponent {
       const year = date.getFullYear().toString().slice(-2);
       return `${month}/${year}`;
     });
-    console.log(labels);
+
     return labels;
   }
-
-  searchPullRequests() {}
 }

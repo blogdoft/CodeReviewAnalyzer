@@ -1,0 +1,11 @@
+<p-card header="Reviewer density">
+  <p class="m-0">How is distributed the review task for team development.</p>
+  <p-chart
+    type="bar"
+    [data]="barChartData"
+    [options]="barChartOptions"
+    [plugins]="barChartPlugins"
+  >
+  </p-chart>
+  <ng-template #footer></ng-template>
+</p-card>

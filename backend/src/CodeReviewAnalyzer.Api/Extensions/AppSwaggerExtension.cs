@@ -10,30 +10,37 @@ public static class AppSwaggerExtension
     public static IApplicationBuilder ConfigureSwagger(
         this WebApplication app,
         IApiVersionDescriptionProvider provider,
-        string? pathBase) =>
-        app
-            .UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                {
-                    var host = httpReq.GetForwardedHost();
+        string? pathBase)
+    {
+        if (pathBase is null || !pathBase.EndsWith('/'))
+        {
+            pathBase = "/";
+        }
 
-                    swaggerDoc.Servers = new List<OpenApiServer>
+        return app
+                .UseSwagger(c =>
+                {
+                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                     {
+                        var host = httpReq.GetForwardedHost();
+
+                        swaggerDoc.Servers = new List<OpenApiServer>
+                        {
                         new OpenApiServer
                         {
-                            Url = $"https://{host}{pathBase ?? "/"}",
+                            Url = $"https://{host}{pathBase}",
                         },
                         new OpenApiServer
                         {
-                            Url = $"http://{host}{pathBase ?? "/"}",
+                            Url = $"http://{host}{pathBase}",
                         },
-                    };
-                });
-            })
-            .UseSwaggerUI(o => provider.ApiVersionDescriptions
-                .ToList()
-                .ForEach(d =>
-                    o.SwaggerEndpoint($"{pathBase}/swagger/{d.GroupName}/swagger.json", d.GroupName.ToUpper())));
+                        };
+                    });
+                })
+                .UseSwaggerUI(o => provider.ApiVersionDescriptions
+                    .ToList()
+                    .ForEach(d =>
+                        o.SwaggerEndpoint($"{pathBase}swagger/{d.GroupName}/swagger.json", d.GroupName.ToUpper())));
+    }
 }
 #pragma warning restore S5332 // Using http protocol is insecure. Use https instead.
