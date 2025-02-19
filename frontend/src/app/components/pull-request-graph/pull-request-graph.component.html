@@ -4,32 +4,14 @@
     comments
   </p>
   <div class="pull-request-chart">
-    <canvas
+    <p-chart
       class="demo-chart"
       baseChart
       [type]="'line'"
       [data]="lineChartData"
       [options]="lineChartOptions"
-      [legend]="lineChartLegend"
     >
-    </canvas>
+    </p-chart>
   </div>
-  <ng-template #footer>
-    <div class="pull-request-datepicker">
-      <p-datepicker
-        [(ngModel)]="rangeDates"
-        selectionMode="range"
-        [readonlyInput]="true"
-        dateFormat="dd/mm/yy"
-        size="small"
-        showIcon
-        iconDisplay="input"
-        fluid="true"
-        [showButtonBar]="true"
-      >
-      </p-datepicker>
-    </div>
-    <p-button #pullRequestSearchBtn (onClick)="onSearch()" label="Search">
-    </p-button>
-  </ng-template>
+  <ng-template #footer> </ng-template>
 </p-card>
