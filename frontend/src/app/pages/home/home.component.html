@@ -1,7 +1,32 @@
+<p-toolbar>
+  <ng-template #start><h1>Code Review Analyzer</h1> </ng-template> </p-toolbar
+><p-toolbar>
+  <ng-template #start>
+    <p-floatlabel>
+      <p-datepicker
+        [(ngModel)]="rangeDates"
+        selectionMode="range"
+        [readonlyInput]="true"
+        dateFormat="dd/mm/yy"
+        size="small"
+        showIcon
+        iconDisplay="input"
+        fluid="true"
+        [showButtonBar]="true"
+        inputId="inputPeriod"
+      >
+      </p-datepicker>
+      <label for="inputPeriod">Period</label>
+    </p-floatlabel>
+  </ng-template>
+</p-toolbar>
 <div class="pull-request-chart">
   <app-pull-request-graph
-    [pullRequestTimeReport]="report"
-    [rangeDates]="rangeDates"
-    (onSearchClick)="searchPullRequests($event)"
+    [pullRequestTimeReport]="pullRequestReport"
   ></app-pull-request-graph>
+</div>
+<div class="reviewer-density-chart">
+  <app-reviewer-density-graph
+    [reviewerDensity]="reviewerDensityReport"
+  ></app-reviewer-density-graph>
 </div>

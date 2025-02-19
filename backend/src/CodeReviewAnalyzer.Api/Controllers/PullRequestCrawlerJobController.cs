@@ -1,10 +1,13 @@
 using CodeReviewAnalyzer.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace CodeReviewAnalyzer.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[Consumes(MediaTypeNames.Application.Json)]
 public class PullRequestCrawlerJobController(PullRequestMetadataProcessor metadataProcessor) : ControllerBase
 {
     /// <summary>
