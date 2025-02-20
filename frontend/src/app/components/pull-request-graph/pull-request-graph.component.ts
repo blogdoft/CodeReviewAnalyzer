@@ -1,15 +1,28 @@
 import { Component, Input } from '@angular/core';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { TabsModule } from 'primeng/tabs';
 
+import { MathjaxDirective } from '../../directives/mathjax.directive';
 import { TimeIndex } from '../../services/report/models/pull-request-report.model';
 import { monthNames } from '../constants/month-names';
 import { PullRequestTimeReport } from './../../services/report/models/pull-request-report.model';
 
 @Component({
   selector: 'app-pull-request-graph',
-  imports: [CardModule, ChartModule],
+  imports: [
+    CardModule,
+    ChartModule,
+    AccordionModule,
+    TabsModule,
+    PanelModule,
+    DividerModule,
+    MathjaxDirective,
+  ],
   templateUrl: './pull-request-graph.component.html',
   styleUrl: './pull-request-graph.component.scss',
 })
@@ -74,18 +87,18 @@ export class PullRequestGraphComponent {
       labels: labels,
       datasets: [
         {
-          data: meanTimeToApproval,
-          label: 'Mean Time To Approval',
-          borderColor: '#264653',
+          data: meanTimeStartReview,
+          label: 'Mean Time to Review',
+          borderColor: '#2A9D8F',
           backgroundColor: 'transparent',
           fill: false,
           tension: 0.0,
           borderWidth: 1.5,
         },
         {
-          data: meanTimeStartReview,
-          label: 'Mean Time To Start Review',
-          borderColor: '#2A9D8F',
+          data: meanTimeToApproval,
+          label: 'Mean Time to Approve',
+          borderColor: '#264653',
           backgroundColor: 'transparent',
           fill: false,
           tension: 0.0,
