@@ -1,9 +1,12 @@
 .pull-request-chart {
-  width: 75%;
+  width: 100%;
   display: inline-block;
+}
+#canvas{
+  max-height: 50px;
 }
 
 .reviewer-density-chart {
-  width: 75%;
+  width: 100%;
     display: inline-block;
 }
