@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
+import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ToolbarModule } from 'primeng/toolbar';
 
@@ -21,6 +22,7 @@ import { ReviewerDensityGraphComponent } from './../../components/reviewer-densi
     DatePickerModule,
     FloatLabelModule,
     FormsModule,
+    DividerModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
