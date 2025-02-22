@@ -1,0 +1,165 @@
+<p-card header="Pull Request analysis">
+    <p class="m-0">The graph bellow overlaps all Pull Request metrics for comparative analysis.</p>
+    <div class="grid grid-cols-12 gap-8">
+        <div class="pull-request-chart col-span-12 lg:col-span-6">
+            <p-chart class="demo-chart" baseChart [type]="'line'" [data]="lineChartData" [options]="lineChartOptions" height="100%"> </p-chart>
+        </div>
+        <div class="col-span-12 lg:col-span-6">
+            <p-accordion value="0">
+                <p-accordion-panel value="0">
+                    <p-accordion-header>Metrics explanation</p-accordion-header>
+                    <p-accordion-content>
+                        <p-tabs value="0" scrollable>
+                            <p-tablist>
+                                <p-tab value="0">Mean Time To Review</p-tab>
+                                <p-tab value="1">Mean Time To Approve</p-tab>
+                                <p-tab value="2">Mean Time To Merge</p-tab>
+                                <p-tab value="3">Pull Request Count</p-tab>
+                                <p-tab value="4">Approved on First Attempt</p-tab>
+                            </p-tablist>
+                            <p-tabpanels>
+                                <p-tabpanel value="0">
+                                    <div class="grid grid-cols-12 gap-3">
+                                        <p-card class="col-span-12" header="Formula">
+                                            <p appMathjax="$$ Review \ Time = Date_{First\_Review} - Date_{PR\_Creation} $$"></p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="What does it measure?">
+                                            <p class="m-0">The time from opening the Pull Request until the first review is performed by a reviewer.</p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="How to measure it?">
+                                            <ul class="m-0">
+                                                <li>Capture the date/time of the PR creation.</li>
+                                                <li>Capture the date/time of the first comment from a reviewer.</li>
+                                            </ul>
+                                        </p-card>
+                                        <p-card class="col-span-12" header="Target">
+                                            <ul class="m-0">
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 4 hours for small PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 8 hours for medium PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Maximum of 24 hours for large PRs
+                                                </li>
+                                            </ul>
+                                            <p class="m-0">If exceeds 24 hours, it may indicate workflow delays.</p>
+                                        </p-card>
+                                    </div>
+                                </p-tabpanel>
+                                <p-tabpanel value="1">
+                                    <div class="grid grid-cols-12 gap-3">
+                                        <p-card class="col-span-12" header="Formula"><p appMathjax="$$ Mean \ Time \ to \ Approval = Date_{Approval} - Date_{PR\_Creation} $$"></p> </p-card
+                                        ><p-card class="col-span-12 lg:col-span-6 metric-card" header="What does it measure?">
+                                            <p class="m-0">How long it takes for a PR to be approved from the time it is created.</p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="How to measure it?"
+                                            ><ul class="m-0">
+                                                <li>Capture the date/time of the PR creation.</li>
+                                                <li>Capture the date/time of the final approval.</li>
+                                            </ul>
+                                        </p-card>
+                                        <p-card class="col-span-12" header="Target">
+                                            <ul class="m-0">
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 24 hours for small PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 48 hours for medium PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Maximum of 72 hours for large PRs
+                                                </li>
+                                            </ul>
+                                            <p class="m-0">If exceeds 72 hours, it may indicate excessive bureaucracy or difficulty understanding the code.</p>
+                                        </p-card>
+                                    </div>
+                                </p-tabpanel>
+                                <p-tabpanel value="2">
+                                    <div class="grid grid-cols-12 gap-3">
+                                        <p-card class="col-span-12" header="Formula"><p appMathjax="$$ Time \ To \ Merge = Date_{Merge} - Date_{PR\_Creation} $$"></p> </p-card
+                                        ><p-card class="col-span-12 lg:col-span-6 metric-card" header="What does it measure?">
+                                            <p class="m-0">How long a PR takes from creation until it is merged into the <code>develop</code> branch.</p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="How to measure it?"
+                                            ><ul class="m-0">
+                                                <li>Capture the date/time of the PR creation.</li>
+                                                <li>Capture the date/time of the final approval.</li>
+                                            </ul>
+                                        </p-card>
+                                        <p-card class="col-span-12 mt-3" header="Target">
+                                            <ul class="m-0">
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 24 hours for small PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Less than 72 hours for medium PRs
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    Maximum of 5 days for large PRs
+                                                </li>
+                                            </ul>
+                                            <p class="m-0">If it take too long, it may indicate lack of active reviewers or too many changes in the PR.</p>
+                                        </p-card>
+                                    </div>
+                                </p-tabpanel>
+                                <p-tabpanel value="3">
+                                    <div class="grid grid-cols-12 gap-3">
+                                        <p-card class="col-span-12" header="Formula"><p appMathjax="$$ \sum_{PR\_Closed} $$"></p> </p-card
+                                        ><p-card class="col-span-12 lg:col-span-6 metric-card" header="What does it measure?">
+                                            <p class="m-0">How many pull requests are closed into period.</p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="How to measure it?">
+                                            <ul class="m-0">
+                                                <li>Count closed PR, created by teams' developers.</li>
+                                            </ul>
+                                        </p-card>
+                                    </div>
+                                </p-tabpanel>
+                                <p-tabpanel value="4">
+                                    <div class="grid grid-cols-12 gap-3">
+                                        <p-card class="col-span-12" header="Formula">
+                                            <p appMathjax="$$\% \text{Approved on First Try} = \left(\frac{\text{PRs approved without iterations}}{\text{Total PRs}}\right) \times 100 $$"></p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="What does it measure?">
+                                            <p class="m-0">Whether a PR was approved without requiring changes.</p>
+                                        </p-card>
+                                        <p-card class="col-span-12 lg:col-span-6 metric-card" header="How to measure it?">
+                                            <ul class="m-0">
+                                                <li>Count how many PR were approved on the first attempt.</li>
+                                                <li>Divide by the total number of PRs.</li>
+                                            </ul> </p-card
+                                        ><p-card class="col-span-12 mt-3 metric-card" header="Target">
+                                            <ul class="m-0">
+                                                <li>
+                                                    <i class="pi pi-check-circle" style="color: green"></i>
+                                                    40% to 60% of PRs should be approved on the first try.
+                                                </li>
+                                                <li>
+                                                    <i class="pi pi-exclamation-triangle" style="color: rgb(192, 192, 86)"></i>
+                                                    Below 40% may indicate low initial code quality.
+                                                </li>
+                                                <li><i class="pi pi-times" style="color: red"></i> Above 80% may indicate that reviewers are not being critical enough.</li>
+                                            </ul>
+                                            <p class="m-0">If it take too long, it may indicate lack of active reviewers or too many changes in the PR.</p>
+                                        </p-card>
+                                    </div>
+                                </p-tabpanel>
+                            </p-tabpanels>
+                        </p-tabs></p-accordion-content
+                    ></p-accordion-panel
+                ></p-accordion
+            >
+        </div>
+    </div>
+</p-card>
