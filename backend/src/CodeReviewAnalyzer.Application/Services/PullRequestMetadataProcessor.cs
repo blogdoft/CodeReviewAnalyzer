@@ -1,6 +1,7 @@
 using CodeReviewAnalyzer.Application.Integrations;
 using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
+using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Application.Repositories;
 
 namespace CodeReviewAnalyzer.Application.Services;
@@ -8,6 +9,7 @@ namespace CodeReviewAnalyzer.Application.Services;
 public class PullRequestMetadataProcessor(
     IPullRequestsClient pullRequestsClient,
     IConfigurations configurationRepository,
+    ICodeRepository codeRepository,
     IDayOff dayOff,
     IUsers users,
     IPullRequests pullRequestRepository)
@@ -44,10 +46,14 @@ public class PullRequestMetadataProcessor(
 
         await foreach (var pullRequest in pullRequests)
         {
+            await ProcessRepositoryAsync(pullRequest);
             await ProcessUserAsync(pullRequest);
             await ProcessPullRequestAsync(pullRequest);
         }
     }
+
+    private async Task ProcessRepositoryAsync(PullRequest pullRequest) =>
+        await codeRepository.AddAsync(pullRequest.Repository);
 
     private async Task ProcessUserAsync(PullRequest pullRequest)
     {

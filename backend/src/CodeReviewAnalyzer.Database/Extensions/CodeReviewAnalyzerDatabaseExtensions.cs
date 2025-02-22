@@ -15,8 +15,7 @@ namespace CodeReviewAnalyzer.Database.Extensions;
 
 public static class CodeReviewAnalyzerDatabaseExtensions
 {
-    public static IServiceCollection AddDatabase(this IServiceCollection services)
-    {
+    public static IServiceCollection AddDatabase(this IServiceCollection services) =>
         services
             .AddSingleton<IConnectionFactory, NpgConnectionFactory>()
             .AddScoped<IDatabaseFacade, DapperDatabaseFacade>()
@@ -25,10 +24,8 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddScoped<IUsers, UserRepository>()
             .AddScoped<IDayOff, DayOffRepository>()
             .AddScoped<IReport, Report>()
+            .AddScoped<ICodeRepository, CodeRepositoryRepository>()
             .ConfigureMigration();
-
-        return services;
-    }
 
     public static void ExecuteMigration(IServiceProvider provider)
     {

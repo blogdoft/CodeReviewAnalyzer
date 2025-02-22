@@ -10,7 +10,7 @@ public class PullRequest(WorkingHourCalculator workingHourCalculator)
 
     public required string Title { get; init; }
 
-    public required string RepositoryName { get; init; }
+    public required CodeRepository Repository { get; init; }
 
     public required DateTime CreationDate { get; init; }
 
