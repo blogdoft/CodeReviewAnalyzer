@@ -104,7 +104,7 @@ public class PullRequestFactory(
         {
             Id = gitPullRequest.PullRequestId,
             Title = gitPullRequest.Title,
-            RepositoryName = gitPullRequest.Repository.Name,
+            Repository = ToRepository(gitPullRequest.Repository),
             CreationDate = gitPullRequest.CreationDate,
             ClosedDate = gitPullRequest.ClosedDate,
             Url = BuildPullRequestUrl(configuration, gitPullRequest),
@@ -131,4 +131,11 @@ public class PullRequestFactory(
             ThreadCount = personsComments.Count(),
         };
     }
+
+    private CodeRepository ToRepository(GitRepository repository) => new()
+    {
+        Name = repository.Name,
+        Url = repository.Url,
+        ExternalId = repository.Id.ToString(),
+    };
 }
