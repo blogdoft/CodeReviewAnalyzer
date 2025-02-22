@@ -12,7 +12,7 @@ public class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReque
                   "EXTERNAL_ID"
                 , "TITLE"
                 , "CREATED_BY_ID"
-                , "REPOSITORY_NAME"
+                , "REPOSITORY_ID"
                 , "URL"
                 , "CREATION_DATE"
                 , "CLOSED_DATE"
@@ -28,7 +28,7 @@ public class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReque
                   @ExternalId
                 , @Title
                 , (select u."ID" from "USERS" u where u."EXTERNAL_IDENTIFIER" = @UserKey)
-                , @RepositoryName
+                , (select r.id from "REPOSITORIES" r where r.external_id = @RepositoryId)
                 , @Url
                 , @CreationDate
                 , @ClosedDate
@@ -71,7 +71,7 @@ public class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReque
         {
             ExternalId = pullRequest.Id.ToString(),
             pullRequest.Title,
-            pullRequest.RepositoryName,
+            RepositoryId = pullRequest.Repository.ExternalId,
             CreationDate = pullRequest.CreationDate.ToLocalTime(),
             ClosedDate = pullRequest.ClosedDate.ToLocalTime(),
             pullRequest.Url,
