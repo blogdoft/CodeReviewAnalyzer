@@ -1,7 +1,6 @@
 using CodeReviewAnalyzer.Application.Integrations;
 using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
-using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Application.Repositories;
 
 namespace CodeReviewAnalyzer.Application.Services;

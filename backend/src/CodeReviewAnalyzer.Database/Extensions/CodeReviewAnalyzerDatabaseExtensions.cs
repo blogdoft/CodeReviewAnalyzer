@@ -25,6 +25,8 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddScoped<IDayOff, DayOffRepository>()
             .AddScoped<IReport, Report>()
             .AddScoped<ICodeRepository, CodeRepositoryRepository>()
+            .AddScoped<ITeams, TeamRepository>()
+            .AddScoped<ITeamUser, TeamUserRepository>()
             .ConfigureMigration();
 
     public static void ExecuteMigration(IServiceProvider provider)

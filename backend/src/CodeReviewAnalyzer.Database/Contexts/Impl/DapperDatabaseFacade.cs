@@ -28,4 +28,7 @@ public sealed class DapperDatabaseFacade(
         var multiple = await _connection.QueryMultipleAsync(sql, param);
         return new GridReaderFacade(multiple);
     }
+
+    public async Task<T?> QuerySingleOrDefaultAsync<T>(string sql, object? param = null) =>
+        await _connection.QuerySingleOrDefaultAsync<T>(sql, param);
 }

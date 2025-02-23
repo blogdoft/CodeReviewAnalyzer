@@ -1,6 +1,6 @@
 using CodeReviewAnalyzer.Application.Integrations.Models;
 
-namespace CodeReviewAnalyzer.Application.Reports;
+namespace CodeReviewAnalyzer.Application.Repositories;
 
 public interface ICodeRepository
 {

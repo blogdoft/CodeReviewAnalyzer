@@ -1,5 +1,3 @@
-using CodeReviewAnalyzer.Application.Integrations.Models;
-
 namespace CodeReviewAnalyzer.Application.Models.UserDensity;
 
 public class UserReviewerDensity
