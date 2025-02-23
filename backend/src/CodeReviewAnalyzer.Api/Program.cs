@@ -1,6 +1,8 @@
 using CodeReviewAnalyzer.Api.Extensions;
+using CodeReviewAnalyzer.Api.Filters;
 using CodeReviewAnalyzer.Database.Extensions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddVersionedApiExplorer();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+});
 builder.Services.ConfigureApplication();
 builder.Services.ConfigSwagger();
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
 
 var app = builder.Build();
 
