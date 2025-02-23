@@ -1,5 +1,5 @@
 using CodeReviewAnalyzer.Application.Integrations.Models;
-using CodeReviewAnalyzer.Application.Reports;
+using CodeReviewAnalyzer.Application.Repositories;
 using CodeReviewAnalyzer.Database.Contexts;
 
 namespace CodeReviewAnalyzer.Database.Repositories;
