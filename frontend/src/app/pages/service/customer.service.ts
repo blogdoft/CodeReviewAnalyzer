@@ -9052,6 +9052,10 @@ export class CustomerService {
     }
 
     getCustomers(params?: any) {
-        return this.http.get<any>('https://www.primefaces.org/data/customers', { params: params }).toPromise();
+        return this.http
+            .get<any>('https://www.primefaces.org/data/customers', {
+                params: params
+            })
+            .toPromise();
     }
 }
