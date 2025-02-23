@@ -10,19 +10,22 @@
         {
             "files": ["*.ts", "*.mts", "*.d.ts"],
             "options": {
-                "parser": "typescript"
+                "parser": "typescript",
+                "printWidth": 80
             }
         },
         {
             "files": ["*.html"],
             "options": {
-                "parser": "html"
+                "parser": "html",
+                "printWidth": 80
             }
         },
         {
             "files": ["*.component.html"],
             "options": {
-                "parser": "angular"
+                "parser": "angular",
+                "printWidth": 80
             }
         }
     ]
