@@ -2,84 +2,12 @@ using CodeReviewAnalyzer.Application.Models.PullRequestReport;
 using CodeReviewAnalyzer.Application.Models.UserDensity;
 using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Database.Contexts;
+using CodeReviewAnalyzer.Database.Services;
 
 namespace CodeReviewAnalyzer.Database.Repositories;
 
 public class Report(IDatabaseFacade databaseFacade) : IReport
 {
-    private const string TimeUntilApproval =
-        """
-            -- Review time: Start review mean time
-            select avg(pr."FIRST_COMMENT_WAITING_TIME_MINUTES") as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID"  and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-              and pr."FIRST_COMMENT_DATE" <> pr."CREATION_DATE"
-            group by 2
-            order by 2 asc
-            
-            ;
-            
-            --Mean time to approval
-            select (extract(epoch from  avg(pr."LAST_APPROVAL_DATE" - pr."CREATION_DATE")) / 60 )::int as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID"  and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-            group by 2
-            order by 2 asc
-
-            ;
-
-            -- Mean time to merge
-            select avg(pr."MERGE_WAITING_TIME_MINUTES") as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE") as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID"  and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-            group by 2
-            order by 2
-
-            ;
-
-            -- Pull Request count
-            select count(1) as PeriodInMinutes
-                , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr  
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID"  and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-            group by 2
-            order by 2 asc
-            
-            ;
-
-            -- No Commented PullRequests
-            select count(1) as PeriodInMinutes
-                , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr  
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID"  and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-              and pr."THREAD_COUNT" = 0
-            group by 2
-            order by 2 asc
-
-            ;
-
-            -- Pull Request counters
-            select avg(pr."FILE_COUNT") as "MeanFileCount"
-                , max(pr."FILE_COUNT") as "MaxFileCount"
-                , min(pr."FILE_COUNT") as "MinFileCount"
-                , count(pr."ID") as "PrCount"
-                , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
-            from "PULL_REQUEST" pr
-            join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
-            where pr."CLOSED_DATE" between @from and @to
-            group by "ReferenceDate"
-            order by "ReferenceDate" asc
-                       
-        """;
-
     private const string ReviewerDensity =
         """
             with reviewers as (
@@ -90,7 +18,7 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
                 from "PULL_REQUEST" pr 
                     join "PULL_REQUEST_COMMENTS" prc on prc."PULL_REQUEST_ID"  = pr."ID" and prc."COMMENT_INDEX" = 1 
                     join "USERS" u on u."ID" = prc."USER_ID" and u."ACTIVE"
-                where pr."CLOSED_DATE" between @from  and @to)
+                where pr."CLOSED_DATE" between @From and @To)
             select count(r."PR_ID") as "CommentCount"
                 , r."UserId" 
                 , r."UserName"
@@ -102,44 +30,49 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
         """;
 
     public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
-        DateOnly from,
-        DateOnly to)
+        ReportFilter filter)
     {
+        // TODO: Discover a way to maintain the query order inside Query Builder
+        // and resultSets.ReadAsync.
+        var sql = PullRequestInsightReportQueryBuilder.BuildPullRequestSql(filter);
+
         using var resultSets = await databaseFacade.QueryMultipleAsync(
-            TimeUntilApproval,
+            sql,
             new
             {
-                from,
-                to,
+                filter.From,
+                filter.To,
+                repoTeamId = filter.RepoTeamId,
+                userTeamId = filter.UserTeamId,
             });
-        var timeUntilApprove = await resultSets.ReadAsync<TimeIndex>();
-        var startReviewMeanTime = await resultSets.ReadAsync<TimeIndex>();
+
+        var meanTimeToApprove = await resultSets.ReadAsync<TimeIndex>();
+        var meanTimeToReview = await resultSets.ReadAsync<TimeIndex>();
         var meanTimeToMerge = await resultSets.ReadAsync<TimeIndex>();
         var pullRequestCount = await resultSets.ReadAsync<TimeIndex>();
-        var nonCommentedPullRequest = await resultSets.ReadAsync<TimeIndex>();
-        var pullRequestCounters = await resultSets.ReadAsync<PullRequestFileSize>();
+        var approvedOnFirstAttempt = await resultSets.ReadAsync<TimeIndex>();
+        var pullRequestStats = await resultSets.ReadAsync<PullRequestFileSize>();
 
         return new()
         {
-            MeanTimeOpenToApproval = timeUntilApprove,
-            MeanTimeToStartReview = startReviewMeanTime,
+            MeanTimeOpenToApproval = meanTimeToApprove,
+            MeanTimeToStartReview = meanTimeToReview,
             MeanTimeToMerge = meanTimeToMerge,
             PullRequestCount = pullRequestCount,
-            PullRequestWithoutCommentCount = nonCommentedPullRequest,
-            PullRequestSize = pullRequestCounters,
+            PullRequestWithoutCommentCount = approvedOnFirstAttempt,
+            PullRequestSize = pullRequestStats,
         };
     }
 
     public async Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(
-        DateOnly from,
-        DateOnly to)
+        ReportFilter filter)
     {
         var userDensity = await databaseFacade.QueryAsync<UserReviewerDensity>(
             ReviewerDensity,
             new
             {
-                from,
-                to,
+                filter.From,
+                filter.To,
             });
 
         return userDensity ?? [];

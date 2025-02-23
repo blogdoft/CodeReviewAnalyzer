@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 import { CommentData } from './models/comment-data.model';
 import { PullRequestTimeReport } from './models/pull-request-report.model';
@@ -16,16 +16,23 @@ export class PullRequestReportService {
 
     /**
      * Obtém os relatórios para um período informado.
-     * @param begin Data de início no formato YYYY-MM-DD.
-     * @param end Data de término no formato YYYY-MM-DD.
+     * @param from Data de início no formato YYYY-MM-DD.
+     * @param to Data de término no formato YYYY-MM-DD.
      * @param apiVersion Versão da API (padrão: '1.0').
      */
-    getReports(begin: Date, end: Date): Observable<PullRequestTimeReport> {
-        const params = new HttpParams()
-            .set('begin', begin.toISOString().split('T')[0])
-            .set('end', end.toISOString().split('T')[0])
+    getReports(
+        from: Date,
+        to: Date,
+        repoTeamId: string | null,
+        userTeamId: string | null
+    ): Observable<PullRequestTimeReport> {
+        let params = new HttpParams()
+            .set('from', from.toISOString().split('T')[0])
+            .set('to', to.toISOString().split('T')[0])
             .set('api-version', this.apiVersion);
-
+        if (repoTeamId) params = params.set('repoTeamId', repoTeamId);
+        if (userTeamId) params = params.set('userTeamId', userTeamId);
+        console.log(JSON.stringify(params));
         return this.http.get<PullRequestTimeReport>(
             `${this.baseUrl}/api/reports/pull-requests`,
             {
@@ -36,8 +43,8 @@ export class PullRequestReportService {
 
     getReviewerDensity(from: Date, to: Date): Observable<CommentData[]> {
         const params = new HttpParams()
-            .set('begin', from.toISOString().split('T')[0])
-            .set('end', to.toISOString().split('T')[0])
+            .set('from', from.toISOString().split('T')[0])
+            .set('to', to.toISOString().split('T')[0])
             .set('api-version', this.apiVersion);
 
         return this.http.get<CommentData[]>(

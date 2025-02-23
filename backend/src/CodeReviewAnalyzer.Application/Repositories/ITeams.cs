@@ -10,7 +10,7 @@ public interface ITeams
 
     Task<IEnumerable<Team>> QueryBy(string? teamName);
 
-    Task<Team?> QueryBy(Guid id);
+    Task<Team?> QueryByIdAsync(string id);
 
     Task UpdateAsync(Team updateTeam);
 }
