@@ -7,13 +7,24 @@ import { DividerModule } from 'primeng/divider';
 import { PanelModule } from 'primeng/panel';
 import { TabsModule } from 'primeng/tabs';
 
-import { PullRequestTimeReport, TimeIndex } from '../../../service/report/models/pull-request-report.model';
+import {
+    PullRequestTimeReport,
+    TimeIndex
+} from '../../../service/report/models/pull-request-report.model';
 import { MathjaxDirective } from '../../../uikit/directives/mathjax.directive';
 import { monthNames } from '../constants/month-names';
 
 @Component({
     selector: 'app-pull-request-graph',
-    imports: [CardModule, ChartModule, AccordionModule, TabsModule, PanelModule, DividerModule, MathjaxDirective],
+    imports: [
+        CardModule,
+        ChartModule,
+        AccordionModule,
+        TabsModule,
+        PanelModule,
+        DividerModule,
+        MathjaxDirective
+    ],
     templateUrl: './pull-request-graph.component.html',
     styleUrl: './pull-request-graph.component.scss'
 })
@@ -53,11 +64,26 @@ export class PullRequestGraphComponent {
 
     private renderReport(report: PullRequestTimeReport): void {
         const labels = this.extractLabels(report);
-        const meanTimeToApproval = this.createTimeDataSeries(report.meanTimeOpenToApproval ?? [], labels);
-        const meanTimeStartReview = this.createTimeDataSeries(report.meanTimeToStartReview ?? [], labels);
-        const meanTimeToMerge = this.createTimeDataSeries(report.meanTimeToMerge ?? [], labels);
-        const prCounters = this.createCounterDataSeries(report.pullRequestCount ?? [], labels);
-        const prWithoutComment = this.createCounterDataSeries(report.pullRequestWithoutCommentCount ?? [], labels);
+        const meanTimeToApproval = this.createTimeDataSeries(
+            report.meanTimeOpenToApproval ?? [],
+            labels
+        );
+        const meanTimeStartReview = this.createTimeDataSeries(
+            report.meanTimeToStartReview ?? [],
+            labels
+        );
+        const meanTimeToMerge = this.createTimeDataSeries(
+            report.meanTimeToMerge ?? [],
+            labels
+        );
+        const prCounters = this.createCounterDataSeries(
+            report.pullRequestCount ?? [],
+            labels
+        );
+        const prWithoutComment = this.createCounterDataSeries(
+            report.pullRequestWithoutCommentCount ?? [],
+            labels
+        );
 
         this.lineChartData = {
             labels: labels,
@@ -111,7 +137,10 @@ export class PullRequestGraphComponent {
         };
     }
 
-    private createTimeDataSeries(timeIndices: TimeIndex[], labels: string[]): number[] {
+    private createTimeDataSeries(
+        timeIndices: TimeIndex[],
+        labels: string[]
+    ): number[] {
         const dataMap: { [label: string]: number } = {};
         timeIndices.forEach((item) => {
             const date = new Date(item.referenceDate);
@@ -121,7 +150,10 @@ export class PullRequestGraphComponent {
         return labels.map((label) => dataMap[label] ?? 0);
     }
 
-    private createCounterDataSeries(timeIndices: TimeIndex[], labels: string[]): number[] {
+    private createCounterDataSeries(
+        timeIndices: TimeIndex[],
+        labels: string[]
+    ): number[] {
         const dataMap: { [label: string]: number } = {};
         timeIndices.forEach((item) => {
             const date = new Date(item.referenceDate);
@@ -134,8 +166,12 @@ export class PullRequestGraphComponent {
     private extractLabels(report: PullRequestTimeReport) {
         // Extrai todas as datas dos arrays que contenham o campo referenceDate
         const dates: string[] = [
-            ...(report.meanTimeOpenToApproval ?? []).map((item) => item.referenceDate),
-            ...(report.meanTimeToStartReview ?? []).map((item) => item.referenceDate),
+            ...(report.meanTimeOpenToApproval ?? []).map(
+                (item) => item.referenceDate
+            ),
+            ...(report.meanTimeToStartReview ?? []).map(
+                (item) => item.referenceDate
+            ),
             ...(report.meanTimeToMerge ?? []).map((item) => item.referenceDate)
         ];
 

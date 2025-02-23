@@ -13,12 +13,24 @@ import { NodeService } from '../service/node.service';
     template: `
         <div class="card">
             <div class="font-semibold text-xl">Tree</div>
-            <p-tree [value]="treeValue" selectionMode="checkbox" [(selection)]="selectedTreeValue"></p-tree>
+            <p-tree
+                [value]="treeValue"
+                selectionMode="checkbox"
+                [(selection)]="selectedTreeValue"
+            ></p-tree>
         </div>
 
         <div class="card">
             <div class="font-semibold text-xl mb-4">TreeTable</div>
-            <p-treetable [value]="treeTableValue" [columns]="cols" selectionMode="checkbox" [(selectionKeys)]="selectedTreeTableValue" dataKey="key" [scrollable]="true" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-treetable
+                [value]="treeTableValue"
+                [columns]="cols"
+                selectionMode="checkbox"
+                [(selectionKeys)]="selectedTreeTableValue"
+                dataKey="key"
+                [scrollable]="true"
+                [tableStyle]="{ 'min-width': '50rem' }"
+            >
                 <ng-template #header let-columns>
                     <tr>
                         <th *ngFor="let col of columns">
@@ -26,11 +38,22 @@ import { NodeService } from '../service/node.service';
                         </th>
                     </tr>
                 </ng-template>
-                <ng-template #body let-rowNode let-rowData="rowData" let-columns="columns">
+                <ng-template
+                    #body
+                    let-rowNode
+                    let-rowData="rowData"
+                    let-columns="columns"
+                >
                     <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
                         <td *ngFor="let col of columns; let i = index">
-                            <p-treeTableToggler [rowNode]="rowNode" *ngIf="i === 0" />
-                            <p-treeTableCheckbox [value]="rowNode" *ngIf="i === 0" />
+                            <p-treeTableToggler
+                                [rowNode]="rowNode"
+                                *ngIf="i === 0"
+                            />
+                            <p-treeTableCheckbox
+                                [value]="rowNode"
+                                *ngIf="i === 0"
+                            />
                             {{ rowData[col.field] }}
                         </td>
                     </tr>
@@ -55,7 +78,9 @@ export class TreeDemo implements OnInit {
 
     ngOnInit() {
         this.nodeService.getFiles().then((files) => (this.treeValue = files));
-        this.nodeService.getTreeTableNodes().then((files: any) => (this.treeTableValue = files));
+        this.nodeService
+            .getTreeTableNodes()
+            .then((files: any) => (this.treeTableValue = files));
 
         this.cols = [
             { field: 'name', header: 'Name' },

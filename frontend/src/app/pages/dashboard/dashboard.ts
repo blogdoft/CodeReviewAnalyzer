@@ -44,20 +44,40 @@ import { FormsModule } from '@angular/forms';
                     <ng-template #start></ng-template>
                     <ng-template #center>
                         <p-floatlabel>
-                            <p-datepicker [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" dateFormat="dd/mm/yy" size="small" showIcon iconDisplay="input" fluid="true" [showButtonBar]="true" inputId="inputPeriod"></p-datepicker>
-                            <label for="inputPeriod">Period</label></p-floatlabel
+                            <p-datepicker
+                                [(ngModel)]="rangeDates"
+                                selectionMode="range"
+                                [readonlyInput]="true"
+                                dateFormat="dd/mm/yy"
+                                size="small"
+                                showIcon
+                                iconDisplay="input"
+                                fluid="true"
+                                [showButtonBar]="true"
+                                inputId="inputPeriod"
+                            ></p-datepicker>
+                            <label for="inputPeriod"
+                                >Period</label
+                            ></p-floatlabel
                         >
                     </ng-template>
                     <ng-template #end></ng-template>
                 </p-toolbar>
             </div>
-            <app-stats-widget class="contents" [pullRequestTimeReport]="pullRequestReport" />
+            <app-stats-widget
+                class="contents"
+                [pullRequestTimeReport]="pullRequestReport"
+            />
             <div class="col-span-12">
-                <app-pull-request-graph [pullRequestTimeReport]="pullRequestReport"></app-pull-request-graph>
+                <app-pull-request-graph
+                    [pullRequestTimeReport]="pullRequestReport"
+                ></app-pull-request-graph>
             </div>
 
             <div class="col-span-12 ">
-                <app-reviewer-density-graph [reviewerDensity]="reviewerDensityReport"></app-reviewer-density-graph>
+                <app-reviewer-density-graph
+                    [reviewerDensity]="reviewerDensityReport"
+                ></app-reviewer-density-graph>
             </div>
             <div class="col-span-12 xl:col-span-6">
                 <app-recent-sales-widget />
@@ -83,7 +103,8 @@ export class Dashboard {
 
     set rangeDates(value: Date[] | null) {
         this._rangeDates = value;
-        if (value && value[0] != null && value[1] != null) this.searchPullRequests(value);
+        if (value && value[0] != null && value[1] != null)
+            this.searchPullRequests(value);
     }
     get rangeDates(): Date[] | null {
         return this._rangeDates;
@@ -105,17 +126,21 @@ export class Dashboard {
     }
 
     public searchPullRequests(event: Date[] | null) {
-        this.pullRequestReportService.getReports(event![0], event![1]).subscribe({
-            next: (data) => {
-                this.pullRequestReport = data;
-            },
-            error: (err) => this.showError(err)
-        });
+        this.pullRequestReportService
+            .getReports(event![0], event![1])
+            .subscribe({
+                next: (data) => {
+                    this.pullRequestReport = data;
+                },
+                error: (err) => this.showError(err)
+            });
 
-        this.pullRequestReportService.getReviewerDensity(event![0], event![1]).subscribe({
-            next: (data) => (this.reviewerDensityReport = data),
-            error: (err) => this.showError(err)
-        });
+        this.pullRequestReportService
+            .getReviewerDensity(event![0], event![1])
+            .subscribe({
+                next: (data) => (this.reviewerDensityReport = data),
+                error: (err) => this.showError(err)
+            });
     }
 
     private showError(err: any) {

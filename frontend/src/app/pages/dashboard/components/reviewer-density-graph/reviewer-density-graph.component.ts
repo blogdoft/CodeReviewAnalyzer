@@ -38,10 +38,14 @@ export class ReviewerDensityGraphComponent {
 
     prepareChartData(apiResponse: CommentData[]): void {
         // 1. Build axis X
-        const developers = Array.from(new Set(apiResponse.map((item) => item.userName))).sort();
+        const developers = Array.from(
+            new Set(apiResponse.map((item) => item.userName))
+        ).sort();
 
         // 2. Build Month list (referenceDate)
-        const months = Array.from(new Set(apiResponse.map((item) => item.referenceDate))).sort();
+        const months = Array.from(
+            new Set(apiResponse.map((item) => item.referenceDate))
+        ).sort();
 
         // User Friendly dates: "Jan/2025"
         const formattedMonths = months.map((dateStr) => {
@@ -71,7 +75,10 @@ export class ReviewerDensityGraphComponent {
         const datasets = months.map((month, idx) => {
             // Para cada desenvolvedor, busque o registro correspondente a este mês
             const data = developers.map((dev) => {
-                const record = apiResponse.find((item) => item.userName === dev && item.referenceDate === month);
+                const record = apiResponse.find(
+                    (item) =>
+                        item.userName === dev && item.referenceDate === month
+                );
                 return record ? record.commentCount : 0;
             });
             return {

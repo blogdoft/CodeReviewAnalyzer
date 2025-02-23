@@ -1,6 +1,9 @@
 import { MetricStatsOptions } from '../../../shared/components/metric-stats-panel/metric-stats-options';
 import { MetricStatus } from '../../../shared/components/metric-stats-panel/metric-status.enum';
-import { PullRequestFileSize, PullRequestTimeReport } from '../../service/report/models/pull-request-report.model';
+import {
+    PullRequestFileSize,
+    PullRequestTimeReport
+} from '../../service/report/models/pull-request-report.model';
 
 export class PullRequestSizeStatsService {
     constructor(public report: PullRequestTimeReport) {}
@@ -12,7 +15,10 @@ export class PullRequestSizeStatsService {
         referenceDate: new Date().toString()
     };
 
-    public build(): { meanFileCount: MetricStatsOptions; maxFileCount: MetricStatsOptions } {
+    public build(): {
+        meanFileCount: MetricStatsOptions;
+        maxFileCount: MetricStatsOptions;
+    } {
         const sorted = this.getOrdered(this.report.pullRequestSize);
 
         let status = MetricStatus.ok;
@@ -48,7 +54,9 @@ export class PullRequestSizeStatsService {
         };
     }
 
-    private getOrdered(timeIndex: PullRequestFileSize[] | null): CurrentPrevious {
+    private getOrdered(
+        timeIndex: PullRequestFileSize[] | null
+    ): CurrentPrevious {
         if (!timeIndex) {
             return {
                 current: this.emptyFileSize,
@@ -56,7 +64,11 @@ export class PullRequestSizeStatsService {
             };
         }
 
-        const sorted = timeIndex.sort((a, b) => new Date(a.referenceDate).getTime() - new Date(b.referenceDate).getTime());
+        const sorted = timeIndex.sort(
+            (a, b) =>
+                new Date(a.referenceDate).getTime() -
+                new Date(b.referenceDate).getTime()
+        );
 
         return {
             current: sorted[sorted.length - 1],
