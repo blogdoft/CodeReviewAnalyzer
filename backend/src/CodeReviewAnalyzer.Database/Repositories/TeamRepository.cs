@@ -67,7 +67,7 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
           update "TEAMS" set active = false where external_id = @id
         """;
 
-        await databaseFacade.ExecuteAsync(Sql, new { id });
+        await databaseFacade.ExecuteAsync(Sql, new { id = id.ToString() });
     }
 
     public async Task<IEnumerable<Team>> QueryBy(string? teamName)
@@ -87,7 +87,7 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
             });
     }
 
-    public async Task<Team?> QueryBy(Guid id)
+    public async Task<Team?> QueryByIdAsync(string id)
     {
         const string Where = "where t.external_id = @id";
         return await databaseFacade.QuerySingleOrDefaultAsync<Team>(

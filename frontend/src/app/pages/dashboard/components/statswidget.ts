@@ -25,10 +25,10 @@ import { PullRequestStatsService } from '../services/pull-request-stats.service'
             <app-metric-stats-panel [options]="prApproval" />
         </div>
         <div class="col-span-12 lg:col-span-6 xl:col-span-3">
-            <app-metric-stats-panel [options]="closedPullRequest" />
+            <app-metric-stats-panel [options]="meanFileCount" />
         </div>
         <div class="col-span-12 lg:col-span-6 xl:col-span-3">
-            <app-metric-stats-panel [options]="meanFileCount" />
+            <app-metric-stats-panel [options]="closedPullRequest" />
         </div>
         <div class="col-span-12 lg:col-span-6 xl:col-span-3">
             <app-metric-stats-panel [options]="maxFileCount" />
@@ -52,14 +52,7 @@ export class StatsWidget {
         return this.report;
     }
 
-    public report: PullRequestTimeReport = {
-        meanTimeOpenToApproval: [],
-        meanTimeToMerge: [],
-        meanTimeToStartReview: [],
-        pullRequestCount: [],
-        pullRequestSize: [],
-        pullRequestWithoutCommentCount: []
-    };
+    public report!: PullRequestTimeReport;
 
     public prApproval!: MetricStatsOptions;
     public closedPullRequest!: MetricStatsOptions;

@@ -18,8 +18,7 @@ public class ReportsController(IReport report) : ControllerBase
     /// Based on Closed Pull Request history, this endpoint returns mesures
     /// about Time to Approval, to merge, to receive first comment and etc.
     /// </remarks>
-    /// <param name="begin" example="2024-01-01">Period begin.</param>
-    /// <param name="end" example="2025-02-28">Period end.</param>
+    /// <param name="filter">Period begin.</param>
     /// <response code="200">Pull Request mesures.</response>
     /// <response code="400">Invalid request</response>
     /// <response code="401">Not authenticated</response>
@@ -34,12 +33,9 @@ public class ReportsController(IReport report) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetPullRequestTimeReportAsync(
-        [FromQuery] DateOnly? begin,
-        [FromQuery] DateOnly? end)
+        [FromQuery] ReportFilter filter)
     {
-        var pullRequestReport = await report.GetPullRequestTimeReportAsync(
-            begin ?? new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1),
-            end ?? DateOnly.FromDateTime(DateTime.Now.AddMonths(1).AddTicks(-1)));
+        var pullRequestReport = await report.GetPullRequestTimeReportAsync(filter);
 
         return Ok(pullRequestReport);
     }
@@ -50,8 +46,7 @@ public class ReportsController(IReport report) : ControllerBase
     /// <remarks>
     /// ..
     /// </remarks>
-    /// <param name="begin" example="2024-01-01">Period begin.</param>
-    /// <param name="end" example="2025-02-28">Period end.</param>
+    /// <param name="filter">Filters</param>
     /// <response code="200">Job scheduled and running</response>
     /// <response code="400">Invalid request</response>
     /// <response code="401">Not authenticated</response>
@@ -66,12 +61,9 @@ public class ReportsController(IReport report) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetUserReviewDensityAsync(
-        [FromQuery] DateOnly? begin,
-        [FromQuery] DateOnly? end)
+        [FromQuery] ReportFilter filter)
     {
-        var reviewerDensity = await report.GetUserReviewerDensity(
-            begin ?? new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1),
-            end ?? DateOnly.FromDateTime(DateTime.Now.AddMonths(1).AddTicks(-1)));
+        var reviewerDensity = await report.GetUserReviewerDensity(filter);
 
         return Ok(reviewerDensity);
     }

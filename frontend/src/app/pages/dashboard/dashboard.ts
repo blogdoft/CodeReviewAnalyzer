@@ -1,28 +1,31 @@
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { DatePickerModule } from 'primeng/datepicker';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 
 import { CommentData } from '../service/report/models/comment-data.model';
 import { PullRequestTimeReport } from '../service/report/models/pull-request-report.model';
 import { PullRequestReportService } from '../service/report/pullrequest.report.service';
 import { BestSellingWidget } from './components/bestsellingwidget';
+import { DashboardFilter, DateRange } from './components/filter/date-range';
+import { FilterComponent } from './components/filter/filter.component';
 import { NotificationsWidget } from './components/notificationswidget';
 import { PullRequestGraphComponent } from './components/pull-request-graph/pull-request-graph.component';
 import { RecentSalesWidget } from './components/recentsaleswidget';
 import { RevenueStreamWidget } from './components/revenuestreamwidget';
 import { ReviewerDensityGraphComponent } from './components/reviewer-density-graph/reviewer-density-graph.component';
 import { StatsWidget } from './components/statswidget';
-import { ToolbarModule } from 'primeng/toolbar';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
     imports: [
-        FloatLabelModule,
+        AutoCompleteModule,
         DatePickerModule,
         FormsModule,
         StatsWidget,
@@ -34,36 +37,20 @@ import { FormsModule } from '@angular/forms';
         ToastModule,
         MessageModule,
         ReviewerDensityGraphComponent,
-        ToolbarModule
+        ToolbarModule,
+        IftaLabelModule,
+        FilterComponent
     ],
     template: `
         <p-toast></p-toast>
         <div class="grid grid-cols-12 gap-8">
             <div class="col-span-12">
-                <p-toolbar>
-                    <ng-template #start></ng-template>
-                    <ng-template #center>
-                        <p-floatlabel>
-                            <p-datepicker
-                                [(ngModel)]="rangeDates"
-                                selectionMode="range"
-                                [readonlyInput]="true"
-                                dateFormat="dd/mm/yy"
-                                size="small"
-                                showIcon
-                                iconDisplay="input"
-                                fluid="true"
-                                [showButtonBar]="true"
-                                inputId="inputPeriod"
-                            ></p-datepicker>
-                            <label for="inputPeriod"
-                                >Period</label
-                            ></p-floatlabel
-                        >
-                    </ng-template>
-                    <ng-template #end></ng-template>
-                </p-toolbar>
+                <app-filter
+                    [rangeDate]="rangeDates"
+                    (OnSearch)="OnSearch($event)"
+                ></app-filter>
             </div>
+            <div class="col-span-12"></div>
             <app-stats-widget
                 class="contents"
                 [pullRequestTimeReport]="pullRequestReport"
@@ -92,6 +79,8 @@ import { FormsModule } from '@angular/forms';
     providers: [MessageService]
 })
 export class Dashboard {
+    public rangeDates!: DateRange;
+
     public pullRequestReport: PullRequestTimeReport = {
         meanTimeOpenToApproval: [],
         meanTimeToMerge: [],
@@ -101,17 +90,14 @@ export class Dashboard {
         pullRequestWithoutCommentCount: []
     };
 
-    set rangeDates(value: Date[] | null) {
-        this._rangeDates = value;
-        if (value && value[0] != null && value[1] != null)
-            this.searchPullRequests(value);
-    }
-    get rangeDates(): Date[] | null {
-        return this._rangeDates;
-    }
-
-    public reviewerDensityReport: CommentData[] = [];
-    private _rangeDates: Date[] | null = null;
+    public reviewerDensityReport: CommentData[] = [
+        {
+            commentCount: -1,
+            userId: 'undefined',
+            userName: 'undefined',
+            referenceDate: new Date().toDateString()
+        }
+    ];
 
     constructor(
         private pullRequestReportService: PullRequestReportService,
@@ -122,12 +108,23 @@ export class Dashboard {
         const today = new Date();
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(today.getMonth() - 3, 1);
-        this.rangeDates = [threeMonthsAgo, today];
+        this.rangeDates = { from: threeMonthsAgo, to: today };
+        const filter: DashboardFilter = {
+            teamRepositoryId: null,
+            teamUserId: null,
+            dateRange: this.rangeDates
+        };
+        this.OnSearch(filter);
     }
 
-    public searchPullRequests(event: Date[] | null) {
+    OnSearch($event: DashboardFilter) {
         this.pullRequestReportService
-            .getReports(event![0], event![1])
+            .getReports(
+                $event.dateRange.from,
+                $event.dateRange.to,
+                $event.teamRepositoryId,
+                $event.teamUserId
+            )
             .subscribe({
                 next: (data) => {
                     this.pullRequestReport = data;
@@ -136,7 +133,7 @@ export class Dashboard {
             });
 
         this.pullRequestReportService
-            .getReviewerDensity(event![0], event![1])
+            .getReviewerDensity($event.dateRange.from, $event.dateRange.to)
             .subscribe({
                 next: (data) => (this.reviewerDensityReport = data),
                 error: (err) => this.showError(err)

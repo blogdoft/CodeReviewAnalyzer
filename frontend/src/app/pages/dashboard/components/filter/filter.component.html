@@ -1,0 +1,73 @@
+<p-card header="Filter">
+    <div class="filter-container">
+        <div class="filter-item">
+            <p-iftalabel>
+                <p-datepicker
+                    [(ngModel)]="lookupRange"
+                    selectionMode="range"
+                    [readonlyInput]="true"
+                    dateFormat="dd/mm/yy"
+                    size="small"
+                    showIcon
+                    fluid
+                    iconDisplay="input"
+                    [showButtonBar]="true"
+                    inputId="inputPeriod"
+                    [inputStyle]="{ width: '100%' }"
+                ></p-datepicker>
+                <label for="inputPeriod">Period</label>
+            </p-iftalabel>
+        </div>
+        <div class="filter-item">
+            <p-iftalabel>
+                <p-autocomplete
+                    [style]="{ width: '100%' }"
+                    [suggestions]="autoFilteredValue"
+                    optionLabel="name"
+                    dataKey="externalId"
+                    forceSelection
+                    placeholder="Start typing the repositories' team name"
+                    dropdown
+                    lazy="true"
+                    display="chip"
+                    fluid
+                    (onSelect)="onSelectRepoTeam($event)"
+                    (onClear)="onClearRepoTeam($event)"
+                    (completeMethod)="filterTeamRepository($event)"
+                    inputId="repoTeamLookup"
+                ></p-autocomplete>
+                <label for="repoTeamLookup">Filter by teams' repository:</label>
+            </p-iftalabel>
+        </div>
+        <div class="filter-item">
+            <p-iftalabel>
+                <p-autocomplete
+                    [style]="{ width: '100%' }"
+                    [suggestions]="autoFilteredValue"
+                    optionLabel="name"
+                    dataKey="externalId"
+                    forceSelection
+                    placeholder="Start typing the team name"
+                    dropdown
+                    lazy="true"
+                    display="chip"
+                    fluid
+                    (onSelect)="onSelectUserTeam($event)"
+                    (onClear)="onClearUserTeam($event)"
+                    (completeMethod)="filterTeamRepository($event)"
+                    inputId="repoTeamLookup2"
+                ></p-autocomplete>
+                <label for="repoTeamLookup2">Filter by team activities:</label>
+            </p-iftalabel>
+        </div>
+    </div>
+    <ng-template #footer>
+        <div class="col-span-12">
+            <p-button
+                label="Search"
+                styleClass="left-0"
+                (onClick)="onSearchClick()"
+            />
+        </div>
+    </ng-template>
+</p-card>

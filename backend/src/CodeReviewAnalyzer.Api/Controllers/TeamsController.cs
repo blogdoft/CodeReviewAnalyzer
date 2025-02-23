@@ -96,7 +96,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetTeamByIdAsync([FromRoute][Required] Guid id)
     {
-        var teamsFound = await teamsRepository.QueryBy(id);
+        var teamsFound = await teamsRepository.QueryBy(id.ToString());
 
         return Ok(teamsFound);
     }
@@ -149,7 +149,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
         [FromRoute][Required] Guid id,
         [FromBody] Team updateTeam)
     {
-        if (updateTeam.ExternalId != id)
+        if (updateTeam.ExternalId != id.ToString())
         {
             return BadRequest();
         }
