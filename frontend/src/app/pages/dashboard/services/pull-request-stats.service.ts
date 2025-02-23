@@ -1,6 +1,9 @@
 import { MetricStatsOptions } from '../../../shared/components/metric-stats-panel/metric-stats-options';
 import { MetricStatus } from '../../../shared/components/metric-stats-panel/metric-status.enum';
-import { PullRequestTimeReport, TimeIndex } from '../../service/report/models/pull-request-report.model';
+import {
+    PullRequestTimeReport,
+    TimeIndex
+} from '../../service/report/models/pull-request-report.model';
 
 export interface PullRequestStats {
     firstAttempt: MetricStatsOptions;
@@ -20,13 +23,24 @@ export class PullRequestStatsService {
 
     public build(): PullRequestStats {
         const sortedPrCount = this.getOrdered(this.report.pullRequestCount);
-        const sortedNonApproval = this.getOrdered(this.report.pullRequestWithoutCommentCount);
+        const sortedNonApproval = this.getOrdered(
+            this.report.pullRequestWithoutCommentCount
+        );
         return {
-            firstAttempt: this.buildFirstAttempt(sortedPrCount, sortedNonApproval),
+            firstAttempt: this.buildFirstAttempt(
+                sortedPrCount,
+                sortedNonApproval
+            ),
             closedPullRequest: this.buildPrClosedCount(sortedPrCount),
-            meanTimeToReview: this.buildMeanTimeToReview(this.report.meanTimeToStartReview),
-            meanTimeToApprove: this.buildMeanTimeToApprove(this.report.meanTimeOpenToApproval),
-            meanTimeToMerge: this.buildMeanTimeToMerge(this.report.meanTimeToMerge)
+            meanTimeToReview: this.buildMeanTimeToReview(
+                this.report.meanTimeToStartReview
+            ),
+            meanTimeToApprove: this.buildMeanTimeToApprove(
+                this.report.meanTimeOpenToApproval
+            ),
+            meanTimeToMerge: this.buildMeanTimeToMerge(
+                this.report.meanTimeToMerge
+            )
         };
     }
 
@@ -38,7 +52,11 @@ export class PullRequestStatsService {
             };
         }
 
-        const sorted = timeIndex.sort((a, b) => new Date(a.referenceDate).getTime() - new Date(b.referenceDate).getTime());
+        const sorted = timeIndex.sort(
+            (a, b) =>
+                new Date(a.referenceDate).getTime() -
+                new Date(b.referenceDate).getTime()
+        );
 
         return {
             current: sorted[sorted.length - 1],
@@ -46,7 +64,10 @@ export class PullRequestStatsService {
         };
     }
 
-    private buildFirstAttempt(prCount: CurrentPrevious, nonApproved: CurrentPrevious): MetricStatsOptions {
+    private buildFirstAttempt(
+        prCount: CurrentPrevious,
+        nonApproved: CurrentPrevious
+    ): MetricStatsOptions {
         const firstAttempt = this.evalFirstAttempt(prCount, nonApproved);
         let status = MetricStatus.ok;
         const value = parseInt(firstAttempt.current.value);
@@ -82,7 +103,9 @@ export class PullRequestStatsService {
         };
     }
 
-    private buildMeanTimeToReview(meanTimeToReview: TimeIndex[] | null): MetricStatsOptions {
+    private buildMeanTimeToReview(
+        meanTimeToReview: TimeIndex[] | null
+    ): MetricStatsOptions {
         const sorted = this.getCurrentPreviousHourly(meanTimeToReview);
         let status = MetricStatus.ok;
         if (sorted.current.periodInMinutes > 8) status = MetricStatus.warning;
@@ -102,7 +125,9 @@ export class PullRequestStatsService {
         };
     }
 
-    private buildMeanTimeToApprove(meanTimeToApprove: TimeIndex[] | null): MetricStatsOptions {
+    private buildMeanTimeToApprove(
+        meanTimeToApprove: TimeIndex[] | null
+    ): MetricStatsOptions {
         const sorted = this.getCurrentPreviousHourly(meanTimeToApprove);
         let status = MetricStatus.ok;
         if (sorted.current.periodInMinutes > 48) status = MetricStatus.warning;
@@ -122,7 +147,9 @@ export class PullRequestStatsService {
         };
     }
 
-    private buildMeanTimeToMerge(meanTimeToMerge: TimeIndex[] | null): MetricStatsOptions {
+    private buildMeanTimeToMerge(
+        meanTimeToMerge: TimeIndex[] | null
+    ): MetricStatsOptions {
         const sorted = this.getCurrentPreviousHourly(meanTimeToMerge);
         let status = MetricStatus.ok;
         if (sorted.current.periodInMinutes > 48) status = MetricStatus.warning;
@@ -142,7 +169,9 @@ export class PullRequestStatsService {
         };
     }
 
-    private getCurrentPreviousHourly(content: TimeIndex[] | null): CurrentPrevious {
+    private getCurrentPreviousHourly(
+        content: TimeIndex[] | null
+    ): CurrentPrevious {
         if (!content) {
             return {
                 current: {
@@ -164,14 +193,23 @@ export class PullRequestStatsService {
             },
             previous: {
                 ...sorted.previous,
-                periodInMinutes: Math.round(sorted.previous.periodInMinutes / 60)
+                periodInMinutes: Math.round(
+                    sorted.previous.periodInMinutes / 60
+                )
             }
         };
     }
 
-    private evalFirstAttempt(prCount: CurrentPrevious, prWithoutApprovalCount: CurrentPrevious) {
-        const currentValue = (prWithoutApprovalCount.current.periodInMinutes * 100) / prCount.current.periodInMinutes;
-        const previousValue = (prWithoutApprovalCount.previous.periodInMinutes * 100) / prCount.previous.periodInMinutes;
+    private evalFirstAttempt(
+        prCount: CurrentPrevious,
+        prWithoutApprovalCount: CurrentPrevious
+    ) {
+        const currentValue =
+            (prWithoutApprovalCount.current.periodInMinutes * 100) /
+            prCount.current.periodInMinutes;
+        const previousValue =
+            (prWithoutApprovalCount.previous.periodInMinutes * 100) /
+            prCount.previous.periodInMinutes;
         return {
             current: {
                 value: `${Math.round(currentValue)}%`,

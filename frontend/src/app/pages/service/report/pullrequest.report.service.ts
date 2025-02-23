@@ -21,18 +21,30 @@ export class PullRequestReportService {
      * @param apiVersion Versão da API (padrão: '1.0').
      */
     getReports(begin: Date, end: Date): Observable<PullRequestTimeReport> {
-        const params = new HttpParams().set('begin', begin.toISOString().split('T')[0]).set('end', end.toISOString().split('T')[0]).set('api-version', this.apiVersion);
+        const params = new HttpParams()
+            .set('begin', begin.toISOString().split('T')[0])
+            .set('end', end.toISOString().split('T')[0])
+            .set('api-version', this.apiVersion);
 
-        return this.http.get<PullRequestTimeReport>(`${this.baseUrl}/api/reports/pull-requests`, {
-            params
-        });
+        return this.http.get<PullRequestTimeReport>(
+            `${this.baseUrl}/api/reports/pull-requests`,
+            {
+                params
+            }
+        );
     }
 
     getReviewerDensity(from: Date, to: Date): Observable<CommentData[]> {
-        const params = new HttpParams().set('begin', from.toISOString().split('T')[0]).set('end', to.toISOString().split('T')[0]).set('api-version', this.apiVersion);
+        const params = new HttpParams()
+            .set('begin', from.toISOString().split('T')[0])
+            .set('end', to.toISOString().split('T')[0])
+            .set('api-version', this.apiVersion);
 
-        return this.http.get<CommentData[]>(`${this.baseUrl}/api/reports/density`, {
-            params
-        });
+        return this.http.get<CommentData[]>(
+            `${this.baseUrl}/api/reports/density`,
+            {
+                params
+            }
+        );
     }
 }

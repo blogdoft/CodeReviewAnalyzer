@@ -12,7 +12,10 @@ import { LayoutService } from '../service/layout.service';
     imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+            <button
+                class="layout-menu-button layout-topbar-action"
+                (click)="layoutService.onMenuToggle()"
+            >
                 <i class="pi pi-bars"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
@@ -23,8 +26,18 @@ import { LayoutService } from '../service/layout.service';
 
         <div class="layout-topbar-actions">
             <div class="layout-config-menu">
-                <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
-                    <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
+                <button
+                    type="button"
+                    class="layout-topbar-action"
+                    (click)="toggleDarkMode()"
+                >
+                    <i
+                        [ngClass]="{
+                            'pi ': true,
+                            'pi-moon': layoutService.isDarkTheme(),
+                            'pi-sun': !layoutService.isDarkTheme()
+                        }"
+                    ></i>
                 </button>
                 <div class="relative">
                     <button
@@ -42,7 +55,15 @@ import { LayoutService } from '../service/layout.service';
                 </div>
             </div>
 
-            <button class="layout-topbar-menu-button layout-topbar-action" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
+            <button
+                class="layout-topbar-menu-button layout-topbar-action"
+                pStyleClass="@next"
+                enterFromClass="hidden"
+                enterActiveClass="animate-scalein"
+                leaveToClass="hidden"
+                leaveActiveClass="animate-fadeout"
+                [hideOnOutsideClick]="true"
+            >
                 <i class="pi pi-ellipsis-v"></i>
             </button>
 
@@ -71,6 +92,9 @@ export class AppTopbar {
     constructor(public layoutService: LayoutService) {}
 
     toggleDarkMode() {
-        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+        this.layoutService.layoutConfig.update((state) => ({
+            ...state,
+            darkTheme: !state.darkTheme
+        }));
     }
 }

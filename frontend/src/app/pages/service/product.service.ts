@@ -1285,16 +1285,20 @@ export class ProductService {
             rating: this.generateRating()
         };
 
-        product.image = product.name?.toLocaleLowerCase().split(/[ ,]+/).join('-') + '.jpg';
+        product.image =
+            product.name?.toLocaleLowerCase().split(/[ ,]+/).join('-') + '.jpg';
         return product;
     }
 
     generateId() {
         let text = '';
-        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let possible =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         for (var i = 0; i < 5; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+            text += possible.charAt(
+                Math.floor(Math.random() * possible.length)
+            );
         }
 
         return text;
