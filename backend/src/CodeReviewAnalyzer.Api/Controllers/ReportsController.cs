@@ -1,5 +1,5 @@
-using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Application.Models.PullRequestReport;
+using CodeReviewAnalyzer.Application.Reports;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 

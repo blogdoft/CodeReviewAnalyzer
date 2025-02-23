@@ -101,7 +101,9 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
 
         """;
 
-    public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(DateOnly from, DateOnly to)
+    public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
+        DateOnly from,
+        DateOnly to)
     {
         using var resultSets = await databaseFacade.QueryMultipleAsync(
             TimeUntilApproval,
@@ -128,7 +130,9 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
         };
     }
 
-    public async Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(DateOnly from, DateOnly to)
+    public async Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(
+        DateOnly from,
+        DateOnly to)
     {
         var userDensity = await databaseFacade.QueryAsync<UserReviewerDensity>(
             ReviewerDensity,

@@ -23,7 +23,7 @@ export class PullRequestReportService {
     getReports(begin: Date, end: Date): Observable<PullRequestTimeReport> {
         const params = new HttpParams().set('begin', begin.toISOString().split('T')[0]).set('end', end.toISOString().split('T')[0]).set('api-version', this.apiVersion);
 
-        return this.http.get<PullRequestTimeReport>(`${this.baseUrl}/api/Reports/pull-requests`, {
+        return this.http.get<PullRequestTimeReport>(`${this.baseUrl}/api/reports/pull-requests`, {
             params
         });
     }
@@ -31,7 +31,7 @@ export class PullRequestReportService {
     getReviewerDensity(from: Date, to: Date): Observable<CommentData[]> {
         const params = new HttpParams().set('begin', from.toISOString().split('T')[0]).set('end', to.toISOString().split('T')[0]).set('api-version', this.apiVersion);
 
-        return this.http.get<CommentData[]>(`${this.baseUrl}/api/Reports/density`, {
+        return this.http.get<CommentData[]>(`${this.baseUrl}/api/reports/density`, {
             params
         });
     }
