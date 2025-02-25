@@ -1,0 +1,10 @@
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-item {
+    flex: 1 1 300px;
+    /* Cada item terá, no mínimo, 300px de largura e crescerá conforme o espaço disponível */
+}

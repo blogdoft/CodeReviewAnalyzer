@@ -18,7 +18,7 @@ export class PullRequestStatsService {
 
     private emptyTimeIndex: TimeIndex = {
         periodInMinutes: -1,
-        referenceDate: new Date().toString()
+        referenceDate: new Date().toISOString()
     };
 
     public build(): PullRequestStats {
@@ -45,9 +45,16 @@ export class PullRequestStatsService {
     }
 
     private getOrdered(timeIndex: TimeIndex[] | null): CurrentPrevious {
-        if (!timeIndex) {
+        if (!timeIndex || timeIndex.length === 0) {
             return {
                 current: this.emptyTimeIndex,
+                previous: this.emptyTimeIndex
+            };
+        }
+
+        if (timeIndex.length === 1) {
+            return {
+                current: timeIndex[0],
                 previous: this.emptyTimeIndex
             };
         }
@@ -176,11 +183,11 @@ export class PullRequestStatsService {
             return {
                 current: {
                     periodInMinutes: -1,
-                    referenceDate: new Date().toString()
+                    referenceDate: new Date().toISOString()
                 },
                 previous: {
                     periodInMinutes: -1,
-                    referenceDate: new Date().toString()
+                    referenceDate: new Date().toISOString()
                 }
             };
         }

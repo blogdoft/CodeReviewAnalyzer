@@ -12,7 +12,7 @@ export class PullRequestSizeStatsService {
         maxFileCount: -1,
         meanFileCount: -1,
         minFileCount: -1,
-        referenceDate: new Date().toString()
+        referenceDate: new Date().toISOString()
     };
 
     public build(): {
@@ -57,9 +57,16 @@ export class PullRequestSizeStatsService {
     private getOrdered(
         timeIndex: PullRequestFileSize[] | null
     ): CurrentPrevious {
-        if (!timeIndex) {
+        if (!timeIndex || timeIndex.length === 0) {
             return {
                 current: this.emptyFileSize,
+                previous: this.emptyFileSize
+            };
+        }
+
+        if (timeIndex.length === 1) {
+            return {
+                current: timeIndex[0],
                 previous: this.emptyFileSize
             };
         }
@@ -79,7 +86,7 @@ export class PullRequestSizeStatsService {
     private getDate(date: string | null): Date {
         if (!date) return new Date();
 
-        return new Date(`${date}T00:00:00`);
+        return new Date(date);
     }
 }
 
