@@ -75,6 +75,6 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
                 filter.To,
             });
 
-        return userDensity ?? [];
+        return userDensity ??[];
     }
 }

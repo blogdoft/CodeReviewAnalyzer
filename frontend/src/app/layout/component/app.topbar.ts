@@ -20,7 +20,7 @@ import { LayoutService } from '../service/layout.service';
             </button>
             <a class="layout-topbar-logo" routerLink="/">
                 <img src="favicon.png" width="50px" />
-                <span>Code Review Analyzer</span>
+                <span>Pull Request Insights</span>
             </a>
         </div>
 
