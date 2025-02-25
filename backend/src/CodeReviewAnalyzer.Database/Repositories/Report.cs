@@ -8,27 +8,6 @@ namespace CodeReviewAnalyzer.Database.Repositories;
 
 public class Report(IDatabaseFacade databaseFacade) : IReport
 {
-    private const string ReviewerDensity =
-        """
-            with reviewers as (
-                select distinct pr."ID" as "PR_ID"
-                    , u."ID" as "UserId"
-                    , u."NAME" as "UserName"
-                    , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
-                from "PULL_REQUEST" pr 
-                    join "PULL_REQUEST_COMMENTS" prc on prc."PULL_REQUEST_ID"  = pr."ID" and prc."COMMENT_INDEX" = 1 
-                    join "USERS" u on u."ID" = prc."USER_ID" and u."ACTIVE"
-                where pr."CLOSED_DATE" between @From and @To)
-            select count(r."PR_ID") as "CommentCount"
-                , r."UserId" 
-                , r."UserName"
-                , r."ReferenceDate"
-            from reviewers r
-            group by 2, 3, 4
-            order by 4, 1 desc
-
-        """;
-
     public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
         ReportFilter filter)
     {
@@ -67,12 +46,15 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
     public async Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(
         ReportFilter filter)
     {
+        var sql = PullRequestInsightReportQueryBuilder.BuildDeveloperDensity(filter);
         var userDensity = await databaseFacade.QueryAsync<UserReviewerDensity>(
-            ReviewerDensity,
+            sql,
             new
             {
                 filter.From,
                 filter.To,
+                filter.RepoTeamId,
+                filter.UserTeamId,
             });
 
         return userDensity ??[];
