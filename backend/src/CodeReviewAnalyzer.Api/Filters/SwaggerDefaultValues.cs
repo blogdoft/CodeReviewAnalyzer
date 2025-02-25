@@ -45,7 +45,7 @@ public class SwaggerDefaultValues : IOperationFilter
         // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
         foreach (var parameter in operation.Parameters)
         {
-            var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+            var description = apiDescription.ParameterDescriptions.First(p => p.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase));
 
             parameter.Description ??= description.ModelMetadata?.Description;
 

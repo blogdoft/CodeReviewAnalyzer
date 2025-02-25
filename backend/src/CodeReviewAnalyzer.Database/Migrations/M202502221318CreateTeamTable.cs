@@ -25,7 +25,7 @@ public class M202502221318CreateTeamTable : Migration
                 .NotNullable()
                 .WithColumnDescription("Primary Key")
             .WithColumn("external_id")
-                .AsGuid()
+                .AsString(255)
                 .NotNullable()
                 .Unique("idx_uk_teams_external_id")
                 .WithColumnDescription("Auto generated external identifier")
