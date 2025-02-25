@@ -4,21 +4,6 @@ namespace CodeReviewAnalyzer.Database.Services;
 
 public static class PullRequestInsightReportQueryBuilder
 {
-    private const string RepoTeamJoin =
-        """
-
-            join "TEAM_REPOSITORY" tr on tr.repository_id = pr."REPOSITORY_ID" 
-            join "TEAMS" repo_team on repo_team.id = tr.team_id
-            
-        """;
-
-    private const string UserTeamJoin =
-        """
-            join "TEAM_USER" tu on tu.user_id = u."ID"
-            join "TEAMS" user_team on user_team.id = tu.team_id
-
-        """;
-
     private const string MeanTimeToReview =
         """
             select avg(pr."FIRST_COMMENT_WAITING_TIME_MINUTES") as PeriodInMinutes
@@ -113,52 +98,41 @@ public static class PullRequestInsightReportQueryBuilder
 
         """;
 
+    private const string UserReviewerDensitySql =
+        """
+            with reviewers as (
+                select distinct pr."ID" as "PR_ID"
+                    , u."ID" as "UserId"
+                    , u."NAME" as "UserName"
+                    , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
+                from "PULL_REQUEST" pr
+                    join "PULL_REQUEST_COMMENTS" prc on prc."PULL_REQUEST_ID"  = pr."ID" and prc."COMMENT_INDEX" = 1 
+                    join "USERS" u on u."ID" = prc."USER_ID" and u."ACTIVE"
+                    {0}
+                where pr."CLOSED_DATE" between @From and @To
+                  {1}  
+            )
+            select count(r."PR_ID") as "CommentCount"
+                , r."UserId" 
+                , r."UserName"
+                , r."ReferenceDate"
+            from reviewers r
+            group by 2, 3, 4
+            order by 4, 1 desc
+
+        """;
+
     public static string BuildPullRequestSql(ReportFilter filter)
     {
-        // Joins opcionais para time de repositórios
-        var repoTeamJoin = !string.IsNullOrEmpty(filter.RepoTeamId)
-            ? RepoTeamJoin
-            : string.Empty;
-
-        // Joins opcionais para time de usuários
-        var userTeamJoin = !string.IsNullOrEmpty(filter.UserTeamId)
-            ? UserTeamJoin
-            : string.Empty;
-
-        // Condições opcionais no WHERE
-        var repoTeamCondition = !string.IsNullOrEmpty(filter.RepoTeamId)
-            ? " and repo_team.external_id = @repoTeamId"
-            : string.Empty;
-
-        var userTeamCondition = !string.IsNullOrEmpty(filter.UserTeamId)
-            ? " and user_team.external_id = @userTeamId"
-            : string.Empty;
+        var sqlFilter = new RepoSqlFilter(filter);
 
         // Exemplo: Query de "FirstCommentWaitingTime"
-        var meanTimeToReview = string.Format(
-            MeanTimeToReview,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
-        var meanTimeToApprove = string.Format(
-            MeanTimeToApprove,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
-        var meanTimeToMerge = string.Format(
-            MeanTimeToMerge,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
-        var pullRequestCount = string.Format(
-            PullRequestCount,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
-        var approvedOnFirstAttempt = string.Format(
-            ApprovedOnFirstAttempt,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
-        var pullRequestStats = string.Format(
-            PullRequestStats,
-            userTeamJoin + repoTeamJoin,
-            userTeamCondition + repoTeamCondition);
+        var meanTimeToReview = Merge(MeanTimeToReview, sqlFilter);
+        var meanTimeToApprove = Merge(MeanTimeToApprove, sqlFilter);
+        var meanTimeToMerge = Merge(MeanTimeToMerge, sqlFilter);
+        var pullRequestCount = Merge(PullRequestCount, sqlFilter);
+        var approvedOnFirstAttempt = Merge(ApprovedOnFirstAttempt, sqlFilter);
+        var pullRequestStats = Merge(PullRequestStats, sqlFilter);
 
         return string.Join(
             ";\n\n",
@@ -168,5 +142,68 @@ public static class PullRequestInsightReportQueryBuilder
             pullRequestCount,
             approvedOnFirstAttempt,
             pullRequestStats);
+    }
+
+    public static string BuildDeveloperDensity(ReportFilter filter)
+    {
+        var sqlFilter = new RepoSqlFilter(filter);
+
+        // Exemplo: Query de "FirstCommentWaitingTime"
+        return Merge(UserReviewerDensitySql, sqlFilter);
+    }
+
+    private static string Merge(string sql, RepoSqlFilter sqlFilter) => string.Format(
+        sql,
+        sqlFilter.UserTeamJoin + sqlFilter.RepoTeamJoin,
+        sqlFilter.UserTeamWhere + sqlFilter.RepoTeamWhere);
+
+    private sealed class RepoSqlFilter(ReportFilter filter)
+    {
+        private const string RepoTeamJoins =
+            """
+
+            join "TEAM_REPOSITORY" tr on tr.repository_id = pr."REPOSITORY_ID" 
+            join "TEAMS" repo_team on repo_team.id = tr.team_id
+            
+        """;
+
+        private const string UserTeamJoins =
+            """
+            join "TEAM_USER" tu on tu.user_id = u."ID"
+            join "TEAMS" user_team on user_team.id = tu.team_id
+
+        """;
+
+        private const string RepoTeamCondition =
+            """
+                and repo_team.external_id = @repoTeamId
+
+            """;
+
+        private const string RepoUserCondition =
+            """
+                and user_team.external_id = @userTeamId
+
+            """;
+
+        public string RepoTeamJoin { get; } =
+            !string.IsNullOrEmpty(filter.RepoTeamId)
+                ? RepoTeamJoins
+                : string.Empty;
+
+        public string RepoTeamWhere { get; } =
+            !string.IsNullOrEmpty(filter.RepoTeamId)
+                ? RepoTeamCondition
+                : string.Empty;
+
+        public string UserTeamJoin { get; } =
+            !string.IsNullOrEmpty(filter.UserTeamId)
+                ? UserTeamJoins
+                : string.Empty;
+
+        public string UserTeamWhere { get; } =
+            !string.IsNullOrEmpty(filter.UserTeamId)
+                ? RepoUserCondition
+                : string.Empty;
     }
 }

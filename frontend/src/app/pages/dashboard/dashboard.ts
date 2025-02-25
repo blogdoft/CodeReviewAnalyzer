@@ -133,7 +133,12 @@ export class Dashboard {
             });
 
         this.pullRequestReportService
-            .getReviewerDensity($event.dateRange.from, $event.dateRange.to)
+            .getReviewerDensity(
+                $event.dateRange.from,
+                $event.dateRange.to,
+                $event.teamRepositoryId,
+                $event.teamUserId
+            )
             .subscribe({
                 next: (data) => (this.reviewerDensityReport = data),
                 error: (err) => this.showError(err)
