@@ -30,9 +30,10 @@ export class PullRequestReportService {
             .set('from', from.toISOString().split('T')[0])
             .set('to', to.toISOString().split('T')[0])
             .set('api-version', this.apiVersion);
+
         if (repoTeamId) params = params.set('repoTeamId', repoTeamId);
         if (userTeamId) params = params.set('userTeamId', userTeamId);
-        console.log(JSON.stringify(params));
+
         return this.http.get<PullRequestTimeReport>(
             `${this.baseUrl}/api/reports/pull-requests`,
             {

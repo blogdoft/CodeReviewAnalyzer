@@ -67,7 +67,6 @@ export class FilterComponent {
         this.teams.getTeamsByDescription($event.query).subscribe({
             next: (data) => {
                 this.autoFilteredValue = data;
-                console.log(data);
             },
             error: (err) => console.log(JSON.stringify(err))
         });
