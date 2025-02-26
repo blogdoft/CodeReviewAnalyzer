@@ -45,6 +45,7 @@ public class M202501311748CreatePullRequestTable : Migration
             .WithColumn("CLOSED_DATE")
                 .AsDateTime()
                 .NotNullable()
+                .Indexed("idx_pull_request_closed_date")
                 .WithColumnDescription("Pull request closed date")
             .WithColumn("FIRST_COMMENT_DATE")
                 .AsDateTime()
@@ -81,6 +82,16 @@ public class M202501311748CreatePullRequestTable : Migration
                 .NotNullable()
                 .WithDefaultValue(0)
                 .WithColumnDescription("Number of threads in the pull request");
+
+        Execute.Sql(@"
+            CREATE INDEX idx_pull_request_closed_date_covering 
+            ON public.""PULL_REQUEST""(""CLOSED_DATE"")
+            INCLUDE (""FIRST_COMMENT_WAITING_TIME_MINUTES"", 
+                     ""REVISION_WAITING_TIME_MINUTES"", 
+                     ""MERGE_WAITING_TIME_MINUTES"", 
+                     ""FILE_COUNT"", 
+                     ""THREAD_COUNT"");
+        ");
 
         Create.Table("PULL_REQUEST_REVIEWER")
             .WithColumn("PULL_REQUEST_ID")
@@ -154,6 +165,7 @@ public class M202501311748CreatePullRequestTable : Migration
 
     public override void Down()
     {
+        Delete.Index("idx_pull_request_closed_date_covering").OnTable("PULL_REQUEST");
         Delete.Table("PULL_REQUEST_COMMENTS");
         Delete.Table("PULL_REQUEST_REVIEWER");
         Delete.Table("PULL_REQUEST");

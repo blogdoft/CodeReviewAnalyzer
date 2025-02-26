@@ -9,12 +9,14 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 
 import { CommentData } from '../service/report/models/comment-data.model';
+import { Outlier } from '../service/report/models/outlier';
 import { PullRequestTimeReport } from '../service/report/models/pull-request-report.model';
 import { PullRequestReportService } from '../service/report/pullrequest.report.service';
 import { BestSellingWidget } from './components/bestsellingwidget';
 import { DashboardFilter, DateRange } from './components/filter/date-range';
 import { FilterComponent } from './components/filter/filter.component';
 import { NotificationsWidget } from './components/notificationswidget';
+import { OutliersTableComponent } from './components/outliers-table/outliers-table.component';
 import { PullRequestGraphComponent } from './components/pull-request-graph/pull-request-graph.component';
 import { RecentSalesWidget } from './components/recentsaleswidget';
 import { RevenueStreamWidget } from './components/revenuestreamwidget';
@@ -39,7 +41,8 @@ import { StatsWidget } from './components/statswidget';
         ReviewerDensityGraphComponent,
         ToolbarModule,
         IftaLabelModule,
-        FilterComponent
+        FilterComponent,
+        OutliersTableComponent
     ],
     template: `
         <p-toast></p-toast>
@@ -60,11 +63,13 @@ import { StatsWidget } from './components/statswidget';
                     [pullRequestTimeReport]="pullRequestReport"
                 ></app-pull-request-graph>
             </div>
-
             <div class="col-span-12 ">
                 <app-reviewer-density-graph
                     [reviewerDensity]="reviewerDensityReport"
                 ></app-reviewer-density-graph>
+            </div>
+            <div class="col-span-12 xl:col-span-6">
+                <app-outliers-table [outliers]="outliers" />
             </div>
             <div class="col-span-12 xl:col-span-6">
                 <app-recent-sales-widget />
@@ -98,6 +103,8 @@ export class Dashboard {
             referenceDate: new Date().toDateString()
         }
     ];
+
+    outliers!: Outlier[];
 
     constructor(
         private pullRequestReportService: PullRequestReportService,
@@ -141,6 +148,17 @@ export class Dashboard {
             )
             .subscribe({
                 next: (data) => (this.reviewerDensityReport = data),
+                error: (err) => this.showError(err)
+            });
+        this.pullRequestReportService
+            .getOutliers(
+                $event.dateRange.from,
+                $event.dateRange.to,
+                $event.teamRepositoryId,
+                $event.teamUserId
+            )
+            .subscribe({
+                next: (data) => (this.outliers = data),
                 error: (err) => this.showError(err)
             });
     }
