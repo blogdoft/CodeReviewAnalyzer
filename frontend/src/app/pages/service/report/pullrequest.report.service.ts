@@ -42,11 +42,19 @@ export class PullRequestReportService {
         );
     }
 
-    getReviewerDensity(from: Date, to: Date): Observable<CommentData[]> {
-        const params = new HttpParams()
+    getReviewerDensity(
+        from: Date,
+        to: Date,
+        repoTeamId: string | null,
+        userTeamId: string | null
+    ): Observable<CommentData[]> {
+        let params = new HttpParams()
             .set('from', from.toISOString().split('T')[0])
             .set('to', to.toISOString().split('T')[0])
             .set('api-version', this.apiVersion);
+
+        if (repoTeamId) params = params.set('repoTeamId', repoTeamId);
+        if (userTeamId) params = params.set('userTeamId', userTeamId);
 
         return this.http.get<CommentData[]>(
             `${this.baseUrl}/api/reports/density`,
