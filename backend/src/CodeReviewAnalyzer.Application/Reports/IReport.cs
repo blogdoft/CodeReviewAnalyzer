@@ -5,9 +5,12 @@ namespace CodeReviewAnalyzer.Application.Reports;
 
 public interface IReport
 {
-    public Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
+    Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
         ReportFilter filter);
 
-    public Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(
+    Task<IEnumerable<UserReviewerDensity>> GetUserReviewerDensity(
+        ReportFilter filter);
+
+    Task<IEnumerable<PullRequestOutlier>> GetPullRequestOutlier(
         ReportFilter filter);
 }

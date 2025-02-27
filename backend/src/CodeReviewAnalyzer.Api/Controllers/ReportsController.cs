@@ -67,4 +67,34 @@ public class ReportsController(IReport report) : ControllerBase
 
         return Ok(reviewerDensity);
     }
+
+    /// <summary>
+    /// Retrieve pull request outliers
+    /// </summary>
+    /// <remarks>
+    /// This endpoint returns pull request records identified as outliers for the
+    /// specified metrics.It only considers records where CLOSED_DATE is between the
+    /// provided startDate and endDate and teams when specified.
+    /// </remarks>
+    /// <param name="filter">Period begin.</param>
+    /// <response code="200">List of pull request outliers.</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Not authenticated</response>
+    /// <response code="403">Forbidden</response>
+    /// <response code="404">Not Found</response>
+    /// <response code="500">Server error</response>
+    [HttpGet("pull-requests:outliers")]
+    [ProducesResponseType(typeof(IEnumerable<PullRequestOutlier>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetPullRequestOutliersAsync(
+            [FromQuery] ReportFilter filter)
+    {
+        var pullRequestReport = await report.GetPullRequestOutlier(filter);
+
+        return Ok(pullRequestReport);
+    }
 }
