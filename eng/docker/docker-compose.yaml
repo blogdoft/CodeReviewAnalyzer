@@ -17,7 +17,7 @@ services:
     env_file:
       - ./postgres/database.env
     volumes:
-      - ./postgres/init.sql:/init.sql
+      - ./postgres/init-sql:/init-sql
       - ./postgres/init.sh:/init.sh
     entrypoint: ["/init.sh"]
     network_mode: "host"    

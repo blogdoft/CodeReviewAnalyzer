@@ -8,6 +8,18 @@ namespace CodeReviewAnalyzer.Database.Repositories;
 
 public class Report(IDatabaseFacade databaseFacade) : IReport
 {
+    public Task<IEnumerable<PullRequestOutlier>> GetPullRequestOutlier(ReportFilter filter)
+    {
+        var sql = PullRequestInsightReportQueryBuilder.BuildOutlier(filter);
+        return databaseFacade.QueryAsync<PullRequestOutlier>(sql, new
+        {
+            filter.From,
+            filter.To,
+            filter.RepoTeamId,
+            filter.UserTeamId,
+        });
+    }
+
     public async Task<PullRequestTimeReport> GetPullRequestTimeReportAsync(
         ReportFilter filter)
     {

@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { CommentData } from './models/comment-data.model';
+import { Outlier } from './models/outlier';
 import { PullRequestTimeReport } from './models/pull-request-report.model';
 
 @Injectable({
@@ -58,6 +59,28 @@ export class PullRequestReportService {
 
         return this.http.get<CommentData[]>(
             `${this.baseUrl}/api/reports/density`,
+            {
+                params
+            }
+        );
+    }
+
+    getOutliers(
+        from: Date,
+        to: Date,
+        repoTeamId: string | null,
+        userTeamId: string | null
+    ): Observable<Outlier[]> {
+        let params = new HttpParams()
+            .set('from', from.toISOString().split('T')[0])
+            .set('to', to.toISOString().split('T')[0])
+            .set('api-version', this.apiVersion);
+
+        if (repoTeamId) params = params.set('repoTeamId', repoTeamId);
+        if (userTeamId) params = params.set('userTeamId', userTeamId);
+
+        return this.http.get<Outlier[]>(
+            `${this.baseUrl}/api/reports/pull-requests:outliers`,
             {
                 params
             }
