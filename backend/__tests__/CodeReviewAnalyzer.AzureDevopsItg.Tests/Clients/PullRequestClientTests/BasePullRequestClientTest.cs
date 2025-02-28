@@ -1,7 +1,6 @@
 using AutoFixture;
 using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
-using CodeReviewAnalyzer.Application.Services;
 using CodeReviewAnalyzer.AzureDevopsItg.Clients;
 using CodeReviewAnalyzer.AzureDevopsItg.Clients.Impl;
 using Microsoft.TeamFoundation.Core.WebApi;
@@ -61,16 +60,11 @@ public class BasePullRequestClientTest
         // Given
         var configuration = new Fixture()
             .Create<Configuration>();
-        var morning = new PeriodTimeSpan(TimeSpan.FromHours(9), TimeSpan.FromHours(12));
-        var afternoon = new PeriodTimeSpan(TimeSpan.FromHours(13), TimeSpan.FromHours(18));
-        var holidays = new List<DateOnly>();
-        var workingHourCalculator = new WorkingHourCalculator(morning, afternoon, holidays);
         var client = new PullRequestClient(ConnectionFactory);
 
         // When
         var pullRequests = client.GetPullRequestsAsync(
             configuration,
-            workingHourCalculator,
             minTime: DateTime.Now.AddDays(-1),
             maxTime: DateTime.Now);
 

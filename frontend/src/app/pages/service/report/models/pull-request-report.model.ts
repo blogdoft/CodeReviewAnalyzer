@@ -53,7 +53,7 @@ export interface PullRequestTimeReport {
     /**
      * Tempo médio entre a abertura e a aprovação do pull request.
      */
-    meanTimeOpenToApproval: TimeIndex[] | null;
+    meanTimeToApprove: TimeIndex[] | null;
 
     /**
      * Tempo médio de revisão.
@@ -68,7 +68,7 @@ export interface PullRequestTimeReport {
     /**
      * How many pull requests was closed without any comment in a period.
      */
-    pullRequestWithoutCommentCount: TimeIndex[] | null;
+    approvedOnFirstAttempt: TimeIndex[] | null;
 
     /**
      * Relatório sobre o tamanho dos pull requests (em número de arquivos).

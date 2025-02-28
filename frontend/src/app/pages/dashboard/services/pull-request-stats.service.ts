@@ -24,7 +24,7 @@ export class PullRequestStatsService {
     public build(): PullRequestStats {
         const sortedPrCount = this.getOrdered(this.report.pullRequestCount);
         const sortedNonApproval = this.getOrdered(
-            this.report.pullRequestWithoutCommentCount
+            this.report.approvedOnFirstAttempt
         );
         return {
             firstAttempt: this.buildFirstAttempt(
@@ -36,7 +36,7 @@ export class PullRequestStatsService {
                 this.report.meanTimeToStartReview
             ),
             meanTimeToApprove: this.buildMeanTimeToApprove(
-                this.report.meanTimeOpenToApproval
+                this.report.meanTimeToApprove
             ),
             meanTimeToMerge: this.buildMeanTimeToMerge(
                 this.report.meanTimeToMerge
