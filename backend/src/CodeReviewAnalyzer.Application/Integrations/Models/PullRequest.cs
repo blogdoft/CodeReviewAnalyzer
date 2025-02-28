@@ -1,11 +1,7 @@
-using CodeReviewAnalyzer.Application.Services;
-
 namespace CodeReviewAnalyzer.Application.Integrations.Models;
 
-public class PullRequest(WorkingHourCalculator workingHourCalculator)
+public class PullRequest
 {
-    private readonly WorkingHourCalculator _workingHourCalculator = workingHourCalculator;
-
     public required int Id { get; init; }
 
     public required string Title { get; init; }
@@ -21,28 +17,22 @@ public class PullRequest(WorkingHourCalculator workingHourCalculator)
     public TimeSpan PlainWaitingTime => ClosedDate.Subtract(CreationDate);
 
     public TimeSpan RevisionWaitingTime => Comments.Any()
-        ? _workingHourCalculator.Calculate(
-            createdAt: Comments
-                .Select(c => c.CommentDate)
-                .DefaultIfEmpty(DateTime.MinValue)
-                .Min(),
-            closedAt: Comments
-                .Select(c => c.ResolvedDate)
-                .DefaultIfEmpty(DateTime.MinValue)
-                .Max())
+        ? Comments
+            .Select(c => c.ResolvedDate)
+            .DefaultIfEmpty(DateTime.MinValue)
+            .Max() - Comments
+            .Select(c => c.CommentDate)
+            .DefaultIfEmpty(DateTime.MinValue)
+            .Min()
         : TimeSpan.Zero;
 
-    public TimeSpan MergeWaitingTime => _workingHourCalculator.Calculate(
-        createdAt: CreationDate,
-        closedAt: ClosedDate);
+    public TimeSpan MergeWaitingTime => ClosedDate - CreationDate;
 
     public TimeSpan FirstCommentWaitingTime => Comments.Any()
-        ? _workingHourCalculator.Calculate(
-            createdAt: CreationDate,
-            closedAt: Comments
+        ? Comments
                 .Select(c => c.CommentDate)
                 .DefaultIfEmpty(DateTime.MinValue)
-                .Min())
+                .Min() - CreationDate
         : TimeSpan.Zero;
 
     public required User CreatedBy { get; init; }
@@ -57,7 +47,7 @@ public class PullRequest(WorkingHourCalculator workingHourCalculator)
 
     public required string MergeMode { get; init; }
 
-    public required IEnumerable<User> Reviewers { get; init; }
+    public required IEnumerable<Reviewer> Reviewers { get; init; }
 
     public required IEnumerable<PrComments> Comments { get; init; }
 }

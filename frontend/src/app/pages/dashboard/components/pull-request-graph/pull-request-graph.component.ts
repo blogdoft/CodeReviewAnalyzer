@@ -52,12 +52,12 @@ export class PullRequestGraphComponent {
     public lineChartLegend = true;
 
     private _pullRequestTimeReport: PullRequestTimeReport = {
-        meanTimeOpenToApproval: [],
+        meanTimeToApprove: [],
         meanTimeToMerge: [],
         meanTimeToStartReview: [],
         pullRequestCount: [],
         pullRequestSize: [],
-        pullRequestWithoutCommentCount: []
+        approvedOnFirstAttempt: []
     };
 
     constructor() {}
@@ -65,7 +65,7 @@ export class PullRequestGraphComponent {
     private renderReport(report: PullRequestTimeReport): void {
         const labels = this.extractLabels(report);
         const meanTimeToApproval = this.createTimeDataSeries(
-            report.meanTimeOpenToApproval ?? [],
+            report.meanTimeToApprove ?? [],
             labels
         );
         const meanTimeStartReview = this.createTimeDataSeries(
@@ -81,7 +81,7 @@ export class PullRequestGraphComponent {
             labels
         );
         const prWithoutComment = this.createCounterDataSeries(
-            report.pullRequestWithoutCommentCount ?? [],
+            report.approvedOnFirstAttempt ?? [],
             labels
         );
 
@@ -126,7 +126,7 @@ export class PullRequestGraphComponent {
                 },
                 {
                     data: prWithoutComment,
-                    label: 'Non Commented pull requests count',
+                    label: 'Approved on First Attempt',
                     borderColor: '#E76F51',
                     backgroundColor: 'transparent',
                     fill: false,
@@ -166,7 +166,7 @@ export class PullRequestGraphComponent {
     private extractLabels(report: PullRequestTimeReport) {
         // Extrai todas as datas dos arrays que contenham o campo referenceDate
         const dates: string[] = [
-            ...(report.meanTimeOpenToApproval ?? []).map(
+            ...(report.meanTimeToApprove ?? []).map(
                 (item) => item.referenceDate
             ),
             ...(report.meanTimeToStartReview ?? []).map(

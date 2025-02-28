@@ -98,26 +98,20 @@ internal static class ReportStmt
 
     internal const string UserReviewerDensitySql =
         """
-            with reviewers as (
-                select distinct pr."ID" as "PR_ID"
-                    , u."ID" as "UserId"
-                    , u."NAME" as "UserName"
-                    , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
-                from "PULL_REQUEST" pr
-                    join "PULL_REQUEST_COMMENTS" prc on prc."PULL_REQUEST_ID"  = pr."ID" and prc."COMMENT_INDEX" = 1 
-                    join "USERS" u on u."ID" = prc."USER_ID" and u."ACTIVE"
-                    {0}
-                where pr."CLOSED_DATE" between @From and @To
+            select u."ID" as "UserId"
+                , u."NAME" as "UserName"
+                , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
+                , count(1) as "CommentCount"
+            from "PULL_REQUEST" pr
+                join "PULL_REQUEST_REVIEWER" prr on prr."PULL_REQUEST_ID" = pr."ID" and prr."VOTE" > 0 
+                join "USERS" u on u."ID" = prr."USER_ID" and u."ACTIVE"
+                {0}
+            where pr."CLOSED_DATE" between :From and :To
                   {1}  
-            )
-            select count(r."PR_ID") as "CommentCount"
-                , r."UserId" 
-                , r."UserName"
-                , r."ReferenceDate"
-            from reviewers r
-            group by 2, 3, 4
-            order by 4, 1 desc
-
+            group by "UserId"
+                   , "UserName"
+                   , "ReferenceDate"
+        
         """;
 
     internal const string PullRequestOutLiers =

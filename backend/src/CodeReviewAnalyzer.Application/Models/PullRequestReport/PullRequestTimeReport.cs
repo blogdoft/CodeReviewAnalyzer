@@ -14,7 +14,7 @@ public class PullRequestTimeReport
     /// until it's final approval.</para>
     /// <pre>Mean time to approval = Last approval date - Pull Request opening date</pre>
     /// </summary>
-    public required IEnumerable<TimeIndex> MeanTimeOpenToApproval { get; init; }
+    public required IEnumerable<TimeIndex> MeanTimeToApprove { get; init; }
 
     /// <summary>
     /// <para>What is measured: The mean time that a Pull Request takes from
@@ -31,7 +31,7 @@ public class PullRequestTimeReport
     /// <summary>
     /// How many pull requests was closed without any comment in a period.
     /// </summary>
-    public required IEnumerable<TimeIndex> PullRequestWithoutCommentCount { get; init; }
+    public required IEnumerable<TimeIndex> ApprovedOnFirstAttempt { get; init; }
 
     /// <summary>
     /// <para>What is measured: Avg, Max and Min files number by Pull request</para>

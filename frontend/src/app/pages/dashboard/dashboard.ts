@@ -87,12 +87,12 @@ export class Dashboard {
     public rangeDates!: DateRange;
 
     public pullRequestReport: PullRequestTimeReport = {
-        meanTimeOpenToApproval: [],
+        meanTimeToApprove: [],
         meanTimeToMerge: [],
         meanTimeToStartReview: [],
         pullRequestCount: [],
         pullRequestSize: [],
-        pullRequestWithoutCommentCount: []
+        approvedOnFirstAttempt: []
     };
 
     public reviewerDensityReport: CommentData[] = [
