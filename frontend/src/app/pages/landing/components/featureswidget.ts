@@ -14,10 +14,10 @@ import { CommonModule } from '@angular/common';
                 <div
                     class="text-surface-900 dark:text-surface-0 font-normal mb-2 text-4xl"
                 >
-                    Marvelous Features
+                    Accessible indicators
                 </div>
                 <span class="text-muted-color text-2xl"
-                    >Placerat in egestas erat...</span
+                    >Easy to see and understand</span
                 >
             </div>
 
