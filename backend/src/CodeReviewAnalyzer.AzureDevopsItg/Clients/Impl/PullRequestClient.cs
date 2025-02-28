@@ -14,7 +14,6 @@ internal sealed class PullRequestClient(IConnectionFactory connectionFactory) : 
 
     public async IAsyncEnumerable<PullRequest> GetPullRequestsAsync(
         Configuration configuration,
-        WorkingHourCalculator workingHourCalculator,
         DateTime? minTime,
         DateTime? maxTime = null)
     {
@@ -27,7 +26,7 @@ internal sealed class PullRequestClient(IConnectionFactory connectionFactory) : 
 
         var repositories = await gitClient.GetRepositoriesAsync(project.Id, includeHidden: false);
 
-        var pullRequestFactory = new PullRequestFactory(configuration, gitClient, workingHourCalculator);
+        var pullRequestFactory = new PullRequestFactory(configuration, gitClient);
 
         foreach (var repository in repositories)
         {

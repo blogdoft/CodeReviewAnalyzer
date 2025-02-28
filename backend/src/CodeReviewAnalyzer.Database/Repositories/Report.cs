@@ -46,11 +46,11 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
 
         return new()
         {
-            MeanTimeOpenToApproval = meanTimeToApprove,
+            MeanTimeToApprove = meanTimeToApprove,
             MeanTimeToStartReview = meanTimeToReview,
             MeanTimeToMerge = meanTimeToMerge,
             PullRequestCount = pullRequestCount,
-            PullRequestWithoutCommentCount = approvedOnFirstAttempt,
+            ApprovedOnFirstAttempt = approvedOnFirstAttempt,
             PullRequestSize = pullRequestStats,
         };
     }
@@ -69,6 +69,6 @@ public class Report(IDatabaseFacade databaseFacade) : IReport
                 filter.UserTeamId,
             });
 
-        return userDensity ??[];
+        return userDensity ?? [];
     }
 }

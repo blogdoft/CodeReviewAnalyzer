@@ -71,15 +71,25 @@ export class PullRequestSizeStatsService {
             };
         }
 
-        const sorted = timeIndex.sort(
-            (a, b) =>
-                new Date(a.referenceDate).getTime() -
-                new Date(b.referenceDate).getTime()
-        );
+        const sorted = timeIndex
+            .map((item) => {
+                const [year, month, day] = item.referenceDate
+                    .split('-')
+                    .map(Number);
+                var date = new Date(year, month - 1, day);
+                return {
+                    original: {
+                        ...item,
+                        referenceDate: date.toISOString()
+                    },
+                    orderTimestamp: date.getTime()
+                };
+            })
+            .sort((a, b) => a.orderTimestamp - b.orderTimestamp);
 
         return {
-            current: sorted[sorted.length - 1],
-            previous: sorted[sorted.length - 2]
+            current: sorted[sorted.length - 1].original,
+            previous: sorted[sorted.length - 2].original
         };
     }
 
