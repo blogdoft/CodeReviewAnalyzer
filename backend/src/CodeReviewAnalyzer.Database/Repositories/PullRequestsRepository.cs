@@ -65,6 +65,19 @@ public class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReque
 
         """;
 
+    private const string InsertReviewer =
+        """ 
+            INSERT INTO public."PULL_REQUEST_REVIEWER" (
+                  "PULL_REQUEST_ID"
+                , "USER_ID"
+                , "VOTE"
+            ) VALUES(
+                  @PullRequestId
+                , (select u."ID" from "USERS" u where u."EXTERNAL_IDENTIFIER" = @UserId)
+                , @Vote);
+
+        """;
+
     public async Task Add(PullRequest pullRequest)
     {
         var id = await databaseFacade.ExecuteScalarAsync<int>(InsertSql, new
@@ -98,6 +111,16 @@ public class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReque
                 CommentDate = comment.CommentDate.ToLocalTime(),
                 comment.Comment,
                 ResolvedDate = comment.ResolvedDate.ToLocalTime(),
+            });
+        }
+
+        foreach (var reviewer in pullRequest.Reviewers)
+        {
+            await databaseFacade.ExecuteAsync(InsertReviewer, new
+            {
+                PullRequestId = id,
+                UserId = reviewer.User.Id,
+                reviewer.Vote,
             });
         }
     }

@@ -1,6 +1,5 @@
 using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
-using CodeReviewAnalyzer.Application.Services;
 using CodeReviewAnalyzer.AzureDevopsItg.Extensions;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 
@@ -8,8 +7,7 @@ namespace CodeReviewAnalyzer.AzureDevopsItg.Factories;
 
 public class PullRequestFactory(
     Configuration configuration,
-    GitHttpClient gitClient,
-    WorkingHourCalculator workingHourCalculator)
+    GitHttpClient gitClient)
 {
     public async Task<PullRequest> CreateAsync(GitPullRequest pr, GitRepository repository)
     {
@@ -100,7 +98,7 @@ public class PullRequestFactory(
                     && x.Comment.Author != null)
                 .OrderBy(x => x.Thread.PublishedDate);
 
-        return new(workingHourCalculator)
+        return new()
         {
             Id = gitPullRequest.PullRequestId,
             Title = gitPullRequest.Title,
@@ -113,12 +111,16 @@ public class PullRequestFactory(
             MergeMode = ExtractMergeMode(gitPullRequest),
             Reviewers = gitPullRequest.Reviewers
                 .Aggregate(
-                    new List<User>(),
+                    new List<Reviewer>(),
                     (users, reviewer) =>
                     {
                         if (!reviewer.Inactive)
                         {
-                            users.Add(reviewer.ToUser());
+                            users.Add(new()
+                            {
+                                User = reviewer.ToUser(),
+                                Vote = reviewer.Vote,
+                            });
                         }
 
                         return users;
