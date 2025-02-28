@@ -12,14 +12,10 @@ import { CommentData } from '../service/report/models/comment-data.model';
 import { Outlier } from '../service/report/models/outlier';
 import { PullRequestTimeReport } from '../service/report/models/pull-request-report.model';
 import { PullRequestReportService } from '../service/report/pullrequest.report.service';
-import { BestSellingWidget } from './components/bestsellingwidget';
 import { DashboardFilter, DateRange } from './components/filter/date-range';
 import { FilterComponent } from './components/filter/filter.component';
-import { NotificationsWidget } from './components/notificationswidget';
 import { OutliersTableComponent } from './components/outliers-table/outliers-table.component';
 import { PullRequestGraphComponent } from './components/pull-request-graph/pull-request-graph.component';
-import { RecentSalesWidget } from './components/recentsaleswidget';
-import { RevenueStreamWidget } from './components/revenuestreamwidget';
 import { ReviewerDensityGraphComponent } from './components/reviewer-density-graph/reviewer-density-graph.component';
 import { StatsWidget } from './components/statswidget';
 
@@ -31,10 +27,6 @@ import { StatsWidget } from './components/statswidget';
         DatePickerModule,
         FormsModule,
         StatsWidget,
-        RecentSalesWidget,
-        BestSellingWidget,
-        RevenueStreamWidget,
-        NotificationsWidget,
         PullRequestGraphComponent,
         ToastModule,
         MessageModule,
@@ -44,8 +36,7 @@ import { StatsWidget } from './components/statswidget';
         FilterComponent,
         OutliersTableComponent
     ],
-    template: `
-        <p-toast></p-toast>
+    template: `<p-toast></p-toast>
         <div class="grid grid-cols-12 gap-8">
             <div class="col-span-12">
                 <app-filter
@@ -71,16 +62,7 @@ import { StatsWidget } from './components/statswidget';
             <div class="col-span-12 xl:col-span-6">
                 <app-outliers-table [outliers]="outliers" />
             </div>
-            <div class="col-span-12 xl:col-span-6">
-                <app-recent-sales-widget />
-                <app-best-selling-widget />
-            </div>
-            <div class="col-span-12 xl:col-span-6">
-                <app-revenue-stream-widget />
-                <app-notifications-widget />
-            </div>
-        </div>
-    `,
+        </div>`,
     providers: [MessageService]
 })
 export class Dashboard {

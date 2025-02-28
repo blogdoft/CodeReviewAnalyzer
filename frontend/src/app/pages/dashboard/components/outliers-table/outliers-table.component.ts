@@ -10,7 +10,6 @@ import { SliderModule } from 'primeng/slider';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
-import { CustomerService } from '../../../service/customer.service';
 import { Outlier } from '../../../service/report/models/outlier';
 
 @Component({
@@ -29,8 +28,7 @@ import { Outlier } from '../../../service/report/models/outlier';
         CardModule
     ],
     templateUrl: './outliers-table.component.html',
-    styleUrl: './outliers-table.component.scss',
-    providers: [CustomerService]
+    styleUrl: './outliers-table.component.scss'
 })
 export class OutliersTableComponent {
     loading: boolean = true;

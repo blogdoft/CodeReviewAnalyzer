@@ -11,7 +11,7 @@ import {
     PullRequestTimeReport,
     TimeIndex
 } from '../../../service/report/models/pull-request-report.model';
-import { MathjaxDirective } from '../../../uikit/directives/mathjax.directive';
+import { MathjaxDirective } from '../../../../shared/directives/mathjax.directive';
 import { monthNames } from '../constants/month-names';
 
 @Component({
