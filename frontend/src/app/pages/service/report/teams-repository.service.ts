@@ -2,22 +2,30 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Team } from './models/team';
+import { PageFilter } from './models/page-filter';
+import { TeamsPaginated } from './models/teams-paginated';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TeamsRepositoryService {
     private readonly baseUrl = 'http://localhost:8080/code-review';
-    private readonly apiVersion = '1.0';
 
     constructor(private http: HttpClient) {}
 
-    getTeamsByDescription(description: string): Observable<Team[]> {
-        const params = new HttpParams()
+    getTeamsByDescription(
+        description: string,
+        pageFilter: PageFilter
+    ): Observable<TeamsPaginated> {
+        let params = new HttpParams()
             .set('teamName', description)
-            .set('api-version', this.apiVersion);
+            .set('page', pageFilter.page)
+            .set('size', pageFilter.size);
 
-        return this.http.get<Team[]>(`${this.baseUrl}/api/teams`, { params });
+        if (pageFilter.order) params = params.set('order', pageFilter.order);
+
+        return this.http.get<TeamsPaginated>(`${this.baseUrl}/api/teams`, {
+            params
+        });
     }
 }

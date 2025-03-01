@@ -1,0 +1,23 @@
+<p-iftalabel>
+    <p-autocomplete
+        [inputId]="lookupOptions.inputId"
+        [style]="{ width: '100%' }"
+        [suggestions]="suggestions"
+        (completeMethod)="onCompleteMethod($event)"
+        (onLazyLoad)="onLazyLoad($event)"
+        (onSelect)="onSelectItem($event)"
+        (onClear)="onClearSelection($event)"
+        [dropdown]="true"
+        [lazy]="true"
+        [virtualScroll]="true"
+        [virtualScrollItemSize]="30"
+        [optionLabel]="lookupOptions.optionLabel"
+        [dataKey]="lookupOptions.dataKey"
+        [forceSelection]="true"
+        [placeholder]="lookupOptions.placeholder"
+        display="chip"
+        [fluid]="true"
+        [showClear]="true"
+    ></p-autocomplete>
+    <label [for]="lookupOptions.inputId">Filter by team activities:</label>
+</p-iftalabel>
