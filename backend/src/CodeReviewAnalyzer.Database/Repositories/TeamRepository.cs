@@ -1,7 +1,9 @@
 using CodeReviewAnalyzer.Application.Models;
+using CodeReviewAnalyzer.Application.Models.PagingModels;
 using CodeReviewAnalyzer.Application.Repositories;
 using CodeReviewAnalyzer.Database.Contexts;
 using CodeReviewAnalyzer.Database.Extensions;
+using CodeReviewAnalyzer.Database.Services;
 
 namespace CodeReviewAnalyzer.Database.Repositories;
 
@@ -70,21 +72,31 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
         await databaseFacade.ExecuteAsync(Sql, new { id = id.ToString() });
     }
 
-    public async Task<IEnumerable<Team>> QueryBy(string? teamName)
+    public async Task<PageReturn<IEnumerable<Team>>> QueryBy(
+        PageFilter pageFilter,
+        string? teamName)
     {
-        var where = string.Empty;
-        if (!string.IsNullOrWhiteSpace(teamName))
+        var (query, pageCount) = new PaginatedSqlBuilder()
+            .WithResultSet(TeamResultSet)
+            .WithWhere(whereBuilder => whereBuilder
+                .AndWith(teamName, "t.name_sh like @Name"))
+            .WithPagination(pageFilter)
+            .MappingOrderWith("name", "t.name")
+            .Build();
+        var param = new
         {
-            where = "where t.name_sh like @Name";
-        }
+            Name = teamName?.AsSqlWildCard(),
+        };
 
-        var sql = TeamResultSet + where;
+        var totalItems = await databaseFacade.QuerySingleOrDefaultAsync<int>(
+            pageCount.ToString(),
+            param);
 
-        return await databaseFacade
-            .QueryAsync<Team>(sql, new
-            {
-                Name = (teamName + '%').AsSqlWildCard(),
-            });
+        var content = await databaseFacade.QueryAsync<Team>(
+            query.ToString(),
+            param);
+
+        return new PageReturn<IEnumerable<Team>>(content, totalItems);
     }
 
     public async Task<Team?> QueryByIdAsync(string id)

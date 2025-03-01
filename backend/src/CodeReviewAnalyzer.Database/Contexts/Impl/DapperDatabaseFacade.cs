@@ -17,6 +17,11 @@ public sealed class DapperDatabaseFacade(
         object? param = null) =>
         _connection.QueryAsync<T>(sql, param);
 
+    public async Task<T> QueryFirstAsync<T>(
+        string sql,
+        object? param = null) =>
+        await _connection.QueryFirstAsync<T>(sql, param);
+
     public async Task<int> ExecuteAsync(string sql, object? param = null) =>
         await _connection.ExecuteAsync(sql, param);
 

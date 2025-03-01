@@ -1,3 +1,5 @@
+using CodeReviewAnalyzer.Api.Models.Paging;
+using CodeReviewAnalyzer.Api.Models.Teams;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.Application.Repositories;
 using CodeReviewAnalyzer.Application.Services.Teams;
@@ -52,6 +54,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     /// Return a list of Teams.
     /// </summary>
     /// <param name="teamsRepository">Dependency injection</param>
+    /// <param name="paging">Pagination filter</param>
     /// <param name="teamName">Query team with this name. Use "*" as wildcard. This field is case insensitive.</param>
     /// <returns>A list of Teams found.</returns>
     /// <response code="200">A Team's list.</response>
@@ -61,7 +64,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     /// <response code="404">Not Found</response>
     /// <response code="500">Server error</response>
     [HttpGet]
-    [ProducesResponseType(typeof(Team), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(TeamsPaginated), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -69,11 +72,18 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllTeamsAsync(
         [FromServices] ITeams teamsRepository,
+        [FromQuery] PaginatedRequest paging,
         [FromQuery] string? teamName)
     {
-        IEnumerable<Team> teamsFound = await teamsRepository.QueryBy(teamName);
+        var teamResult = await teamsRepository.QueryBy(
+            paging.ToPageFilter(),
+            teamName);
 
-        return Ok(teamsFound);
+        var teamResponse = new TeamsPaginated(
+            teamResult,
+            paging);
+
+        return Ok(teamResponse);
     }
 
     /// <summary>
@@ -96,7 +106,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetTeamByIdAsync([FromRoute][Required] Guid id)
     {
-        var teamsFound = await teamsRepository.QueryBy(id.ToString());
+        var teamsFound = await teamsRepository.QueryByIdAsync(id.ToString());
 
         return Ok(teamsFound);
     }

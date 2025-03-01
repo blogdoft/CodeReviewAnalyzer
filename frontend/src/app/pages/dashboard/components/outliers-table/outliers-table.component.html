@@ -1,16 +1,19 @@
 <p-card header="Outliers">
     <p-table
         [value]="outliers"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        [scrollable]="true"
+        [tableStyle]="{ width: '100%' }"
         styleClass="mt-4"
         sortMode="multiple"
+        [scrollable]="true"
         paginator="true"
-        [rows]="7"
+        [rows]="10"
     >
         <ng-template #header>
             <tr>
-                <th pSortableColumn="outlierField">
+                <th
+                    pSortableColumn="outlierField"
+                    style="width: auto; white-space: nowrap"
+                >
                     <div class="flex items-center">
                         <p-sortIcon
                             field="outlierField"
@@ -53,7 +56,10 @@
                         </p-columnFilter>
                     </div>
                 </th>
-                <th pSortableColumn="outlierValue">
+                <th
+                    pSortableColumn="outlierValue"
+                    style="width: auto; white-space: nowrap"
+                >
                     <div class="flex items-center">
                         <p-sortIcon
                             field="outlierValue"
@@ -62,7 +68,9 @@
                         <span class="mr-2">Value</span>
                     </div>
                 </th>
-                <th><div class="flex justify-between items-center">PR</div></th>
+                <th style="width: auto; white-space: nowrap">
+                    <div class="flex justify-between items-center">PR</div>
+                </th>
             </tr>
         </ng-template>
         <ng-template #body let-outlier>
