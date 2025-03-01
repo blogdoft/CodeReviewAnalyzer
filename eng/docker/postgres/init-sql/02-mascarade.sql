@@ -278,7 +278,7 @@ BEGIN
             FROM public."PULL_REQUEST_COMMENTS"
         )
         UPDATE public."PULL_REQUEST_COMMENTS" r
-        SET "COMMENT" = '[DICA] É sério isso? Acho que você precisa acessar o https://blogdoft.com.br pra entender melhor ' || pr.rn
+        SET "COMMENT" = '[DICA] É sério isso? Acho que você precisa acessar o https://blogdoft.com.br pra entender melhor ' || prc.rn
         FROM prc
         WHERE r."ID" = prc."ID";
     END IF;

@@ -1,7 +1,6 @@
 using CodeReviewAnalyzer.Application.Integrations;
 using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
-using CodeReviewAnalyzer.Application.Services;
 using CodeReviewAnalyzer.AzureDevopsItg.Factories;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
