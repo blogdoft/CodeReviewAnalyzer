@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     standalone: true,
     selector: 'app-footer',
     template: `<div class="layout-footer">
-        <img src="favicon.png" width="25px" />
+        <img src="favicon.png" width="25px" alt="Blog do FT logo" />
         <a
             href="https://blogdoft.com.br"
             target="_blank"

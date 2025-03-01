@@ -228,6 +228,9 @@ dotnet_diagnostic.SA1305.severity=warning
 # SA1412: Store file as  UTF-8
 dotnet_diagnostic.SA1412.severity=none
 
+# SA1010: Opening square brackets should not be preceded by a space.
+dotnet_diagnostic.SA1010.severity=none
+
 # CSharp code style settings:
 [*.cs]
 # Newline settings
@@ -327,6 +330,9 @@ dotnet_diagnostic.SA1600.severity = none
 
 # CA1848: Use the LoggerMessage delegates
 dotnet_diagnostic.CA1848.severity = none
+
+# S3925: Update this implementation of 'ISerializable' to conform to the recommended serialization pattern. Add a 'protected' constructor 'PaginatedSqlBuilderException(SerializationInfo, StreamingContext)'.
+dotnet_diagnostic.S3925.severity = none
 
 [src/CodeStyle/**.{cs,vb}]
 # warning RS0005: Do not use generic CodeAction.Create to create CodeAction

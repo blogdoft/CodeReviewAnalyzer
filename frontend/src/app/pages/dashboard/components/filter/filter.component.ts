@@ -1,4 +1,8 @@
-import { TeamsRepositoryService } from './../../../service/report/teams-repository.service';
+import {
+    LazyQuery,
+    LookupOptions,
+    PageResponse
+} from './../../../../shared/components/paginated-lookup/paginated-lookup.component';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -6,8 +10,7 @@ import {
     AutoCompleteDropdownClickEvent,
     AutoCompleteLazyLoadEvent,
     AutoCompleteModule,
-    AutoCompleteSelectEvent,
-    AutoCompleteUnselectEvent
+    AutoCompleteSelectEvent
 } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -15,6 +18,9 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ToolbarModule } from 'primeng/toolbar';
 
+import { PaginatedLookupComponent } from '../../../../shared/components/paginated-lookup/paginated-lookup.component';
+import { PageFilter } from './../../../service/report/models/page-filter';
+import { TeamsRepositoryService } from './../../../service/report/teams-repository.service';
 import { DashboardFilter, DateRange } from './date-range';
 
 @Component({
@@ -27,7 +33,8 @@ import { DashboardFilter, DateRange } from './date-range';
         DatePickerModule,
         AutoCompleteModule,
         CardModule,
-        ButtonModule
+        ButtonModule,
+        PaginatedLookupComponent
     ],
     templateUrl: './filter.component.html',
     styleUrl: './filter.component.scss'
@@ -51,26 +58,33 @@ export class FilterComponent {
         return this._rangeDate;
     }
 
-    public selectedAutoValue!: any;
     public autoFilteredValue!: any;
     protected lookupRange: Date[] = [];
-    private _rangeDate!: DateRange | null;
-    private repoTeamId: string | null = null;
-    private userTeamId: string | null = null;
+    protected userTeamLookupOptions: LookupOptions = {
+        placeholder: 'Start typing the team name',
+        dataKey: 'externalId',
+        optionLabel: 'name',
+        inputId: 'userTeamLookup'
+    };
+    protected repoTeamLookupOptions: LookupOptions = {
+        ...this.userTeamLookupOptions,
+        inputId: 'repoTeamLookup'
+    };
+    protected isLoading: boolean = false;
+    protected pageResponse: PageResponse = {
+        currentPage: 0,
+        totalItems: 0,
+        totalPages: 0
+    };
 
-    /**
-     *
-     */
+    protected repoTeamId: string | null = null;
+    protected userTeamId: string | null = null;
+
+    private _rangeDate!: DateRange | null;
+    private pageSize: number = 50;
+
     constructor(private teams: TeamsRepositoryService) {}
 
-    public filterTeamRepository($event: AutoCompleteDropdownClickEvent) {
-        this.teams.getTeamsByDescription($event.query).subscribe({
-            next: (data) => {
-                this.autoFilteredValue = data;
-            },
-            error: (err) => console.log(JSON.stringify(err))
-        });
-    }
     onSearchClick() {
         this.OnSearch.emit({
             teamRepositoryId: this.repoTeamId,
@@ -82,18 +96,37 @@ export class FilterComponent {
         });
     }
 
-    onClearRepoTeam($event: Event | undefined) {
-        this.repoTeamId = null;
-    }
-    onSelectRepoTeam($event: AutoCompleteSelectEvent) {
-        this.repoTeamId = $event.value['externalId'];
-    }
+    loadTeamData(event: LazyQuery): void {
+        this.isLoading = true;
 
-    onSelectUserTeam($event: AutoCompleteSelectEvent) {
-        this.userTeamId = $event.value['externalId'];
-    }
+        this.teams
+            .getTeamsByDescription(`${event.params}*`, {
+                page: event.page,
+                size: this.pageSize,
+                order: event.order ?? 'name'
+            })
+            .subscribe({
+                next: (response) => {
+                    this.pageResponse = {
+                        totalItems: response.totalItems,
+                        currentPage: response.currentPage,
+                        totalPages: response.totalPages
+                    };
 
-    onClearUserTeam($event: Event | undefined) {
-        this.userTeamId = null;
+                    if (event.lazyCall) {
+                        this.autoFilteredValue = [
+                            ...this.autoFilteredValue,
+                            ...response.data
+                        ];
+                    } else {
+                        this.autoFilteredValue = response.data;
+                    }
+                    this.isLoading = false;
+                },
+                error: (err) => {
+                    console.log(JSON.stringify(err));
+                    this.isLoading = false;
+                }
+            });
     }
 }

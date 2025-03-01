@@ -19,7 +19,12 @@ import { LayoutService } from '../service/layout.service';
                 <i class="pi pi-bars"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
-                <img src="favicon.png" width="50px" />
+                <img
+                    src="favicon.png"
+                    width="50px"
+                    ariaLabel="Pull Request Insights logo"
+                    alt="Pull Request Insights logo"
+                />
                 <span>Pull Request Insights</span>
             </a>
         </div>
