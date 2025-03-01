@@ -19,46 +19,24 @@
             </p-iftalabel>
         </div>
         <div class="filter-item">
-            <p-iftalabel>
-                <p-autocomplete
-                    [style]="{ width: '100%' }"
-                    [suggestions]="autoFilteredValue"
-                    optionLabel="name"
-                    dataKey="externalId"
-                    forceSelection
-                    placeholder="Start typing the repositories' team name"
-                    dropdown
-                    lazy="true"
-                    display="chip"
-                    fluid
-                    (onSelect)="onSelectRepoTeam($event)"
-                    (onClear)="onClearRepoTeam($event)"
-                    (completeMethod)="filterTeamRepository($event)"
-                    inputId="repoTeamLookup"
-                ></p-autocomplete>
-                <label for="repoTeamLookup">Filter by teams' repository:</label>
-            </p-iftalabel>
+            <app-paginated-lookup
+                [lookupOptions]="repoTeamLookupOptions"
+                (onLoadData)="loadTeamData($event)"
+                [suggestions]="autoFilteredValue"
+                [isLoading]="isLoading"
+                [pageResponse]="pageResponse"
+                [(fieldKey)]="repoTeamId"
+            />
         </div>
         <div class="filter-item">
-            <p-iftalabel>
-                <p-autocomplete
-                    [style]="{ width: '100%' }"
-                    [suggestions]="autoFilteredValue"
-                    optionLabel="name"
-                    dataKey="externalId"
-                    forceSelection
-                    placeholder="Start typing the team name"
-                    dropdown
-                    lazy="true"
-                    display="chip"
-                    fluid
-                    (onSelect)="onSelectUserTeam($event)"
-                    (onClear)="onClearUserTeam($event)"
-                    (completeMethod)="filterTeamRepository($event)"
-                    inputId="repoTeamLookup2"
-                ></p-autocomplete>
-                <label for="repoTeamLookup2">Filter by team activities:</label>
-            </p-iftalabel>
+            <app-paginated-lookup
+                [lookupOptions]="userTeamLookupOptions"
+                (onLoadData)="loadTeamData($event)"
+                [suggestions]="autoFilteredValue"
+                [isLoading]="isLoading"
+                [pageResponse]="pageResponse"
+                [(fieldKey)]="userTeamId"
+            />
         </div>
     </div>
     <ng-template #footer>
