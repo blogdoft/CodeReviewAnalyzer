@@ -65,7 +65,7 @@ public class PullRequestFactory(
         {
             CommentIndex = x.Comment.Id,
             ThreadId = x.Thread.Id,
-            CommentedBy = new User()
+            CommentedBy = new IntegrationUser()
             {
                 Id = x.Comment.Author.Id,
                 Name = x.Comment.Author.DisplayName,

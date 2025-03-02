@@ -40,12 +40,12 @@ public class TeamUserRepository(IDatabaseFacade databaseFacade) : ITeamUser
     private const string RemoveUserFromTeam =
         """
             delete from "TEAM_USER"
-            where team_id = @TeamId
-              and user_id = @UserId;
+            where team_id = (select id FROM public."TEAMS" t WHERE t.external_id = @TeamId)
+              and user_id = (SELECT "ID" FROM public."USERS"u where u."EXTERNAL_IDENTIFIER" = @UserId);
         
         """;
 
-    public async Task<IEnumerable<TeamUser>> GetUserFromTeamAsync(Guid teamId)
+    public async Task<IEnumerable<TeamUser>> GetUserFromTeamAsync(string teamId)
     {
         const string Where =
             "where t.external_id = @ExternalId";
@@ -62,7 +62,7 @@ public class TeamUserRepository(IDatabaseFacade databaseFacade) : ITeamUser
     }
 
     public async Task<IEnumerable<TeamUser>> AddUsersAsync(
-        Guid teamId,
+        string teamId,
         IEnumerable<TeamUser> users)
     {
         foreach (var teamUser in users)
@@ -81,7 +81,9 @@ public class TeamUserRepository(IDatabaseFacade databaseFacade) : ITeamUser
         return await GetUserFromTeamAsync(teamId);
     }
 
-    public async Task<IEnumerable<TeamUser>> RemoveUserFrom(Guid teamId, Guid userId)
+    public async Task<IEnumerable<TeamUser>> RemoveUserFromAsync(
+        string teamId,
+        string userId)
     {
         await databaseFacade.ExecuteAsync(RemoveUserFromTeam, new
         {

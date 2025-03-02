@@ -1,5 +1,3 @@
-using CodeReviewAnalyzer.Application.Integrations.Models;
-
 namespace CodeReviewAnalyzer.Application.Models;
 
 public class TeamUser
