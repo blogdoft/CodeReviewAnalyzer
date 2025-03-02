@@ -1,5 +1,7 @@
 <p-iftalabel>
     <p-autocomplete
+        #autocomplete
+        [pAutoFocus]="focus"
         [inputId]="lookupOptions.inputId"
         [style]="{ width: '100%' }"
         [suggestions]="suggestions"
@@ -19,5 +21,7 @@
         [fluid]="true"
         [showClear]="true"
     ></p-autocomplete>
-    <label [for]="lookupOptions.inputId">Filter by team activities:</label>
+    <label [for]="lookupOptions.inputId"
+        >{{ lookupOptions.label ?? '' }}
+    </label>
 </p-iftalabel>

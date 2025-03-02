@@ -6,7 +6,7 @@ public class PrComments
 
     public required int ThreadId { get; init; }
 
-    public required User CommentedBy { get; init; }
+    public required IntegrationUser CommentedBy { get; init; }
 
     public required string Comment { get; init; }
 

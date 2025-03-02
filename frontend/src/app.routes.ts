@@ -8,7 +8,13 @@ export const appRoutes: Routes = [
     {
         path: '',
         component: AppLayout,
-        children: [{ path: '', component: Dashboard }]
+        children: [
+            { path: '', component: Dashboard },
+            {
+                path: 'admin',
+                loadChildren: () => import('./app/pages/pages.routes')
+            }
+        ]
     },
     { path: 'landing', component: Landing },
     { path: 'notfound', component: Notfound },
