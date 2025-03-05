@@ -1,19 +1,29 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+} from '@angular/core';
+import {
+    AutoComplete,
     AutoCompleteDropdownClickEvent,
     AutoCompleteLazyLoadEvent,
     AutoCompleteModule,
     AutoCompleteSelectEvent
 } from 'primeng/autocomplete';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { IftaLabelModule } from 'primeng/iftalabel';
 
 @Component({
     selector: 'app-paginated-lookup',
-    imports: [AutoCompleteModule, IftaLabelModule],
+    imports: [AutoCompleteModule, AutoFocusModule, IftaLabelModule],
     templateUrl: './paginated-lookup.component.html',
     styleUrl: './paginated-lookup.component.scss'
 })
-export class PaginatedLookupComponent {
+export class PaginatedLookupComponent implements AfterViewInit {
     @Input()
     public lookupOptions!: LookupOptions;
 
@@ -28,6 +38,9 @@ export class PaginatedLookupComponent {
 
     @Input()
     public fieldKey!: any;
+
+    @Input()
+    public focus: boolean = false;
 
     @Output()
     public fieldKeyChange: EventEmitter<any> = new EventEmitter<any>();
@@ -44,10 +57,31 @@ export class PaginatedLookupComponent {
         Event | undefined
     >();
 
-    protected autoFilteredValue!: any[];
+    @ViewChild('autocomplete', { read: ElementRef }) autoElRef!: ElementRef;
+    @ViewChild('autocomplete') private autoComplete!: AutoComplete;
 
     private lastQuery: string = '';
     private pageSize: number = 0;
+
+    ngAfterViewInit(): void {
+        this.applyFocus();
+    }
+
+    public clear() {
+        this.autoComplete.clear();
+    }
+
+    public applyFocus() {
+        if (this.focus) {
+            setTimeout(() => {
+                const input =
+                    this.autoElRef.nativeElement.querySelector('input');
+                if (input) {
+                    input.focus();
+                }
+            }, 0);
+        }
+    }
 
     protected onSelectItem($event: AutoCompleteSelectEvent) {
         this.fieldKey = $event.value[this.lookupOptions.dataKey];
@@ -104,6 +138,7 @@ export interface PageResponse {
 }
 
 export interface LookupOptions {
+    label: string | null | undefined;
     placeholder: string;
     dataKey: string;
     optionLabel: string;

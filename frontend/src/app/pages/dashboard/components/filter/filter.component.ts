@@ -20,7 +20,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 
 import { PaginatedLookupComponent } from '../../../../shared/components/paginated-lookup/paginated-lookup.component';
 import { PageFilter } from './../../../service/report/models/page-filter';
-import { TeamsRepositoryService } from './../../../service/report/teams-repository.service';
+import { TeamsRepositoryService } from '../../../service/teamsRepository/teams-repository.service';
 import { DashboardFilter, DateRange } from './date-range';
 
 @Component({
@@ -61,6 +61,7 @@ export class FilterComponent {
     public autoFilteredValue!: any;
     protected lookupRange: Date[] = [];
     protected userTeamLookupOptions: LookupOptions = {
+        label: 'Filter by team activities:',
         placeholder: 'Start typing the team name',
         dataKey: 'externalId',
         optionLabel: 'name',

@@ -54,8 +54,8 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     /// Return a list of Teams.
     /// </summary>
     /// <param name="teamsRepository">Dependency injection</param>
-    /// <param name="paging">Pagination filter</param>
     /// <param name="teamName">Query team with this name. Use "*" as wildcard. This field is case insensitive.</param>
+    /// <param name="paging">Pagination filter</param>
     /// <returns>A list of Teams found.</returns>
     /// <response code="200">A Team's list.</response>
     /// <response code="400">Invalid request</response>
@@ -72,8 +72,8 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllTeamsAsync(
         [FromServices] ITeams teamsRepository,
-        [FromQuery] PaginatedRequest paging,
-        [FromQuery] string? teamName)
+        [FromQuery] string? teamName,
+        [FromQuery] PaginatedRequest paging)
     {
         var teamResult = await teamsRepository.QueryBy(
             paging.ToPageFilter(),
@@ -173,7 +173,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     /// Return a list of users assigned to a Team.
     /// </summary>
     /// <param name="teamUserRepository">Dependency injection</param>
-    /// <param name="teamId">Team external identifier.</param>
+    /// <param name="teamId" example="04b7833d-a02c-4ff5-aea7-f3e2eeac9768">Team external identifier.</param>
     /// <returns>List of Teams' users.</returns>
     /// <response code="200">List of Teams' users</response>
     /// <response code="400">Invalid request</response>
@@ -190,7 +190,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetTeamsUsersAsync(
         [FromServices] ITeamUser teamUserRepository,
-        [FromRoute][Required] Guid teamId)
+        [FromRoute][Required] string teamId)
     {
         IEnumerable<TeamUser> teamUsers = await teamUserRepository
             .GetUserFromTeamAsync(teamId);
@@ -220,7 +220,7 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddUsersAsync(
         [FromServices] ITeamUser teamUserRepository,
-        [FromRoute][Required] Guid teamId,
+        [FromRoute][Required] string teamId,
         [FromBody] IEnumerable<TeamUser> users)
     {
         IEnumerable<TeamUser> teamUsers = await teamUserRepository
@@ -236,14 +236,14 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     /// <param name="teamId">Team external identifier.</param>
     /// <param name="userId">User external id to be removed.</param>
     /// <returns>Current list of users.</returns>
-    /// <response code="200">Users added to a team.</response>
+    /// <response code="204">User removed from team.</response>
     /// <response code="400">Invalid request</response>
     /// <response code="401">Not authenticated</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Not Found</response>
     /// <response code="500">Server error</response>
     [HttpDelete("{teamId}/users/{userId}")]
-    [ProducesResponseType(typeof(IEnumerable<TeamUser>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -251,11 +251,11 @@ public class TeamsController(ITeams teamsRepository) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RemoveBatchUsersAsync(
         [FromServices] ITeamUser teamUserRepository,
-        [FromRoute][Required] Guid teamId,
-        [FromBody] Guid userId)
+        [FromRoute][Required] string teamId,
+        [FromRoute] string userId)
     {
         IEnumerable<TeamUser> teamUsers = await teamUserRepository
-            .RemoveUserFrom(teamId, userId);
+            .RemoveUserFromAsync(teamId, userId);
 
         return Ok(teamUsers);
     }

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -8,6 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 
+import { MessageHandlerService } from '../../shared/services/message-handler.service';
 import { CommentData } from '../service/report/models/comment-data.model';
 import { Outlier } from '../service/report/models/outlier';
 import { PullRequestTimeReport } from '../service/report/models/pull-request-report.model';
@@ -63,7 +63,7 @@ import { StatsWidget } from './components/statswidget';
                 <app-outliers-table [outliers]="outliers" />
             </div>
         </div>`,
-    providers: [MessageService]
+    providers: [MessageHandlerService]
 })
 export class Dashboard {
     public rangeDates!: DateRange;
@@ -90,7 +90,7 @@ export class Dashboard {
 
     constructor(
         private pullRequestReportService: PullRequestReportService,
-        private message: MessageService
+        private messageHandler: MessageHandlerService
     ) {}
 
     ngOnInit(): void {
@@ -118,7 +118,11 @@ export class Dashboard {
                 next: (data) => {
                     this.pullRequestReport = data;
                 },
-                error: (err) => this.showError(err)
+                error: (err) =>
+                    this.messageHandler.handleHttpError(
+                        err,
+                        "Error retrieving Pull Requests' report data"
+                    )
             });
 
         this.pullRequestReportService
@@ -130,8 +134,13 @@ export class Dashboard {
             )
             .subscribe({
                 next: (data) => (this.reviewerDensityReport = data),
-                error: (err) => this.showError(err)
+                error: (err) =>
+                    this.messageHandler.handleHttpError(
+                        err,
+                        "Error retrieving Reviewers' density"
+                    )
             });
+
         this.pullRequestReportService
             .getOutliers(
                 $event.dateRange.from,
@@ -141,16 +150,11 @@ export class Dashboard {
             )
             .subscribe({
                 next: (data) => (this.outliers = data),
-                error: (err) => this.showError(err)
+                error: (err) =>
+                    this.messageHandler.handleHttpError(
+                        err,
+                        'Error retrieving Outliers data.'
+                    )
             });
-    }
-
-    private showError(err: any) {
-        this.message.add({
-            detail: err.message,
-            summary: 'Summary',
-            severity: 'error',
-            life: 50000
-        });
     }
 }
