@@ -7,7 +7,7 @@ public class PaginatedRequest
     /// <summary>
     /// Gets the page number to be retrieved. Defaults to 0.
     /// </summary>
-    /// <example>1</example>
+    /// <example>0</example>
     public int Page { get; init; } = 0;
 
     /// <summary>
@@ -19,7 +19,7 @@ public class PaginatedRequest
     /// <summary>
     /// Gets the order in which the data should be sorted.
     /// </summary>
-    /// <example>"name ASC"</example>
+    /// <example>name ASC</example>
     public string? Order { get; init; }
 
     internal PageFilter ToPageFilter() => new()

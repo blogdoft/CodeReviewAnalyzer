@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { Empty } from './empty/empty';
+
+import { TeamCrud } from './team-crud/crud';
 
 export default [
-    { path: 'empty', component: Empty },
+    { path: 'team', component: TeamCrud },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;
