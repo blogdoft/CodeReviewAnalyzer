@@ -54,7 +54,7 @@ interface ExportColumn {
         ToolbarModule,
         TeamDetailsComponent
     ],
-    templateUrl: './crud.html',
+    templateUrl: './team-crud.html',
     providers: [
         ConfirmationService,
         MessageHandlerService,
@@ -142,7 +142,8 @@ export class TeamCrud implements OnInit {
             relativeTo: this.route,
             queryParams: {
                 ...tableFilter
-            }
+            },
+            onSameUrlNavigation: 'ignore'
         });
     }
 

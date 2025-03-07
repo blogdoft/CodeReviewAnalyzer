@@ -30,9 +30,20 @@ export class AppMenu {
                 label: 'Home',
                 items: [
                     {
-                        label: 'Dashboard',
+                        label: 'Pull Request Dashboard',
                         icon: 'pi pi-fw pi-home',
                         routerLink: ['/']
+                    }
+                ]
+            },
+            {
+                label: 'Admin',
+                icon: 'pi pi-fw pi-briefcase',
+                items: [
+                    {
+                        label: 'Team',
+                        icon: 'pi pi-fw pi-users',
+                        routerLink: ['/admin/teams']
                     }
                 ]
             }
