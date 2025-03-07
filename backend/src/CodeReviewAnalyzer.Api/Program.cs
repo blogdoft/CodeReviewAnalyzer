@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Serilog;
 using System.Reflection;
 
-
 LogConfigBuilder.AutoWire();
 try
 {
@@ -54,9 +53,11 @@ catch (Exception ex)
 {
     Log.Fatal(
         exception: ex,
-        messageTemplate: $"Failed to start the {Assembly.GetExecutingAssembly().GetName().Name}: {ex.Message}");
+        messageTemplate: "Failed to start the {Name}: {Message}",
+        Assembly.GetExecutingAssembly().GetName().Name,
+        ex.Message);
 }
 finally
 {
-    Log.CloseAndFlush();
+    await Log.CloseAndFlushAsync();
 }
