@@ -15,12 +15,18 @@ public sealed class UserRepository(IDatabaseFacade databaseFacade) : IUsers
             INSERT INTO public."USERS" (
                  "EXTERNAL_IDENTIFIER"
                 , "NAME"
+                , "NAME_SH"
                 , "ACTIVE"
             ) VALUES (
                   @Id
                 , @Name
+                , @NameSh
                 , @Active
-            ) on conflict ("EXTERNAL_IDENTIFIER") do UPDATE SET "NAME"=@Name, "ACTIVE"=@Active;
+            ) on conflict ("EXTERNAL_IDENTIFIER") do 
+            UPDATE SET 
+                  "NAME"=@Name
+                , "NAME_SH"=@NameSh
+                , "ACTIVE"=@Active;
 
             
         """;
@@ -66,5 +72,11 @@ public sealed class UserRepository(IDatabaseFacade databaseFacade) : IUsers
     }
 
     public async Task Upsert(IntegrationUser createdBy) =>
-        await _databaseFacade.ExecuteAsync(UpsertSql, createdBy);
+        await _databaseFacade.ExecuteAsync(UpsertSql, new
+        {
+            createdBy.Id,
+            createdBy.Name,
+            NameSh = createdBy.Name.ToUpper(),
+            createdBy.Active,
+        });
 }
