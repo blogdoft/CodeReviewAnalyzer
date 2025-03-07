@@ -33,6 +33,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         }
     }
 
+#pragma warning disable S1075 //Refactor your code not to use hardcoded absolute paths or URIs.
     private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
         var info = new OpenApiInfo()
@@ -51,4 +52,5 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 
         return info;
     }
+#pragma warning restore S1075 //Refactor your code not to use hardcoded absolute paths or URIs.
 }
