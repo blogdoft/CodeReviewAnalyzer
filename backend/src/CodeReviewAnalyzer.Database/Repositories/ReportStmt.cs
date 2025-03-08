@@ -159,6 +159,7 @@ internal static class ReportStmt
             SELECT 'First comment waiting time (h)' AS "OutlierField"
                 , f."FIRST_COMMENT_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
                 , f."URL"
+                , f."EXTERNAL_ID" as "ExternalId"
             FROM filtered f, fc_stats s
             WHERE f."FIRST_COMMENT_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
             OR f."FIRST_COMMENT_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
@@ -169,6 +170,7 @@ internal static class ReportStmt
             SELECT 'Revision waiting time (h)' AS "OutlierField"
                 , f."REVISION_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
                 , f."URL"
+                , f."EXTERNAL_ID" as "ExternalId"
             FROM filtered f, rev_stats s
             WHERE f."REVISION_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
             OR f."REVISION_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
@@ -179,6 +181,7 @@ internal static class ReportStmt
             SELECT 'Merge waiting time (h)' AS "OutlierField",
                 f."MERGE_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
                 , f."URL"
+                , f."EXTERNAL_ID" as "ExternalId"
             FROM filtered f, merge_stats s
             WHERE f."MERGE_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
             OR f."MERGE_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
@@ -189,6 +192,7 @@ internal static class ReportStmt
             SELECT 'File count' AS "OutlierField"
                 , f."FILE_COUNT" as "OutlierValue"
                 , f."URL"
+                , f."EXTERNAL_ID" as "ExternalId"
             FROM filtered f, file_stats s
             WHERE f."FILE_COUNT" < s.q1 - 1.5 * (s.q3 - s.q1)
             OR f."FILE_COUNT" > s.q3 + 1.5 * (s.q3 - s.q1)
@@ -199,6 +203,7 @@ internal static class ReportStmt
             SELECT 'Thread Count' AS "OutlierField"
                 , f."THREAD_COUNT" as "OutlierValue"
                 , f."URL"
+                , f."EXTERNAL_ID" as "ExternalId"
             FROM filtered f, thread_stats s
             WHERE f."THREAD_COUNT" < s.q1 - 1.5 * (s.q3 - s.q1)
             OR f."THREAD_COUNT" > s.q3 + 1.5 * (s.q3 - s.q1);

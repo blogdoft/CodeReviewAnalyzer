@@ -1,0 +1,84 @@
+<p-dialog
+    [(visible)]="visible"
+    [modal]="true"
+    [dismissableMask]="true"
+    [header]="pullRequestStats.title"
+    ><div class="flex">
+        <div class="card flex flex-col gap-6 w-full">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex flex-wrap gap-2 w-full">
+                    <p-fieldset legend="Cycle time">
+                        <ul>
+                            <li>
+                                <strong>Created at:</strong>
+                                {{
+                                    pullRequestStats.createdAt
+                                        | date: "MMM dd 'at' HH:mm (EEE)"
+                                }}
+                            </li>
+                            <li>
+                                <strong>Closed at:</strong>
+                                {{
+                                    pullRequestStats.closedAt
+                                        | date: "MMM dd 'at' HH:mm (EEE)"
+                                }}
+                            </li>
+                            <li>
+                                <strong>Merge Waiting time:</strong>
+                                {{
+                                    pullRequestStats.mergeWaitingTimeMinutes
+                                        | minToHours
+                                }}
+                            </li>
+                            <li>
+                                <strong>Merge mode:</strong>
+                                {{ pullRequestStats.mergeMode }}
+                            </li>
+                        </ul></p-fieldset
+                    >
+                </div>
+                <div class="flex flex-wrap gap-2 w-full">
+                    <p-fieldset legend="Revision time">
+                        <ul>
+                            <li>
+                                <strong>First comment date:</strong>
+                                {{
+                                    pullRequestStats.firstCommentDate
+                                        | date: "MMM dd 'at' HH:mm (EEE)"
+                                }}
+                            </li>
+                            <li>
+                                <strong>First comment waiting time:</strong>
+                                {{
+                                    pullRequestStats.firstCommentWaitingMinutes
+                                        | minToHours
+                                }}
+                            </li>
+                            <li>
+                                <strong>Time in revision:</strong>
+                                {{
+                                    pullRequestStats.revisionWaitingTimeMinutes
+                                        | minToHours
+                                }}
+                            </li>
+                        </ul></p-fieldset
+                    >
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6">
+                <p-fieldset legend="Sizes">
+                    <ul>
+                        <li>
+                            <strong>File count:</strong>
+                            {{ pullRequestStats.fileCount }}
+                        </li>
+                        <li>
+                            <strong>Thread count:</strong>
+                            {{ pullRequestStats.threadCount }}
+                        </li>
+                    </ul></p-fieldset
+                >
+            </div>
+        </div>
+    </div></p-dialog
+>

@@ -1,4 +1,3 @@
-using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
 
 namespace CodeReviewAnalyzer.Database.TablesViews;

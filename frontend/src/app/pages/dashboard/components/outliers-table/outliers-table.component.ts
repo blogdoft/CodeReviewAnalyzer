@@ -11,11 +11,14 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
 import { Outlier } from '../../../service/report/models/outlier';
+import { ButtonModule } from 'primeng/button';
+import { PullRequestStatsDialogComponent } from '../pull-request-stats-dialog/pull-request-stats-dialog.component';
 
 @Component({
     selector: 'app-outliers-table',
     standalone: true,
     imports: [
+        ButtonModule,
         TableModule,
         TagModule,
         FormsModule,
@@ -25,17 +28,20 @@ import { Outlier } from '../../../service/report/models/outlier';
         MultiSelectModule,
         SelectModule,
         SliderModule,
-        CardModule
+        CardModule,
+        PullRequestStatsDialogComponent
     ],
     templateUrl: './outliers-table.component.html',
     styleUrl: './outliers-table.component.scss'
 })
 export class OutliersTableComponent {
     loading: boolean = true;
+    showPrStats: boolean = false;
 
     fieldNames: string[] = [];
 
     @ViewChild('filter') filter!: ElementRef;
+    @ViewChild('prstats') prStatsDialog!: PullRequestStatsDialogComponent;
 
     @Input()
     set outliers(value: Outlier[]) {
@@ -54,6 +60,15 @@ export class OutliersTableComponent {
     }
 
     public selectedOutliers!: string[];
+
+    public showPrStatsClick() {
+        console.log(this.showPrStats);
+        this.showPrStats = true;
+    }
+
+    public showPrStatsOf(event: string): void {
+        this.prStatsDialog.showStatsFor(event);
+    }
 
     private _outliers!: Outlier[];
 }
