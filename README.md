@@ -11,7 +11,7 @@ Você precisa adicionar configurações em dois arquivos `.env` dentro de `./eng
 - ./eng/docker/dev.env
 - ./eng/docker/postgres/database.env
 
-Você tem os arquivos `.template` para se basear em como criar. 
+Você tem os arquivos `.template` para se basear em como criar.
 
 Os dados de PAT, Organization e ProjectName são necessários para pré-configurar o sistema, habilitando a coleta de dados.
 
@@ -43,7 +43,7 @@ curl -X 'GET' \
   -H 'accept: */*'
 ```
 
-Aguarde alguns minutos até que todos os dados sejam carregados. O tempo vai depender da quantidade de pull requestes do seu repositório.
+Aguarde alguns minutos até que todos os dados sejam carregados. O tempo vai depender da quantidade de pull requests do seu repositório.
 
 ## Customizações pós-execução
 
@@ -51,6 +51,6 @@ Após a conclusão, inicie novamente o container `init-db`. Dessa vez, os script
 
 As configurações que estão no arquivo agora, satisfazem necessidades minhas. Ao baixar, construa os arquivos conforme você achar necessário.
 
-Qualquer arquivo *.sql dentro da pasta `./eng/docker/postgres/init-sql` serão executados.
+Qualquer arquivo \*.sql dentro da pasta `./eng/docker/postgres/init-sql` serão executados.
 
 Eu só escrevi esses scripts para poupar tempo na restauração dos dados (precisei fazer várias vezes, né?). Depois de ajustar o script de leitura, isso não será mais necessário.
