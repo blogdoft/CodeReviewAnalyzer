@@ -68,8 +68,11 @@
                         <span class="mr-2">Value</span>
                     </div>
                 </th>
-                <th style="width: auto; white-space: nowrap">
-                    <div class="flex justify-between items-center">PR</div>
+                <th
+                    style="width: auto; white-space: nowrap; text-align: center"
+                    class="text-center"
+                >
+                    PR
                 </th>
             </tr>
         </ng-template>
@@ -77,12 +80,24 @@
             <tr>
                 <td>{{ outlier.outlierField }}</td>
                 <td>{{ outlier.outlierValue }}</td>
-                <td>
+                <td style="text-align: center">
+                    <p-button
+                        icon="pi pi-search"
+                        [rounded]="true"
+                        [text]="true"
+                        severity="primary"
+                        (onClick)="showPrStatsOf(outlier.externalId)"
+                    />
                     <a [href]="outlier.url" target="_blank"
-                        ><i class="pi pi-external-link"></i
-                    ></a>
+                        ><p-button
+                            icon="pi pi-external-link"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="primary"
+                    /></a>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </p-card>
+<app-pull-request-stats-dialog #prstats />
