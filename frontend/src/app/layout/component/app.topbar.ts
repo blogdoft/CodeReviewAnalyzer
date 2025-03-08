@@ -21,7 +21,6 @@ import { LayoutService } from '../service/layout.service';
             <a class="layout-topbar-logo" routerLink="/">
                 <img
                     src="favicon.png"
-                    width="50px"
                     ariaLabel="Pull Request Insights logo"
                     alt="Pull Request Insights logo"
                 />

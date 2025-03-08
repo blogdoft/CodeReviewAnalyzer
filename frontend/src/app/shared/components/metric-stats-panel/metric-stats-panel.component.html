@@ -7,8 +7,24 @@
             <div
                 class="text-surface-900 dark:text-surface-0 font-medium text-xl"
             >
-                {{ options.current.value }} at
-                {{ options.current.referenceDate | date: 'MMM' }}
+                {{ options.current.value }}
+                <ng-container
+                    *ngIf="
+                        (options.current.referenceDate | date: 'MM/YYYY') !==
+                        (currentDate | date: 'MM/YYYY')
+                    "
+                >
+                    at
+                    {{
+                        options.current.referenceDate
+                            | date
+                                : ((options.current.referenceDate
+                                      | date: 'yyyy') !==
+                                  (currentDate | date: 'yyyy')
+                                      ? 'MMM/yy'
+                                      : 'MMM')
+                    }}
+                </ng-container>
             </div>
         </div>
         <div
@@ -21,6 +37,14 @@
     <span class="text-primary font-medium">{{ options.previous.value }} </span>
 
     <span class="text-muted-color"
-        >at {{ options.previous.referenceDate | date: 'MMM' }}</span
+        >at
+        {{
+            options.previous.referenceDate
+                | date
+                    : ((options.previous.referenceDate | date: 'yyyy') !==
+                      (currentDate | date: 'yyyy')
+                          ? 'MMM/yy'
+                          : 'MMM')
+        }}</span
     >
 </div>
