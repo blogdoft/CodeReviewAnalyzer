@@ -23,6 +23,8 @@ export class MetricStatsPanelComponent {
         return this._options;
     }
 
+    protected currentDate: Date = new Date();
+
     private iconColor = {
         [MetricStatus.ok]: 'text-green-500',
         [MetricStatus.warning]: 'text-yellow-500',
