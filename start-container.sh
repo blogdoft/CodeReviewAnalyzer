@@ -8,25 +8,16 @@ docker compose down
 cd ..
 cd ..
 
-## Build backend
-echo "############# Building backend"
-cd backend
-dotnet publish ./src/CodeReviewAnalyzer.Api -c Release -o ./app
-cd ..
-
-# ## Build frontend
-echo "############# Building frontend"
-cd frontend
-ng build
-cd ..
-
 ## Build Containeres
-echo "############# Building containers"
 cd eng/docker
+
+echo "############# Building containers"
+echo "Solution is auto built inside each image"
+
 docker compose build
 
 ## Start everything
-echo "############# starting up"
+echo "############# Starting up"
 docker compose up
 
 cd ..
