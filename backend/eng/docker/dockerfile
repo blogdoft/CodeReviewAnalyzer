@@ -1,6 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY CodeReviewAnalyzer.sln .
+COPY src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj
+COPY src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj
+COPY src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj
+COPY src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj
+COPY __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj
+COPY __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj
+COPY __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj
+COPY __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet publish ./src/CodeReviewAnalyzer.Api -o /app -c Release 
+
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 ARG PUBLISH_FOLDER=app/
 WORKDIR /app
-COPY ${PUBLISH_FOLDER} .
+COPY --from=build /app .
 EXPOSE 5031
 ENTRYPOINT ["dotnet", "CodeReviewAnalyzer.Api.dll"]
