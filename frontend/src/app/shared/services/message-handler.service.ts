@@ -19,6 +19,7 @@ export class MessageHandlerService {
     public handleHttpError(err: any, title?: string | null) {
         let errorMessage = this.getMessageByStatus(err);
         this.showError(errorMessage, title ?? 'Error during request.');
+        console.log(JSON.stringify(err));
     }
 
     public showError(errorMessage: string, title?: string | null) {
