@@ -41,7 +41,7 @@ import { DashboardFilter, DateRange } from './date-range';
 })
 export class FilterComponent {
     @Output()
-    public OnSearch: EventEmitter<DashboardFilter> =
+    public onSearch: EventEmitter<DashboardFilter> =
         new EventEmitter<DashboardFilter>();
 
     @Input()
@@ -87,7 +87,7 @@ export class FilterComponent {
     constructor(private teams: TeamsRepositoryService) {}
 
     onSearchClick() {
-        this.OnSearch.emit({
+        this.onSearch.emit({
             teamRepositoryId: this.repoTeamId,
             teamUserId: this.userTeamId,
             dateRange: {
