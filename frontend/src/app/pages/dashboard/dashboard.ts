@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -18,6 +18,7 @@ import { OutliersTableComponent } from './components/outliers-table/outliers-tab
 import { PullRequestGraphComponent } from './components/pull-request-graph/pull-request-graph.component';
 import { ReviewerDensityGraphComponent } from './components/reviewer-density-graph/reviewer-density-graph.component';
 import { StatsWidget } from './components/statswidget';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-dashboard',
@@ -41,7 +42,7 @@ import { StatsWidget } from './components/statswidget';
             <div class="col-span-12">
                 <app-filter
                     [rangeDate]="rangeDates"
-                    (OnSearch)="OnSearch($event)"
+                    (onSearch)="onSearch($event)"
                 ></app-filter>
             </div>
             <div class="col-span-12"></div>
@@ -65,7 +66,7 @@ import { StatsWidget } from './components/statswidget';
         </div>`,
     providers: [MessageHandlerService]
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
     public rangeDates!: DateRange;
 
     public pullRequestReport: PullRequestTimeReport = {
@@ -94,67 +95,53 @@ export class Dashboard {
     ) {}
 
     ngOnInit(): void {
-        const today = new Date();
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(today.getMonth() - 3, 1);
-        this.rangeDates = { from: threeMonthsAgo, to: today };
+        this.initializeDateRange();
         const filter: DashboardFilter = {
             teamRepositoryId: null,
             teamUserId: null,
             dateRange: this.rangeDates
         };
-        this.OnSearch(filter);
+        this.onSearch(filter);
     }
 
-    OnSearch($event: DashboardFilter) {
-        this.pullRequestReportService
-            .getReports(
-                $event.dateRange.from,
-                $event.dateRange.to,
-                $event.teamRepositoryId,
-                $event.teamUserId
-            )
-            .subscribe({
-                next: (data) => {
-                    this.pullRequestReport = data;
-                },
-                error: (err) =>
-                    this.messageHandler.handleHttpError(
-                        err,
-                        "Error retrieving Pull Requests' report data"
-                    )
-            });
+    initializeDateRange(): void {
+        const today = new Date();
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(today.getMonth() - 3, 1);
+        this.rangeDates = { from: threeMonthsAgo, to: today };
+    }
 
-        this.pullRequestReportService
-            .getReviewerDensity(
+    onSearch($event: DashboardFilter) {
+        forkJoin({
+            report: this.pullRequestReportService.getReports(
+                $event.dateRange.from,
+                $event.dateRange.to,
+                $event.teamRepositoryId,
+                $event.teamUserId
+            ),
+            density: this.pullRequestReportService.getReviewerDensity(
+                $event.dateRange.from,
+                $event.dateRange.to,
+                $event.teamRepositoryId,
+                $event.teamUserId
+            ),
+            outliers: this.pullRequestReportService.getOutliers(
                 $event.dateRange.from,
                 $event.dateRange.to,
                 $event.teamRepositoryId,
                 $event.teamUserId
             )
-            .subscribe({
-                next: (data) => (this.reviewerDensityReport = data),
-                error: (err) =>
-                    this.messageHandler.handleHttpError(
-                        err,
-                        "Error retrieving Reviewers' density"
-                    )
-            });
-
-        this.pullRequestReportService
-            .getOutliers(
-                $event.dateRange.from,
-                $event.dateRange.to,
-                $event.teamRepositoryId,
-                $event.teamUserId
-            )
-            .subscribe({
-                next: (data) => (this.outliers = data),
-                error: (err) =>
-                    this.messageHandler.handleHttpError(
-                        err,
-                        'Error retrieving Outliers data.'
-                    )
-            });
+        }).subscribe({
+            next: ({ report, density, outliers }) => {
+                this.pullRequestReport = report;
+                this.reviewerDensityReport = density;
+                this.outliers = outliers;
+            },
+            error: (err) =>
+                this.messageHandler.handleHttpError(
+                    err,
+                    'Error retrieving report data'
+                )
+        });
     }
 }
