@@ -1,1 +1,7 @@
 **/*.env
+**/*.crt
+**/*.key
+**/*.p12
+**/*.cnf
+eng/docker/loki/data
+eng/docker/loki/etc

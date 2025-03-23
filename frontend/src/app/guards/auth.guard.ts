@@ -21,6 +21,8 @@ const isAccessAllowed = async (
 
     if (authenticated && !requiredRole) return true;
 
+    // TODO: parametro role pode ser um array
+
     const hasRequiredRole = (role: string): boolean =>
         grantedRoles.resourceRoles &&
         Object.values(grantedRoles.resourceRoles).some((roles) =>
