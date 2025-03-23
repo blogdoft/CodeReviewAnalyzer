@@ -17,7 +17,7 @@ export const provideKeycloakAngular = () =>
     provideKeycloak({
         config: {
             realm: 'blog-do-ft',
-            url: 'https://keycloak.local:8443',
+            url: 'https://localhost:9443',
             clientId: 'code-review-insight'
         },
         initOptions: {
