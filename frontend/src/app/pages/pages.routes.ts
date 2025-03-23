@@ -9,7 +9,7 @@ export default [
         path: 'teams',
         component: TeamCrud,
         canActivate: [canActivateAuthRole],
-        data: { role: 'admin' }
+        data: { role: 'project-admin' }
     },
     { path: 'forbidden', component: ForbiddenComponent },
     { path: '**', redirectTo: '/notfound', pathMatch: 'full' }
