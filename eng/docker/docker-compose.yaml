@@ -1,9 +1,12 @@
 volumes:
   pg-data:
-
+  grafana-data:
+  prometheus-data:
+    
 services:
   postgres:
     image: postgres:14-alpine
+    container_name: cra_postgres
     volumes:
       - pg-data:/var/lib/postgresql/data
     env_file:
@@ -31,6 +34,7 @@ services:
       args:
         - PUBLISH_FOLDER=app/
         - COMMIT="${COMMIT_SHA:-default_sha}"
+    container_name: cra_backend
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5031
       - ASPNETCORE_HTTP_PORTS=5031
@@ -46,6 +50,9 @@ services:
     build:
       context: ../../frontend/
       dockerfile: ./eng/docker/dockerfile
+    container_name: cra_frontend
+    mem_limit: 128m
+    cpus: 1
     network_mode: host
     depends_on:
       - backend
@@ -54,8 +61,110 @@ services:
     build:
       context: .
       dockerfile: ./nginx.dockerfile
+    container_name: cra_reverse-proxy
+    mem_limit: 128m
+    cpus: 0.5
     network_mode: "host"
     depends_on:
       - backend
       - frontend
+
+  keycloak:
+    container_name: cra-keycloak
+    image: quay.io/keycloak/keycloak:26.1.4 
+    env_file:
+      - keycloak/kc.env
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    network_mode: "host"
+    command: ["start", "--verbose", "--import-realm", "--log-console-output=json"]
+    volumes:
+      - ./keycloak/certs:/opt/keycloak/certs
+      - ./keycloak/realm-import:/opt/keycloak/data/import
+    mem_limit: "560MB"
+    cpus: 1
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "560MB"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s 
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: cra_loki
+    user: "0:0"
+    command: -config.file=/etc/loki/local-config.yaml
+    network_mode: "host"
+    volumes:
+      - ./loki/local-config.yaml:/etc/loki/local-config.yaml
+      - ./loki/data:/loki
+    mem_limit: 256m
+    cpus: 0.5
   
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: cra_promtail
+    user: "0:0"
+    network_mode: "host"
+    volumes:
+      # Monta o socket correto do Docker no WSL
+      - /mnt/wsl/shared-docker/docker.sock:/var/run/docker.sock
+
+      # Configuração do promtail
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml
+
+      # Logs do host (opcional — pode remover se só usar docker_sd_configs)
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /run/log/journal:/run/log/journal:ro
+
+    command: -config.file=/etc/promtail/config.yml
+    mem_limit: 128m
+    cpus: 0.25
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: cra-node-exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    volumes:
+      - /:/host:ro
+    command:
+      - '--path.rootfs=/host'
+    mem_limit: 64m
+    cpus: 0.25
+
+  prometheus:
+    image: prom/prometheus
+    container_name: cra-prometheus
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=168h'
+    mem_limit: 128m
+    cpus: 0.25
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: cra_grafana
+    network_mode: "host"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
