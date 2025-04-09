@@ -50,4 +50,6 @@ public class PullRequest
     public required IEnumerable<Reviewer> Reviewers { get; init; }
 
     public required IEnumerable<PrComments> Comments { get; init; }
+
+    public required IEnumerable<string> RelatedWorkItems { get; init; } = [];
 }

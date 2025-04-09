@@ -2,6 +2,7 @@ using CodeReviewAnalyzer.Application.Integrations.Models;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.AzureDevopsItg.Extensions;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
+using System.Collections.Concurrent;
 
 namespace CodeReviewAnalyzer.AzureDevopsItg.Factories;
 
@@ -9,7 +10,10 @@ public class PullRequestFactory(
     Configuration configuration,
     GitHttpClient gitClient)
 {
-    public async Task<PullRequest> CreateAsync(GitPullRequest pr, GitRepository repository)
+    public async Task<PullRequest> CreateAsync(
+        GitPullRequest pr,
+        GitRepository repository,
+        ConcurrentDictionary<int, string[]> relatedWorkItems)
     {
         var fileCount = 0;
         var threads = new List<GitPullRequestCommentThread>();
@@ -22,7 +26,7 @@ public class PullRequestFactory(
 
         await Task.WhenAll(requests);
 
-        return ToPullRequest(pr, threads, fileCount);
+        return ToPullRequest(pr, threads, fileCount, relatedWorkItems);
     }
 
     private static async Task<int> CountChangedFilesAsync(
@@ -77,7 +81,11 @@ public class PullRequestFactory(
         };
     }
 
-    private PullRequest ToPullRequest(GitPullRequest gitPullRequest, List<GitPullRequestCommentThread> threads, int fileCount)
+    private PullRequest ToPullRequest(
+        GitPullRequest gitPullRequest,
+        List<GitPullRequestCommentThread> threads,
+        int fileCount,
+        ConcurrentDictionary<int, string[]> relatedWorkItems)
     {
         var approvals = threads.SelectMany(t => t.Comments)
             .Where(c =>
@@ -131,6 +139,9 @@ public class PullRequestFactory(
             LastApprovalDate = approvals.FirstOrDefault()?.PublishedDate ?? gitPullRequest.ClosedDate,
             Comments = personsComments.Select(ToPrComments),
             ThreadCount = personsComments.Count(),
+            RelatedWorkItems = relatedWorkItems.GetValueOrDefault(
+                gitPullRequest.PullRequestId,
+                []),
         };
     }
 

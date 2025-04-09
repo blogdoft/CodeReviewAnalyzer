@@ -27,6 +27,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddScoped<ICodeRepository, CodeRepositoryRepository>()
             .AddScoped<ITeams, TeamRepository>()
             .AddScoped<ITeamUser, TeamUserRepository>()
+            .AddScoped<IWorkItems, WorkItemsRepository>()
             .ConfigureMigration();
 
     public static void ExecuteMigration(IServiceProvider provider)

@@ -29,20 +29,21 @@ internal class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReq
                 pullRequest.FileCount,
                 pullRequest.ThreadCount,
             });
+
         foreach (var comment in pullRequest.Comments)
         {
             await databaseFacade.ExecuteAsync(
-            PullRequestsStmt.InsertComments,
-            new
-            {
-                PullRequestId = id,
-                UserId = comment.CommentedBy.Id,
-                comment.CommentIndex,
-                comment.ThreadId,
-                CommentDate = comment.CommentDate.ToLocalTime(),
-                comment.Comment,
-                ResolvedDate = comment.ResolvedDate.ToLocalTime(),
-            });
+                PullRequestsStmt.InsertComments,
+                new
+                {
+                    PullRequestId = id,
+                    UserId = comment.CommentedBy.Id,
+                    comment.CommentIndex,
+                    comment.ThreadId,
+                    CommentDate = comment.CommentDate.ToLocalTime(),
+                    comment.Comment,
+                    ResolvedDate = comment.ResolvedDate.ToLocalTime(),
+                });
         }
 
         foreach (var reviewer in pullRequest.Reviewers)
@@ -52,6 +53,15 @@ internal class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReq
                 PullRequestId = id,
                 UserId = reviewer.User.Id,
                 reviewer.Vote,
+            });
+        }
+
+        foreach (var relation in pullRequest.RelatedWorkItems)
+        {
+            await databaseFacade.ExecuteAsync(PullRequestsStmt.InsertWorkItemRelations, new
+            {
+                PullRequestId = id,
+                ExternalId = relation,
             });
         }
     }
