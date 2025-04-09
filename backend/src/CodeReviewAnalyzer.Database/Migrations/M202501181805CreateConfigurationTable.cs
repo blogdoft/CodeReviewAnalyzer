@@ -40,6 +40,9 @@ public class M202501181805CreateConfigurationTable : Migration
                 .WithColumnDescription("Azure project name")
             .WithColumn("PERSONAL_ACCESS_TOKEN")
                 .AsString(516)
-                .WithColumnDescription("Token to access Azure Devops.");
+                .WithColumnDescription("Token to access Azure Devops.")
+            .WithColumn("AREA_PATH")
+                .AsString(516)
+                .WithColumnDescription("Azure Devops work items area path.");
     }
 }

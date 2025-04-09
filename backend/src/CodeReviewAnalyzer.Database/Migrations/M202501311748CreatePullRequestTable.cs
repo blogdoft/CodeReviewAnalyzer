@@ -93,6 +93,11 @@ public class M202501311748CreatePullRequestTable : Migration
                      ""THREAD_COUNT"");
         ");
 
+        Create.Index("idx_uk_pull_request_external_id")
+            .OnTable("PULL_REQUEST")
+            .OnColumn("EXTERNAL_ID")
+            .Unique();
+
         Create.Table("PULL_REQUEST_REVIEWER")
             .WithColumn("PULL_REQUEST_ID")
                 .AsInt32()
@@ -112,6 +117,13 @@ public class M202501311748CreatePullRequestTable : Migration
             .OnTable("PULL_REQUEST")
             .OnColumn("CREATED_BY_ID")
             .Ascending();
+
+        Create.Index("idx_uk_pull_request_reviewer")
+            .OnTable("PULL_REQUEST_REVIEWER")
+            .OnColumn("PULL_REQUEST_ID")
+                .Unique()
+            .OnColumn("USER_ID")
+                .Unique();
 
         Create.Table("PULL_REQUEST_COMMENTS")
             .WithColumn("ID")
@@ -161,6 +173,15 @@ public class M202501311748CreatePullRequestTable : Migration
                 .AsDateTime()
                 .NotNullable()
                 .WithColumnDescription("Resolved date");
+
+        Create.Index("idx_uk_pull_requests_comment")
+            .OnTable("PULL_REQUEST_COMMENTS")
+            .OnColumn("PULL_REQUEST_ID")
+                .Unique()
+            .OnColumn("THREAD_ID")
+                .Unique()
+            .OnColumn("COMMENT_INDEX")
+                .Unique();
     }
 
     public override void Down()

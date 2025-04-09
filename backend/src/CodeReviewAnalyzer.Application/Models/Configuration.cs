@@ -10,4 +10,6 @@ public class Configuration
     public required string Organization { get; init; }
 
     public required string AccessToken { get; init; }
+
+    public required string[] AreaPath { get; init; }
 }

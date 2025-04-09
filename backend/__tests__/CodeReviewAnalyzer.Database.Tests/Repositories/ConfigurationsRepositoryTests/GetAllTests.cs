@@ -28,6 +28,7 @@ public class GetAllTests
                     ProjectName = string.Empty,
                     AccessToken= string.Empty,
                     Organization = string.Empty,
+                    AreaPath = [string.Empty],
                 }
             },
         };
