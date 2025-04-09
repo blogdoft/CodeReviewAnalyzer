@@ -1,4 +1,5 @@
 using CodeReviewAnalyzer.Application.Models.PullRequestReport;
+using CodeReviewAnalyzer.Application.Models.Reports;
 using CodeReviewAnalyzer.Application.Reports;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -96,5 +97,33 @@ public class ReportsController(IReport report) : ControllerBase
         var pullRequestReport = await report.GetPullRequestOutlier(filter);
 
         return Ok(pullRequestReport);
+    }
+
+    /// <summary>
+    /// Retrieve pull request rightness index.
+    /// </summary>
+    /// <remarks>
+    /// This index show how preventive the code review are being to mitigate bugs
+    /// and defect.
+    /// As bugs can be found after a while, this metrics could change as the time goes by.
+    /// For this reason, we choose look for a time frame and understand the behavior.
+    /// </remarks>
+    /// <param name="filter">Period begin.</param>
+    /// <response code="200">List of pull request outliers.</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Not authenticated</response>
+    /// <response code="403">Forbidden</response>
+    /// <response code="404">Not Found</response>
+    /// <response code="500">Server error</response>
+    [HttpGet("code-review-rightness")]
+    [ProducesResponseType(typeof(CodeReviewRightness), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetCodeReviewRightnessAsync([FromQuery] ReportFilter filter)
+    {
+        return Ok();
     }
 }
