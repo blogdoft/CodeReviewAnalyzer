@@ -61,7 +61,7 @@ export class FilterComponent {
     public autoFilteredValue!: any;
     protected lookupRange: Date[] = [];
     protected userTeamLookupOptions: LookupOptions = {
-        label: 'Filter by team activities:',
+        label: "Filter by Team's users activities:",
         placeholder: 'Start typing the team name',
         dataKey: 'externalId',
         optionLabel: 'name',
@@ -69,6 +69,7 @@ export class FilterComponent {
     };
     protected repoTeamLookupOptions: LookupOptions = {
         ...this.userTeamLookupOptions,
+        label: "Filter by Team's repositories:",
         inputId: 'repoTeamLookup'
     };
     protected isLoading: boolean = false;

@@ -4,6 +4,7 @@ using CodeReviewAnalyzer.AzureDevopsItg.Clients;
 using CodeReviewAnalyzer.AzureDevopsItg.Extensions;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using AzureWorkItem = Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models.WorkItem;
 using WorkItem = CodeReviewAnalyzer.Application.Integrations.WorkItems.WorkItem;
 
 namespace CodeReviewAnalyzer.AzureDevopsItg.Services;
@@ -25,7 +26,7 @@ public class WorkItemIntegration(
         var ignorableStatus = string.Join(", ", _ignorableStatus.Select(type => $"'{type}'"));
 
         // var areasPath = string.Join(", ", configuration.AreaPath.Select(path => $"'{path}'"));
-        var areasPath = "'POCs'";
+        var areasPath = @"'AMBEV-SupplyChain-GlobalTechHub\OMNIA\OMNIA Performance Brewhouse\OMNIA Performance Brewhouse Squad'";
         var query = $"""
                 
                 Select [System.Id] 
@@ -59,6 +60,11 @@ public class WorkItemIntegration(
                 continue;
             }
 
+            if (!IsSupportedType(reworkItem, [.. workItemTypes]))
+            {
+                continue;
+            }
+
             result.Add(reworkItem.ToWorkItem());
         }
 
@@ -67,7 +73,8 @@ public class WorkItemIntegration(
 
     public async Task<IList<WorkItem>> GetWorkItemsByIdAsync(
         Configuration configuration,
-        IList<string> workItemIds)
+        IList<string> workItemIds,
+        string[] supportedTypes)
     {
         using var workItemClient = await BuildWorkItemAsync(configuration);
 
@@ -75,7 +82,10 @@ public class WorkItemIntegration(
             workItemIds.Select(id => int.Parse(id)),
             expand: WorkItemExpand.Relations);
 
-        return foundWorkItems.Select(wi => wi.ToWorkItem()).ToList();
+        return foundWorkItems
+            .Where(wi => IsSupportedType(wi, supportedTypes))
+            .Select(wi => wi.ToWorkItem())
+            .ToList();
     }
 
     private async Task<WorkItemTrackingHttpClient> BuildWorkItemAsync(
@@ -83,5 +93,17 @@ public class WorkItemIntegration(
     {
         var connection = connectionFactory.CreateConnection(configuration);
         return await connection!.GetClientAsync<WorkItemTrackingHttpClient>();
+    }
+
+    private bool IsSupportedType(AzureWorkItem workItem, string[] supportedTypes)
+    {
+        var hasWorkItemType = workItem.Fields.TryGetValue("System.WorkItemType", out var workItemType);
+        if (!hasWorkItemType)
+        {
+            return false;
+        }
+
+        var supportedWorkItemType = supportedTypes.Contains(workItemType?.ToString() ?? string.Empty);
+        return supportedWorkItemType;
     }
 }

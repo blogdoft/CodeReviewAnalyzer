@@ -17,7 +17,7 @@ internal static class AzureModelsExtension
     private static readonly Dictionary<string, Func<WorkItemDto, WorkItem>> _factories = new()
     {
         {
-            "Technical Story",
+            "TECHNICAL STORY",
             dto => new TechnicalStory
             {
                 Id = dto.Id?.ToString()!,
@@ -30,7 +30,7 @@ internal static class AzureModelsExtension
             }
         },
         {
-            "User Story",
+            "USER STORY",
             dto => new UserStory
             {
                 Id = dto.Id?.ToString()!,
@@ -43,7 +43,7 @@ internal static class AzureModelsExtension
             }
         },
         {
-            "Bug",
+            "BUG",
             dto => new Bug
             {
                 Id = dto.Id?.ToString()!,
@@ -56,7 +56,7 @@ internal static class AzureModelsExtension
             }
         },
         {
-            "Defect",
+            "DEFECT",
             dto => new Defect
             {
                 Id = dto.Id?.ToString()!,
@@ -91,12 +91,14 @@ internal static class AzureModelsExtension
             throw new ArgumentException("Work item type not found");
         }
 
-        if (!_factories.ContainsKey(workItemType.ToString()!))
+        var workItemTypeStr = workItemType.ToString()!.ToUpper();
+
+        if (!_factories.ContainsKey(workItemTypeStr))
         {
-            throw new ArgumentException($"Work item type {workItemType} not supported");
+            throw new ArgumentException($"Work item type {workItemTypeStr} not supported");
         }
 
-        return _factories[workItemType.ToString()!] !(new WorkItemDto(azureWorkItem));
+        return _factories[workItemTypeStr]!(new WorkItemDto(azureWorkItem));
     }
 
     internal record WorkItemDto

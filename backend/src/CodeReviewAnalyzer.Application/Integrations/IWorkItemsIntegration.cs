@@ -13,5 +13,6 @@ public interface IWorkItemsIntegration
 
     Task<IList<WorkItem>> GetWorkItemsByIdAsync(
         Configuration configuration,
-        IList<string> workItemIds);
+        IList<string> workItemIds,
+        string [] supportedTypes);
 }

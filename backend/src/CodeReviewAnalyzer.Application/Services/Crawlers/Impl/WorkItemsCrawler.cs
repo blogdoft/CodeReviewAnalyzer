@@ -23,17 +23,19 @@ public class WorkItemsCrawler : IWorkItemsCrawler
 
     public async Task CrawAsync(ReportFilter filter)
     {
+        string[] supportedTypes = ["Defect", "Bug", "User Story", "Technical Story"];
         var configuration = await _configurations.GetAllAsync();
         var reworkWorkItem = await _workItemsItg.GetWorkItemsAsync(
             configuration.First(),
             filter.From,
             filter.To,
-            ["Defect", "Bug"]);
+            supportedTypes);
         await PersistAsync(reworkWorkItem);
 
         var relatedWorkItem = await _workItemsItg.GetWorkItemsByIdAsync(
             configuration.First(),
-            [.. reworkWorkItem.SelectMany(wi => wi.RelatedTo)]);
+            [.. reworkWorkItem.SelectMany(wi => wi.RelatedTo)],
+            supportedTypes);
         await PersistAsync(relatedWorkItem);
 
         await BuildWorkItemsRelationAsync(reworkWorkItem, relatedWorkItem);
