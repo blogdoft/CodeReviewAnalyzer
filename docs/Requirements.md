@@ -37,7 +37,8 @@ erDiagram
     ds[DataSource] {
         int id PK
         uuid sharedKey UK
-        string name
+        string name "A descriptive name to identify this tenant"
+        bool active "This integration is active." 
         string integrationType 
     }
 
