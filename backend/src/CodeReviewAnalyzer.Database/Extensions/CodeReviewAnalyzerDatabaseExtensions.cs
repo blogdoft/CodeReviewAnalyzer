@@ -1,5 +1,6 @@
 using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Application.Repositories;
+using CodeReviewAnalyzer.Application.TenantFeature;
 using CodeReviewAnalyzer.Database.Contexts;
 using CodeReviewAnalyzer.Database.Contexts.Impl;
 using CodeReviewAnalyzer.Database.Repositories;
@@ -28,6 +29,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddScoped<ITeams, TeamRepository>()
             .AddScoped<ITeamUser, TeamUserRepository>()
             .AddScoped<IWorkItems, WorkItemsRepository>()
+            .AddScoped<ITenantRepository, TenantRepository>()
             .ConfigureMigration();
 
     public static void ExecuteMigration(IServiceProvider provider)
