@@ -1,6 +1,6 @@
+using BlogDoFT.Libs.DapperUtils.Abstractions;
 using CodeReviewAnalyzer.Application.Integrations.WorkItems;
 using CodeReviewAnalyzer.Application.Repositories;
-using CodeReviewAnalyzer.Database.Contexts;
 using Microsoft.Extensions.Logging;
 
 namespace CodeReviewAnalyzer.Database.Repositories;

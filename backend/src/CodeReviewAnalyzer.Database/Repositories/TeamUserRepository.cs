@@ -1,6 +1,6 @@
+using BlogDoFT.Libs.DapperUtils.Abstractions;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.Application.Repositories;
-using CodeReviewAnalyzer.Database.Contexts;
 using CodeReviewAnalyzer.Database.TablesViews;
 
 namespace CodeReviewAnalyzer.Database.Repositories;

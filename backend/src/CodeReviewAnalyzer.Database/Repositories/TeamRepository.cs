@@ -1,9 +1,9 @@
+using BlogDoFT.Libs.DapperUtils.Abstractions;
+using BlogDoFT.Libs.DapperUtils.Postgres;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.Application.Models.PagingModels;
 using CodeReviewAnalyzer.Application.Repositories;
-using CodeReviewAnalyzer.Database.Contexts;
 using CodeReviewAnalyzer.Database.Extensions;
-using CodeReviewAnalyzer.Database.Services;
 
 namespace CodeReviewAnalyzer.Database.Repositories;
 

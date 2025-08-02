@@ -5,8 +5,9 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
+    <PackageReference Include="BlogDoFT.Libs.DapperUtils.Abstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
@@ -31,13 +32,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CodeReviewInsight.Domain\CodeReviewInsight.Domain.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
 </Project>

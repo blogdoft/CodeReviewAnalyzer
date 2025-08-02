@@ -1,8 +1,7 @@
+using BlogDoFT.Libs.DapperUtils.Postgres;
 using CodeReviewAnalyzer.Application.Reports;
 using CodeReviewAnalyzer.Application.Repositories;
 using CodeReviewAnalyzer.Application.TenantFeature;
-using CodeReviewAnalyzer.Database.Contexts;
-using CodeReviewAnalyzer.Database.Contexts.Impl;
 using CodeReviewAnalyzer.Database.Repositories;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Conventions;
@@ -18,8 +17,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services) =>
         services
-            .AddSingleton<IConnectionFactory, NpgConnectionFactory>()
-            .AddScoped<IDatabaseFacade, DapperDatabaseFacade>()
+            .AddDapperPostgres()
             .AddScoped<IConfigurations, ConfigurationsRepository>()
             .AddScoped<IPullRequests, PullRequestsRepository>()
             .AddScoped<IUsers, UserRepository>()

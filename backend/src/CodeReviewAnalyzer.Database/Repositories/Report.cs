@@ -1,7 +1,7 @@
+using BlogDoFT.Libs.DapperUtils.Abstractions;
 using CodeReviewAnalyzer.Application.Models.PullRequestReport;
 using CodeReviewAnalyzer.Application.Models.UserDensity;
 using CodeReviewAnalyzer.Application.Reports;
-using CodeReviewAnalyzer.Database.Contexts;
 using CodeReviewAnalyzer.Database.Services;
 
 namespace CodeReviewAnalyzer.Database.Repositories;

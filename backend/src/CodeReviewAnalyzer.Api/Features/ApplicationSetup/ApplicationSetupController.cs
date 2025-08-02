@@ -77,7 +77,7 @@ public class ApplicationSetupController : ControllerBase
     ///   "active": true
     /// }
     /// </code>
-    /// 
+    ///
     /// <para><b>Response body example (200 OK):</b></para>
     /// <code>
     /// {

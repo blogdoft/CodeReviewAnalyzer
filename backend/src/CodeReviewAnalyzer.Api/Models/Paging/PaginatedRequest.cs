@@ -1,4 +1,4 @@
-using CodeReviewAnalyzer.Application.Models.PagingModels;
+using BlogDoFT.Libs.DapperUtils.Abstractions;
 
 namespace CodeReviewAnalyzer.Api.Models.Paging;
 
