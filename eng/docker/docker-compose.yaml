@@ -2,10 +2,11 @@ volumes:
   pg-data:
   grafana-data:
   prometheus-data:
-    
+
+
 services:
   postgres:
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     container_name: cra_postgres
     volumes:
       - pg-data:/var/lib/postgresql/data
@@ -22,10 +23,10 @@ services:
     volumes:
       - ./postgres/init-sql:/init-sql
       - ./postgres/init.sh:/init.sh
-    entrypoint: ["/init.sh"]
-    network_mode: "host"    
+    entrypoint: [ "/init.sh" ]
+    network_mode: "host"
     depends_on:
-      - postgres      
+      - postgres
 
   backend:
     build:
@@ -71,14 +72,14 @@ services:
 
   keycloak:
     container_name: cra-keycloak
-    image: quay.io/keycloak/keycloak:26.1.4 
+    image: quay.io/keycloak/keycloak:26.1.4
     env_file:
       - keycloak/kc.env
     restart: unless-stopped
     depends_on:
       - postgres
     network_mode: "host"
-    command: ["start", "--verbose", "--import-realm", "--log-console-output=json"]
+    command: [ "start", "--verbose", "--import-realm", "--log-console-output=json" ]
     volumes:
       - ./keycloak/certs:/opt/keycloak/certs
       - ./keycloak/realm-import:/opt/keycloak/data/import
@@ -90,11 +91,11 @@ services:
           cpus: "1"
           memory: "560MB"
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:9000/health"]
+      test: [ "CMD", "curl", "-f", "https://localhost:9000/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s 
+      start_period: 60s
 
   loki:
     image: grafana/loki:2.9.0
@@ -107,7 +108,7 @@ services:
       - ./loki/data:/loki
     mem_limit: 256m
     cpus: 0.5
-  
+
   promtail:
     image: grafana/promtail:2.9.0
     container_name: cra_promtail
