@@ -1,4 +1,5 @@
 using BlogDoFT.Libs.DapperUtils.Abstractions;
+using BlogDoFT.Libs.DapperUtils.Abstractions.Extensions;
 using BlogDoFT.Libs.DapperUtils.Postgres;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.Application.Models.PagingModels;

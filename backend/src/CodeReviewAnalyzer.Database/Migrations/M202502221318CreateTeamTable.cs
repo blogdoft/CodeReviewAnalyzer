@@ -21,7 +21,7 @@ public class M202502221318CreateTeamTable : Migration
             .WithColumn("id")
                 .AsInt32()
                 .Identity()
-                .PrimaryKey("idx_pk_teams")
+                .PrimaryKey("IDX_PK_TEAMS")
                 .NotNullable()
                 .WithColumnDescription("Primary Key")
             .WithColumn("external_id")
@@ -74,14 +74,14 @@ public class M202502221318CreateTeamTable : Migration
                 .Columns("team_id", "user_id");
 
         Create
-            .ForeignKey("idx_teamuser_users")
+            .ForeignKey("IDX_TEAMUSER_USERS")
             .FromTable("TEAM_USER")
                 .ForeignColumn("user_id")
             .ToTable("USERS")
                 .PrimaryColumn("ID");
 
         Create
-            .ForeignKey("idx_teamuser_team")
+            .ForeignKey("IDX_TEAMUSER_TEAM")
             .FromTable("TEAM_USER")
                 .ForeignColumn("team_id")
             .ToTable("TEAMS")
@@ -104,14 +104,14 @@ public class M202502221318CreateTeamTable : Migration
                 .Columns("team_id", "repository_id");
 
         Create
-            .ForeignKey("idx_teamrepository_repositories")
+            .ForeignKey("IDX_TEAMREPOSITORY_REPOSITORIES")
             .FromTable("TEAM_REPOSITORY")
                 .ForeignColumn("repository_id")
             .ToTable("REPOSITORIES")
                 .PrimaryColumn("id");
 
         Create
-            .ForeignKey("idx_teamrepository_teams")
+            .ForeignKey("IDX_TEAMREPOSITORY_TEAMS")
             .FromTable("TEAM_REPOSITORY")
                 .ForeignColumn("team_id")
             .ToTable("TEAMS")

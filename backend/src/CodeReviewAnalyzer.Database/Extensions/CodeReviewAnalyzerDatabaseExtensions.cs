@@ -20,7 +20,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddDapperPostgres()
             .AddScoped<IConfigurations, ConfigurationsRepository>()
             .AddScoped<IPullRequests, PullRequestsRepository>()
-            .AddScoped<IUsers, UserRepository>()
+            .AddScoped<IUsers, PeopleRepository>()
             .AddScoped<IDayOff, DayOffRepository>()
             .AddScoped<IReport, Report>()
             .AddScoped<ICodeRepository, CodeRepositoryRepository>()
@@ -61,7 +61,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
                     .ScanIn(Assembly.GetExecutingAssembly())
                         .For.Migrations();
             })
-            .Configure<RunnerOptions>(opt => opt.TransactionPerSession = false)
+            .Configure<RunnerOptions>(opt => opt.TransactionPerSession = true)
             .AddLogging(lb => lb.AddFluentMigratorConsole());
 
     private static string? GetConnectionString(IServiceProvider provider) =>

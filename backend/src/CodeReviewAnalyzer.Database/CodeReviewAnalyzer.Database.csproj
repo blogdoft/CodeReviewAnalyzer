@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlogDoFT.Libs.DapperUtils.Abstractions" Version="1.1.1" />
-    <PackageReference Include="BlogDoFT.Libs.DapperUtils.Postgres" Version="1.1.1" />
+    <PackageReference Include="BlogDoFT.Libs.DapperUtils.Abstractions" Version="1.2.0" />
+    <PackageReference Include="BlogDoFT.Libs.DapperUtils.Postgres" Version="1.2.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FluentMigrator" Version="7.1.0" />
     <PackageReference Include="FluentMigrator.Runner" Version="7.1.0" />

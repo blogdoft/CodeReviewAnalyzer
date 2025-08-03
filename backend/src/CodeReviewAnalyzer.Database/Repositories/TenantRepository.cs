@@ -53,7 +53,7 @@ internal class TenantRepository(IDatabaseFacade database) : ITenantRepository
                     , ad.projects 
                     , ad.areas 
                 from "DataSource" ds 
-                    join "Tenants" t on t.id  = ds.tenant_id 
+                    join "Tenants" t on t.id  = ds.tenants_id 
                     left join "AzureDevops" ad on ad.id  = ds.id 
                 where t."sharedKey" = @tenantId;
 

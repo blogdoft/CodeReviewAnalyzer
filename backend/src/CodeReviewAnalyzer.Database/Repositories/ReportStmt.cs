@@ -4,15 +4,15 @@ internal static class ReportStmt
 {
     internal const string MeanTimeToReview =
        """
-            select avg(pr."FIRST_COMMENT_WAITING_TIME_MINUTES") as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
-                {0}
-            where pr."CLOSED_DATE" between @From and @To
+            select avg(pr.first_comment_waiting_time_minutes) as PeriodInMinutes
+                , date_trunc('month', pr.closed_date) as ReferenceDate
+            from public.pull_requests pr 
+                join people p on p.id = pr.created_by_people_id 
+                {0}                
+            where pr.closed_date between @from and @to
               -- FirstCommentDate is equal to CreationDate when a pr has no comment.
-              and pr."FIRST_COMMENT_DATE" <> pr."CREATION_DATE"
-              {1}
+              and pr.first_comment_date <> pr.creation_date 
+              {1}            
             group by 2
             order by 2 asc
 
@@ -21,26 +21,26 @@ internal static class ReportStmt
     internal const string MeanTimeToMerge =
         """
             -- Mean time to merge
-            select avg(pr."MERGE_WAITING_TIME_MINUTES") as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE") as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
+            select avg(pr.merge_waiting_time_minutes) as PeriodInMinutes
+                 , date_trunc('month', pr.closed_date) as ReferenceDate
+            from pull_requests pr
+                join people p on p.id = pr.created_by_people_id 
                 {0}
-            where pr."CLOSED_DATE" between @From and @To
+            where pr.closed_date between @from and @to
             {1}
             group by 2
             order by 2 asc
 
         """;
-
+    // aqui
     internal const string MeanTimeToApprove =
         """
-            select (extract(epoch from  avg(pr."LAST_APPROVAL_DATE" - pr."CREATION_DATE")) / 60 )::int as PeriodInMinutes
-                 , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr 
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE"
+            select (extract(epoch from  avg(pr."last_approval_date" - pr."creation_date")) / 60 )::int as PeriodInMinutes
+                 , date_trunc('month', pr."closed_date" ) as ReferenceDate
+            from "pull_requests" pr 
+                join "people" p on p."id" = pr."created_by_people_id"
                 {0}
-            where pr."CLOSED_DATE" between @From and @To
+            where pr."closed_date" between @From and @To
                 {1}
             group by 2
             order by 2 asc
@@ -51,11 +51,11 @@ internal static class ReportStmt
         """
             -- Pull Request count
             select count(1) as PeriodInMinutes
-                , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr  
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
+                , date_trunc('month', pr."closed_date" ) as ReferenceDate
+            from "pull_requests" pr  
+                join "people" p on p."id" = pr."created_by_people_id" 
                 {0}
-            where pr."CLOSED_DATE" between @From and @To
+            where pr."closed_date" between @From and @To
             {1}
             group by 2
             order by 2 asc
@@ -65,12 +65,12 @@ internal static class ReportStmt
     internal const string ApprovedOnFirstAttempt =
         """
             select count(1) as PeriodInMinutes
-                , date_trunc('month', pr."CLOSED_DATE" ) as ReferenceDate
-            from "PULL_REQUEST" pr  
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
+                , date_trunc('month', pr."closed_date" ) as ReferenceDate
+            from "pull_requests" pr  
+                join "people" p on p."id" = pr."created_by_people_id" 
                 {0}
-            where pr."CLOSED_DATE" between @From and @To
-              and pr."THREAD_COUNT" = 0
+            where pr."closed_date" between @From and @To
+              and pr."thread_count" = 0
               {1}
             group by 2
             order by 2 asc
@@ -81,15 +81,15 @@ internal static class ReportStmt
     internal const string PullRequestStats =
         """
             -- Pull Request counters
-            select avg(pr."FILE_COUNT") as "MeanFileCount"
-                , max(pr."FILE_COUNT") as "MaxFileCount"
-                , min(pr."FILE_COUNT") as "MinFileCount"
-                , count(pr."ID") as "PrCount"
-                , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
-            from "PULL_REQUEST" pr
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE" 
+            select avg(pr."file_count") as "MeanFileCount"
+                , max(pr."file_count") as "MaxFileCount"
+                , min(pr."file_count") as "MinFileCount"
+                , count(pr.id) as "PrCount"
+                , date_trunc('month', pr."closed_date" ) as "ReferenceDate"
+            from "pull_requests" pr
+                join "people" p on p."id" = pr."created_by_people_id" 
                 {0}
-            where pr."CLOSED_DATE" between @From and @To
+            where pr."closed_date" between @From and @To
             {1}
             group by "ReferenceDate"
             order by "ReferenceDate" asc
@@ -98,15 +98,15 @@ internal static class ReportStmt
 
     internal const string UserReviewerDensitySql =
         """
-            select u."ID" as "UserId"
-                , u."NAME" as "UserName"
-                , date_trunc('month', pr."CLOSED_DATE" ) as "ReferenceDate"
-                , count(1) as "CommentCount"
-            from "PULL_REQUEST" pr
-                join "PULL_REQUEST_REVIEWER" prr on prr."PULL_REQUEST_ID" = pr."ID" and prr."VOTE" > 0 
-                join "USERS" u on u."ID" = prr."USER_ID" and u."ACTIVE"
+            select p."id" as "UserId"
+                 , p."name" as "UserName"
+                 , date_trunc('month', pr."closed_date" ) as "ReferenceDate"
+                 , count(1) as "CommentCount"
+            from "pull_requests" pr
+                join "pull_requests_reviewer" prr on prr."pull_requests_id" = pr.id and prr."vote" > 0 
+                join "people" p on p."id" = prr."people_id"
                 {0}
-            where pr."CLOSED_DATE" between :From and :To
+            where pr."closed_date" between :From and :To
                   {1}  
             group by "UserId"
                    , "UserName"
@@ -118,95 +118,95 @@ internal static class ReportStmt
         """
             WITH filtered AS (
             SELECT pr.*
-            FROM public."PULL_REQUEST" pr
-                join "USERS" u on u."ID" = pr."CREATED_BY_ID" and u."ACTIVE"
+            FROM public."pull_requests" pr
+                join "people" p on p."id" = pr."created_by_people_id"
                 {0}
-            WHERE pr."CLOSED_DATE" BETWEEN :from AND :to
+            WHERE pr."closed_date" BETWEEN :from AND :to
                 {1}
             ),
             fc_stats AS (
             SELECT
-                percentile_cont(0.25) WITHIN GROUP (ORDER BY "FIRST_COMMENT_WAITING_TIME_MINUTES") AS q1,
-                percentile_cont(0.75) WITHIN GROUP (ORDER BY "FIRST_COMMENT_WAITING_TIME_MINUTES") AS q3
+                percentile_cont(0.25) WITHIN GROUP (ORDER BY "first_comment_waiting_time_minutes") AS q1,
+                percentile_cont(0.75) WITHIN GROUP (ORDER BY "first_comment_waiting_time_minutes") AS q3
             FROM filtered
             ),
             rev_stats AS (
             SELECT
-                percentile_cont(0.25) WITHIN GROUP (ORDER BY "REVISION_WAITING_TIME_MINUTES") AS q1,
-                percentile_cont(0.75) WITHIN GROUP (ORDER BY "REVISION_WAITING_TIME_MINUTES") AS q3
+                percentile_cont(0.25) WITHIN GROUP (ORDER BY "revision_waiting_time_minutes") AS q1,
+                percentile_cont(0.75) WITHIN GROUP (ORDER BY "revision_waiting_time_minutes") AS q3
             FROM filtered
             ),
             merge_stats AS (
             SELECT
-                percentile_cont(0.25) WITHIN GROUP (ORDER BY "MERGE_WAITING_TIME_MINUTES") AS q1,
-                percentile_cont(0.75) WITHIN GROUP (ORDER BY "MERGE_WAITING_TIME_MINUTES") AS q3
+                percentile_cont(0.25) WITHIN GROUP (ORDER BY "merge_waiting_time_minutes") AS q1,
+                percentile_cont(0.75) WITHIN GROUP (ORDER BY "merge_waiting_time_minutes") AS q3
             FROM filtered
             ),
             file_stats AS (
             SELECT
-                percentile_cont(0.25) WITHIN GROUP (ORDER BY "FILE_COUNT") AS q1,
-                percentile_cont(0.75) WITHIN GROUP (ORDER BY "FILE_COUNT") AS q3
+                percentile_cont(0.25) WITHIN GROUP (ORDER BY "file_count") AS q1,
+                percentile_cont(0.75) WITHIN GROUP (ORDER BY "file_count") AS q3
             FROM filtered
             ),
             thread_stats AS (
             SELECT
-                percentile_cont(0.25) WITHIN GROUP (ORDER BY "THREAD_COUNT") AS q1,
-                percentile_cont(0.75) WITHIN GROUP (ORDER BY "THREAD_COUNT") AS q3
+                percentile_cont(0.25) WITHIN GROUP (ORDER BY "thread_count") AS q1,
+                percentile_cont(0.75) WITHIN GROUP (ORDER BY "thread_count") AS q3
             FROM filtered
             )
 
-            -- Outliers para FIRST_COMMENT_WAITING_TIME_MINUTES
+            -- Outliers para first_comment_waiting_time_minutes
             SELECT 'First comment waiting time (h)' AS "OutlierField"
-                , f."FIRST_COMMENT_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
-                , f."URL"
-                , f."EXTERNAL_ID" as "ExternalId"
+                , f."first_comment_waiting_time_minutes" / 60 as "OutlierValue"
+                , f.url
+                , f.external_id as "ExternalId"
             FROM filtered f, fc_stats s
-            WHERE f."FIRST_COMMENT_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
-            OR f."FIRST_COMMENT_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
+            WHERE f."first_comment_waiting_time_minutes" < s.q1 - 1.5 * (s.q3 - s.q1)
+            OR f."first_comment_waiting_time_minutes" > s.q3 + 1.5 * (s.q3 - s.q1)
 
             UNION ALL
 
-            -- Outliers para REVISION_WAITING_TIME_MINUTES
+            -- Outliers para revision_waiting_time_minutes
             SELECT 'Revision waiting time (h)' AS "OutlierField"
-                , f."REVISION_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
-                , f."URL"
-                , f."EXTERNAL_ID" as "ExternalId"
+                , f."revision_waiting_time_minutes" / 60 as "OutlierValue"
+                , f.url
+                , f.external_id as "ExternalId"
             FROM filtered f, rev_stats s
-            WHERE f."REVISION_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
-            OR f."REVISION_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
+            WHERE f."revision_waiting_time_minutes" < s.q1 - 1.5 * (s.q3 - s.q1)
+            OR f."revision_waiting_time_minutes" > s.q3 + 1.5 * (s.q3 - s.q1)
 
             UNION ALL
 
-            -- Outliers para MERGE_WAITING_TIME_MINUTES
+            -- Outliers para merge_waiting_time_minutes
             SELECT 'Merge waiting time (h)' AS "OutlierField",
-                f."MERGE_WAITING_TIME_MINUTES" / 60 as "OutlierValue"
-                , f."URL"
-                , f."EXTERNAL_ID" as "ExternalId"
+                f."merge_waiting_time_minutes" / 60 as "OutlierValue"
+                , f.url
+                , f.external_id as "ExternalId"
             FROM filtered f, merge_stats s
-            WHERE f."MERGE_WAITING_TIME_MINUTES" < s.q1 - 1.5 * (s.q3 - s.q1)
-            OR f."MERGE_WAITING_TIME_MINUTES" > s.q3 + 1.5 * (s.q3 - s.q1)
+            WHERE f."merge_waiting_time_minutes" < s.q1 - 1.5 * (s.q3 - s.q1)
+            OR f."merge_waiting_time_minutes" > s.q3 + 1.5 * (s.q3 - s.q1)
 
             UNION ALL
 
-            -- Outliers para FILE_COUNT
+            -- Outliers para file_count
             SELECT 'File count' AS "OutlierField"
-                , f."FILE_COUNT" as "OutlierValue"
-                , f."URL"
-                , f."EXTERNAL_ID" as "ExternalId"
+                , f."file_count" as "OutlierValue"
+                , f.url
+                , f.external_id as "ExternalId"
             FROM filtered f, file_stats s
-            WHERE f."FILE_COUNT" < s.q1 - 1.5 * (s.q3 - s.q1)
-            OR f."FILE_COUNT" > s.q3 + 1.5 * (s.q3 - s.q1)
+            WHERE f."file_count" < s.q1 - 1.5 * (s.q3 - s.q1)
+            OR f."file_count" > s.q3 + 1.5 * (s.q3 - s.q1)
 
             UNION ALL
 
-            -- Outliers para THREAD_COUNT
+            -- Outliers para thread_count
             SELECT 'Thread Count' AS "OutlierField"
-                , f."THREAD_COUNT" as "OutlierValue"
-                , f."URL"
-                , f."EXTERNAL_ID" as "ExternalId"
+                , f."thread_count" as "OutlierValue"
+                , f.url
+                , f.external_id as "ExternalId"
             FROM filtered f, thread_stats s
-            WHERE f."THREAD_COUNT" < s.q1 - 1.5 * (s.q3 - s.q1)
-            OR f."THREAD_COUNT" > s.q3 + 1.5 * (s.q3 - s.q1);
+            WHERE f."thread_count" < s.q1 - 1.5 * (s.q3 - s.q1)
+            OR f."thread_count" > s.q3 + 1.5 * (s.q3 - s.q1);
 
 
         """;
