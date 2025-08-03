@@ -1,14 +1,20 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY CodeReviewAnalyzer.sln .
-COPY src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj
+
 COPY src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj
-COPY src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj
 COPY src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj
+COPY src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj
+COPY src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj
+COPY src/CodeReviewInsight.Domain/CodeReviewInsight.Domain.csproj src/CodeReviewInsight.Domain/CodeReviewInsight.Domain.csproj
+
+
 COPY __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj
 COPY __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj
-COPY __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj
 COPY __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj
+COPY __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj
+COPY __tests__/CodeReviewInsight.Domain.Tests/CodeReviewInsight.Domain.Tests.csproj __tests__/CodeReviewInsight.Domain.Tests/CodeReviewInsight.Domain.Tests.csproj
+
 RUN dotnet restore
 
 COPY . .
