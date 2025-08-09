@@ -4,39 +4,38 @@ using System.Diagnostics.CodeAnalysis;
 namespace CodeReviewAnalyzer.Database.Migrations;
 
 [ExcludeFromCodeCoverage]
-[Migration(202508031810, description: "Create table Teams")]
-public class M202508031810CreateTeamsTable : Migration
+[Migration(202508031857, description: "Create Repository Table")]
+public class M202508031857CreateRepositoriesTable : Migration
 {
     public override void Up() =>
-        Create.Table("teams")
+        Create.Table("repositories")
             .WithColumn("id")
                 .AsInt64()
                 .Identity()
-                .PrimaryKey("idx_pk_teams")
+                .PrimaryKey("idx_pk_repositories")
                 .NotNullable()
                 .WithColumnDescription("Primary Key")
             .WithColumn("tenants_id")
                 .AsInt16()
                 .NotNullable()
-                .ForeignKey("fk_teams_tenants", "tenants", "id")
+                .ForeignKey("fk_repositories_tenants", "tenants", "id")
                     .OnDeleteOrUpdate(System.Data.Rule.Cascade)
-                .Indexed("idx_fk_teams_tenants")
-                .WithColumnDescription("Fk to identify wich tenant this team belongs to.")
+                .Indexed("idx_fk_repositories_tenant")
+                .WithColumnDescription("Fk to identify wich tenant this repositories belongs to.")
             .WithColumn("shared_key")
                 .AsGuid()
                 .NotNullable()
-                .Indexed("idx_uk_teams_shared_key")
-                    .Unique()
+                .Indexed("idx_uk_repositories_shared_key").Unique()
                 .WithColumnDescription("Key to be shared with domains/urls.")
-            .WithColumn("external_id")
-                .AsString(255)
-                .Nullable()
-                .WithColumnDescription("When exists, a external identifier.")
             .WithColumn("name")
                 .AsString(255)
                 .NotNullable()
-                .WithColumnDescription("A descriptive name to identify this team.");
+                .WithColumnDescription("A descriptive name to identify this team.")
+            .WithColumn("url")
+                .AsString(2048)
+                .Nullable()
+                .WithColumnDescription("URL that refers to GIT repositories.");
 
     public override void Down() =>
-        Delete.Table("teams");
+        Delete.Table("repositories");
 }

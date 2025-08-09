@@ -129,7 +129,7 @@ public class M202501311748CreatePullRequestTable : Migration
             .WithColumn("ID")
                 .AsInt32()
                 .Identity()
-                .PrimaryKey("idx_pk_pull_request_comments")
+                .PrimaryKey("IDX_PK_PULL_REQUEST_COMMENTS")
                 .NotNullable()
                 .WithColumnDescription("Primary Key")
             .WithColumn("PULL_REQUEST_ID")

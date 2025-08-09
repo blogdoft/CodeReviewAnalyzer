@@ -9,14 +9,14 @@ public class M202507261336CreateTenantTable : Migration
 {
     public override void Up()
     {
-        Create.Table("Tenants")
+        Create.Table("tenants")
             .WithColumn("id")
                 .AsInt16()
                 .Identity()
                 .PrimaryKey("idx_pk_tentant")
                 .NotNullable()
                 .WithColumnDescription("Primary Key")
-            .WithColumn("sharedKey")
+            .WithColumn("shared_key")
                 .AsGuid()
                 .NotNullable()
                 .WithColumnDescription("Key to be shared with domains/urls.")
@@ -31,8 +31,8 @@ public class M202507261336CreateTenantTable : Migration
                 .WithColumnDescription("Check if any operation under this tenant could be completed/executed");
 
         Create.Index("idx_tenants_shared_key")
-            .OnTable("Tenants")
-            .OnColumn("sharedKey")
+            .OnTable("tenants")
+            .OnColumn("shared_key")
                 .Unique();
 
         CreateDataSource();
@@ -40,24 +40,24 @@ public class M202507261336CreateTenantTable : Migration
 
     public override void Down()
     {
-        Delete.ForeignKey("idx_fk_AzureDevops_DataSource").OnTable("AzureDevops");
-        Delete.Table("AzureDevops");
-        Delete.Index("idx_dataSource_sharedkey").OnTable("DataSource");
-        Delete.Table("DataSource");
-        Delete.Index("idx_tenants_shared_key").OnTable("Tenants");
-        Delete.Table("Tenants");
+        Delete.ForeignKey("idx_fk_azure_devops_data_source").OnTable("azure_devops");
+        Delete.Table("azure_devops");
+        Delete.Index("idx_data_source_shared_key").OnTable("data_source");
+        Delete.Table("data_source");
+        Delete.Index("idx_tenants_shared_key").OnTable("tenants");
+        Delete.Table("tenants");
     }
 
     private void CreateDataSource()
     {
-        Create.Table("DataSource")
+        Create.Table("data_sources")
             .WithColumn("id")
                 .AsInt64()
                 .Identity()
-                .PrimaryKey("idx_pk_dataSource")
+                .PrimaryKey("idx_pk_data_source")
                 .NotNullable()
                 .WithColumnDescription("Primary key")
-            .WithColumn("tenant_id")
+            .WithColumn("tenants_id")
                 .AsInt64()
                 .NotNullable()
                 .WithColumnDescription("Foreign key to Tenant")
@@ -70,23 +70,28 @@ public class M202507261336CreateTenantTable : Migration
                 .NotNullable()
                 .WithDefaultValue(true)
                 .WithColumnDescription("Check if any operation under this tenant could be completed/executed")
-            .WithColumn("integrationType")
+            .WithColumn("integration_type")
                 .AsString(50)
                 .NotNullable()
                 .WithColumnDescription("What kind of integration this seupt is.");
+
+        Create.ForeignKey("idx_fk_data_source_tenants")
+        .FromTable("data_sources").ForeignColumn("tenants_id")
+        .ToTable("tenants").PrimaryColumn("id")
+        .OnDeleteOrUpdate(System.Data.Rule.Cascade);
 
         CreateAzureDevops();
     }
 
     private void CreateAzureDevops()
     {
-        Create.Table("AzureDevops")
+        Create.Table("azure_devops")
             .WithColumn("id")
                 .AsInt64()
                 .PrimaryKey()
                 .NotNullable()
                 .WithColumnDescription("Reference to dataSource")
-            .WithColumn("devopsUrl")
+            .WithColumn("devops_url")
                 .AsString(255)
                 .NotNullable()
                 .WithColumnDescription("The company azure devops url: https://dev.azure.com/COMPANY-NAME")
@@ -103,9 +108,9 @@ public class M202507261336CreateTenantTable : Migration
                 .Nullable()
                 .WithColumnDescription("Store a json array with areas");
 
-        Create.ForeignKey("idx_fk_AzureDevops_DataSource")
-            .FromTable("AzureDevops").ForeignColumn("id")
-            .ToTable("DataSource").PrimaryColumn("id")
+        Create.ForeignKey("idx_fk_azure_devops_data_source")
+            .FromTable("azure_devops").ForeignColumn("id")
+            .ToTable("data_sources").PrimaryColumn("id")
             .OnDeleteOrUpdate(System.Data.Rule.Cascade);
     }
 }
