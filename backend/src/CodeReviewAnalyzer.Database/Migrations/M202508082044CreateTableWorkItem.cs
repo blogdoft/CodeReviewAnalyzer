@@ -11,10 +11,15 @@ public class M202508082044CreateTableWorkItem : Migration
     {
         CreateWorkItems();
         CreateWorkItemsPullRequestsRelation();
+        CreateWorkItemSelfRelation();
     }
 
-    public override void Down() =>
+    public override void Down()
+    {
+        Delete.Table("work_item_self_relation");
+        Delete.Table("work_items_pull_requests");
         Delete.Table("work_items");
+    }
 
     private void CreateWorkItems()
     {
@@ -109,6 +114,11 @@ public class M202508082044CreateTableWorkItem : Migration
     private void CreateWorkItemsPullRequestsRelation()
     {
         Create.Table("work_items_pull_requests")
+            .WithColumn("tenants_id")
+                .AsInt16()
+                .NotNullable()
+                .ForeignKey("fk_work_items_pull_requests_tenants", "tenants", "id")
+                .WithColumnDescription("FK for tenants")
             .WithColumn("work_items_id")
                 .AsInt64()
                 .NotNullable()
@@ -118,8 +128,58 @@ public class M202508082044CreateTableWorkItem : Migration
             .WithColumn("work_items_external_id")
                 .AsString(255)
                 .Nullable()
-                .WithColumnDescription("external id for late relation")
+                .WithColumnDescription("External id for late relation")
             .WithColumn("pull_requests_id")
                 .AsInt64()
+                .NotNullable()
+                .ForeignKey("fk_work_Items_pull_requests_pull_requests", "pull_requests", "id")
+                    .OnDeleteOrUpdate(System.Data.Rule.Cascade)
+                .WithColumnDescription("Fk to pull request")
+            .WithColumn("pull_requests_external_id")
+                .AsString(255)
+                .Nullable()
+                .WithColumnDescription("External id for late relation");
+
+        Create.Index("idx_uk_wipr_work_items_external_id")
+            .OnTable("work_items_pull_requests")
+                .OnColumn("tenants_id")
+                .Ascending()
+                .OnColumn("work_items_external_id")
+                .Unique();
+
+        Create.Index("idx_uk_wipr_pull_requests_external_id")
+            .OnTable("work_items_pull_requests")
+                .OnColumn("tenants_id")
+                .Ascending()
+                .OnColumn("pull_requests_external_id")
+                .Unique();
+    }
+
+    private void CreateWorkItemSelfRelation()
+    {
+        Create.Table("work_item_self_relation")
+            .WithColumn("id")
+                .AsInt64()
+                .Identity()
+                .NotNullable()
+                .PrimaryKey("idx_pk_work_item_self_relation")
+            .WithColumn("work_items_id_root")
+                .AsInt64()
+                .NotNullable()
+                .ForeignKey("fk_work_item_self_relation_wi_root", "work_items", "id")
+                    .OnDeleteOrUpdate(System.Data.Rule.Cascade)
+                .Indexed("idx_fk_work_item_self_relation_wi_root")
+                .WithColumnDescription("The work item root")
+            .WithColumn("work_items_id_related")
+                .AsInt64()
+                .NotNullable()
+                .ForeignKey("fk_work_item_self_relation_wi_related", "work_items", "id")
+                    .OnDeleteOrUpdate(System.Data.Rule.Cascade)
+                .Indexed("idx_fk_work_item_self_relation_wi_related")
+                .WithColumnDescription("The related work item")
+            .WithColumn("relation_type")
+                .AsString(255)
+                .NotNullable()
+                .WithColumnDescription("The relation kind between work items");
     }
 }
