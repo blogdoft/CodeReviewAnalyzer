@@ -129,7 +129,7 @@ internal static class PullRequestsStmt
                  , pr.file_count as "FileCount"
                  , pr.thread_count as "ThreadCount"
             FROM public.pull_requests pr
-            where pr.externalId = @externalId
+            where pr.external_id = @externalId
            
         """;
 }
