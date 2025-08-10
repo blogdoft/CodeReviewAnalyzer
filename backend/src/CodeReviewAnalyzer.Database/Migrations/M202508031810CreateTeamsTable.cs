@@ -40,7 +40,16 @@ public class M202508031810CreateTeamsTable : Migration
                 .AsString(255)
                 .NotNullable()
                 .WithColumnDescription("Searchable name field.")
-                .Indexed("idx_sh_teams_name_sh");
+                .Indexed("idx_sh_teams_name_sh")
+            .WithColumn("description")
+                .AsString(2054)
+                .NotNullable()
+                .WithColumnDescription("Describe the team.")
+            .WithColumn("active")
+                .AsBoolean()
+                .NotNullable()
+                .WithDefaultValue(true)
+                .WithColumnDescription("If this team is foundable or not.");
 
     public override void Down() =>
         Delete.Table("teams");

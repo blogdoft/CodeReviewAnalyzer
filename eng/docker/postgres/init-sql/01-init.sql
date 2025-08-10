@@ -66,44 +66,60 @@ BEGIN
                   , shared_key
                   , external_id
                   , "name"
+                  , "name_sh"
+                  , description
             ) VALUES (
                     (select id from tenants t where t.shared_key = '42681c98-67b3-4db8-b670-8a413590ff63')
                   , '6faa24df-aa99-46c1-8eeb-9e60eda8a9ed'
                   , '6faa24df-aa99-46c1-8eeb-9e60eda8a9ed'
-                  , 'Whole Team');
+                  , 'Whole Team'
+                  , 'WHOLE TEAM'
+                  , 'The whole team togheter');
 
             INSERT INTO public.teams(
                     tenants_id
                   , shared_key
                   , external_id
                   , "name"
+                  , name_sh
+                  , description
             ) VALUES (
                     (select id from tenants t where t.shared_key = '42681c98-67b3-4db8-b670-8a413590ff63')
                   , '4374cbea-5d66-4594-98c4-6140ac670f4b'
                   , '4374cbea-5d66-4594-98c4-6140ac670f4b'
-                  , 'Maintenance Team');
+                  , 'Maintenance Team'
+                  , 'MAINTENANCE TEAM'
+                  , 'Team in charge of maintain system.');
 
             INSERT INTO public.teams(
                     tenants_id
                   , shared_key
                   , external_id
                   , "name"
+                  , name_sh
+                  , description
             ) VALUES (
                     (select id from tenants t where t.shared_key = '42681c98-67b3-4db8-b670-8a413590ff63')
                   , '7ea3f23b-0bc5-4b0c-9617-732193e88150'
                   , '7ea3f23b-0bc5-4b0c-9617-732193e88150'
-                  , 'Evolution Team');
+                  , 'Evolution Team'
+                  , 'EVOLUTION TEAM'
+                  , 'Team in charge of new features implemention.');
 
             INSERT INTO public.teams(
                     tenants_id
                   , shared_key
                   , external_id
                   , "name"
+                  , name_sh
+                  , description
             ) VALUES (
                     (select id from tenants t where t.shared_key = '42681c98-67b3-4db8-b670-8a413590ff63')
                   , '911f3f4b-de4f-42ce-ae38-7bc5b7670d20'
                   , '911f3f4b-de4f-42ce-ae38-7bc5b7670d20'
-                  , 'Migration team');
+                  , 'Migration team'
+                  , 'MIGRATION TEAM'
+                  , 'Team in charge of software migration.');
         END IF;
     END IF;
 END $$;

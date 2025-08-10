@@ -36,7 +36,7 @@ public class M202508081955CreateRelationRepositoriesTeams : Migration
                 .NotNullable()
                 .WithColumnDescription("FK for tenant. Necessary for late merge.");
 
-        Create.Index("idx_sh_teams_repositories_team_external_id")
+        Create.Index("idx_sh_teams_repositories_teams_external_id")
             .OnTable("teams_repositories")
                 .OnColumn("teams_external_id")
                     .Ascending()

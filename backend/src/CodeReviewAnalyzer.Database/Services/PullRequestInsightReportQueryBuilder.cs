@@ -49,14 +49,14 @@ public static class PullRequestInsightReportQueryBuilder
             """
 
             join "TEAM_REPOSITORY" tr on tr.repository_id = pr."REPOSITORY_ID" 
-            join "TEAMS" repo_team on repo_team.id = tr.team_id
+            join "TEAMS" repo_team on repo_team.id = tr.teams_id
             
         """;
 
         private const string UserTeamJoins =
             """
             join "TEAM_USER" tu on tu.user_id = u."ID"
-            join "TEAMS" user_team on user_team.id = tu.team_id
+            join "TEAMS" user_team on user_team.id = tu.teams_id
 
         """;
 
@@ -73,22 +73,22 @@ public static class PullRequestInsightReportQueryBuilder
             """;
 
         public string RepoTeamJoin { get; } =
-            !string.IsNullOrEmpty(filter.RepoTeamId)
+            filter.RepoTeamId is not null && filter.RepoTeamId != Guid.Empty
                 ? RepoTeamJoins
                 : string.Empty;
 
         public string RepoTeamWhere { get; } =
-            !string.IsNullOrEmpty(filter.RepoTeamId)
+            filter.RepoTeamId is not null && filter.RepoTeamId != Guid.Empty
                 ? RepoTeamCondition
                 : string.Empty;
 
         public string UserTeamJoin { get; } =
-            !string.IsNullOrEmpty(filter.UserTeamId)
+            filter.UserTeamId is not null && filter.UserTeamId != Guid.Empty
                 ? UserTeamJoins
                 : string.Empty;
 
         public string UserTeamWhere { get; } =
-            !string.IsNullOrEmpty(filter.UserTeamId)
+            filter.UserTeamId is not null && filter.UserTeamId != Guid.Empty
                 ? RepoUserCondition
                 : string.Empty;
     }

@@ -14,7 +14,7 @@ public interface ITeams
         PageFilter pageFilter,
         string? teamName);
 
-    Task<Team?> QueryByIdAsync(string id);
+    Task<Team?> QueryByIdAsync(Guid id);
 
     Task UpdateAsync(Team updateTeam);
 }

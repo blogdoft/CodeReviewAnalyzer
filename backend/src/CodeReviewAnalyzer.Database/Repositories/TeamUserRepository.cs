@@ -9,46 +9,51 @@ public class TeamUserRepository(IDatabaseFacade databaseFacade) : ITeamUser
 {
     public const string SelectUsers =
         """
-            SELECT t.external_id as ExternalId
-                 , tu.role_in_team as Role
-                 , tu.joined_at_utc as JoinedAtUtc
-                 , u."EXTERNAL_IDENTIFIER" as UserId
-                 , u."NAME" as UserName
-                 , u."ACTIVE" as UserActive
-            FROM "TEAMS" t 
-                join "TEAM_USER" tu on tu.team_id = t.id
-                join "USERS" u on u."ID" = tu.user_id
+            select t.shared_key as SharedKey 
+                , tp."role" as role
+                , tp.joined_at_utc as JoinedAtUtc
+                , p.shared_key  as UserId
+                , p."name" as UserName
+            from teams t
+                join teams_people tp on tp.teams_id = t.id 
+                join people p on p.id  = tp.people_id 
 
         """;
 
     private const string InsertTeamUser =
         """
-            INSERT INTO public."TEAM_USER" (
-                  team_id
-                , user_id
-                , role_in_team
+            INSERT INTO public.teams_people (
+                  tenants_id
+                , teams_id
+                , teams_external_id
+                , people_id
+                , people_external_id
+                , "role"
                 , joined_at_utc
-            ) VALUES(
-                  (SELECT id FROM public."TEAMS" t where t.external_id = @TeamId)
-                , (SELECT "ID" FROM public."USERS"u where u."EXTERNAL_IDENTIFIER" = @UserId)
-                , @RoleInTeam
-                , @JoinedAtUtc 
-            );
+            ) VALUES (
+                  @tenant_id
+                , (SELECT id FROM public.teams t WHERE t.shared_key = @TeamId)
+                , @teamsExternalId
+                , (SELECT id FROM public.people p where p.shared_key = @PeopleId)
+                , @people_external_id
+                , @role
+                , @joinedAtUtc
+            );            
 
         """;
 
     private const string RemoveUserFromTeam =
         """
-            delete from "TEAM_USER"
-            where team_id = (select id FROM public."TEAMS" t WHERE t.external_id = @TeamId)
-              and user_id = (SELECT "ID" FROM public."USERS"u where u."EXTERNAL_IDENTIFIER" = @UserId);
+            delete from "teams_people"
+            where teams_id = (SELECT id FROM public.teams t WHERE t.shared_key = @TeamId)
+              and people_id = (SELECT id FROM public.people p where p.shared_key = @PeopleId);
         
         """;
 
     public async Task<IEnumerable<TeamUser>> GetUserFromTeamAsync(string teamId)
     {
         const string Where =
-            "where t.external_id = @ExternalId";
+            "where t.shared_key = @ExternalId";
         const string OrderBy = " order by u.\"NAME\"";
 
         var view = await databaseFacade.QueryAsync<TeamUserView>(
