@@ -5,8 +5,8 @@ using CodeReviewAnalyzer.Application.Models.PagingModels;
 namespace CodeReviewAnalyzer.Api.Models.Users;
 
 public class UsersPaginated(
-    PageReturn<IEnumerable<User>> pageResult,
+    PageReturn<IEnumerable<Person>> pageResult,
     PaginatedRequest pageFilter)
-    : PaginatedResponse<IEnumerable<User>>(pageResult, pageFilter)
+    : PaginatedResponse<IEnumerable<Person>>(pageResult, pageFilter)
 {
 }

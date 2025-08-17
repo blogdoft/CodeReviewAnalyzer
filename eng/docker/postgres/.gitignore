@@ -1,0 +1,3 @@
+init-sql/*.*
+*.sql
+!init-sql/01-init.sql

@@ -28,11 +28,11 @@ public static class AppSwaggerExtension
                         {
                         new OpenApiServer
                         {
-                            Url = $"https://{host}{pathBase}",
+                            Url = $"http://{host}{pathBase}",
                         },
                         new OpenApiServer
                         {
-                            Url = $"http://{host}{pathBase}",
+                            Url = $"https://{host}{pathBase}",
                         },
                         };
                     });
