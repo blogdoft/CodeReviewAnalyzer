@@ -4,11 +4,17 @@ namespace CodeReviewAnalyzer.Application.Repositories;
 
 public interface ITeamUser
 {
-    Task<IEnumerable<TeamUser>> GetUserFromTeamAsync(string teamId);
+    Task<IEnumerable<TeamPerson>> GetUserFromTeamAsync(
+        Guid tenantId,
+        Guid teamId);
 
-    Task<IEnumerable<TeamUser>> AddUsersAsync(
-        string teamId,
-        IEnumerable<TeamUser> users);
+    Task<IEnumerable<TeamPerson>> AddUsersAsync(
+        Guid tenantId,
+        Guid teamId,
+        IEnumerable<TeamPerson> users);
 
-    Task<IEnumerable<TeamUser>> RemoveUserFromAsync(string teamId, string userId);
+    Task<IEnumerable<TeamPerson>> RemoveUserFromAsync(
+        Guid tenantId,
+        Guid teamId,
+        Guid userId);
 }

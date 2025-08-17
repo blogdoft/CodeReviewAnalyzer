@@ -30,7 +30,7 @@ else
 fi
 
 
-for filename in /init-sql/*.sql; do
+for filename in /init-sql/*.*; do
   echo "Replacing $filename"
   envsubst < $filename > tmp.sql
   echo "PostgreSQL pronto! Executando script de inicialização..."

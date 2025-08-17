@@ -53,7 +53,7 @@ public class ApplicationSetupController : ControllerBase
     /// <summary>
     /// Return a specific Tenant details data.
     /// </summary>
-    /// <param name="tenantId">Tenant Unique identifier</param>
+    /// <param name="tenantId" example="42681c98-67b3-4db8-b670-8a413590ff63">Tenant Unique identifier</param>
     /// <returns>A tenant</returns>
     [HttpGet("{tenantId}")]
     [ProducesResponseType(typeof(TenantResponse), StatusCodes.Status200OK)]
@@ -93,7 +93,7 @@ public class ApplicationSetupController : ControllerBase
     ///   <item><description>If the request body is invalid, the server returns 400 Bad Request.</description></item>
     /// </list>
     /// </remarks>
-    /// <param name="tenantId">The unique identifier of the tenant to be updated.</param>
+    /// <param name="tenantId" example="42681c98-67b3-4db8-b670-8a413590ff63">The unique identifier of the tenant to be updated.</param>
     /// <param name="request">The updated tenant information.</param>
     /// <returns>
     /// Returns 200 OK with the updated tenant data if successful;

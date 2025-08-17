@@ -1,9 +1,10 @@
 using BlogDoFT.Libs.DapperUtils.Abstractions;
+using BlogDoFT.Libs.DapperUtils.Abstractions.Extensions;
 using BlogDoFT.Libs.DapperUtils.Postgres;
 using CodeReviewAnalyzer.Application.Models;
 using CodeReviewAnalyzer.Application.Models.PagingModels;
 using CodeReviewAnalyzer.Application.Repositories;
-using CodeReviewAnalyzer.Database.Extensions;
+using CodeReviewAnalyzer.Database.TablesViews;
 
 namespace CodeReviewAnalyzer.Database.Repositories;
 
@@ -11,41 +12,48 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
 {
     private const string Insert =
         """
-            INSERT INTO public."TEAMS" (
-                  external_id
+            INSERT INTO public.teams(
+                  tenant_id
+                , shared_key
+                , external_id
                 , "name"
                 , name_sh
                 , description
-                , active
             ) VALUES (
-                  @ExternalId
-                , @Name
-                , @NameSh
-                , @Description
-                , @Active);
+                  (select id from tenants where tenants.shared_key = @tenantId )
+                , @sharedKey
+                , @externalId
+                , @name
+                , @nameSh
+                , @description
+            );                
 
         """;
 
     private const string Update =
         """
-            UPDATE public."TEAMS" SET 
+            UPDATE public.teams SET 
                   "name" = @Name
                 , name_sh = @NameSh
                 , description = @Description
                 , active = @Active 
-            WHERE external_id = @ExternalId;
+            WHERE shared_key = @sharedKey;
 
         """;
 
     private const string TeamResultSet =
-       """
-            SELECT t.external_id as ExternalId
-                 , t."name" as Name
-                 , t.description as Description
-                 , t.active as Active
-            FROM public."TEAMS" t
+        """
+            SELECT t.id
+                 , tn.shared_key as TenantId
+                 , tn."name" as TenantName
+                 , t.shared_key as SharedKey
+                 , t.external_id as ExternalId
+                 , t."name"
+                 , t.description
+            FROM public.teams t  
+                join tenants tn on tn.id  = t.tenant_id      
 
-       """;
+        """;
 
     public async Task<Team> AddAsync(Team team)
     {
@@ -53,39 +61,47 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
             Insert,
             new
             {
-                ExternalId = team.ExternalId,
-                Name = team.Name,
+                TenantId = team.Tenant.Id,
+                team.ExternalId,
+                team.SharedKey,
+                team.Name,
                 NameSh = team.Name.ToUpperInvariant(),
-                Description = team.Description,
-                Active = team.Active,
+                team.Description,
             });
 
         return team;
     }
 
-    public async Task DeactivateAsync(Guid id)
+    public async Task DeactivateAsync(Guid tenantId, Guid id)
     {
         const string Sql = """
-          update "TEAMS" set active = false where external_id = @id
+            update teams set 
+                active = false 
+            where shared_key = @id 
+              and tenant_id = (select tn.id from tenants tn where tn.shared_key = @tenantId)
+
         """;
 
-        await databaseFacade.ExecuteAsync(Sql, new { id = id.ToString() });
+        await databaseFacade.ExecuteAsync(Sql, new { id, tenantId });
     }
 
     public async Task<PageReturn<IEnumerable<Team>>> QueryBy(
         PageFilter pageFilter,
+        Guid tenantId,
         string? teamName)
     {
         var (query, pageCount) = new PaginatedSqlBuilder()
             .WithResultSet(TeamResultSet)
             .WithWhere(whereBuilder => whereBuilder
-                .AndWith(teamName, "t.name_sh like @Name"))
+                .AndWith(tenantId, "tn.shared_key = @tenantId")
+                .AndWith(teamName, "t.name_sh like @name"))
             .WithPagination(pageFilter)
             .MappingOrderWith("name", "t.name")
             .Build();
         var param = new
         {
             Name = teamName?.AsSqlWildCard(),
+            TenantId = tenantId,
         };
 
         var totalItems = await databaseFacade.QuerySingleOrDefaultAsync<int>(
@@ -99,18 +115,38 @@ public class TeamRepository(IDatabaseFacade databaseFacade) : ITeams
         return new PageReturn<IEnumerable<Team>>(content, totalItems);
     }
 
-    public async Task<Team?> QueryByIdAsync(string id)
+    public async Task<Team?> QueryByIdAsync(Guid tenantId, Guid id)
     {
-        const string Where = "where t.external_id = @id";
-        return await databaseFacade.QuerySingleOrDefaultAsync<Team>(
+        const string Where = "where t.shared_key = @id and tn.shared_key =  @tenantId";
+        var table = await databaseFacade.QuerySingleOrDefaultAsync<TeamsTable>(
             TeamResultSet + Where,
-            new { id });
+            new { id, tenantId });
+
+        if (table is null)
+        {
+            return null;
+        }
+
+        return new Team()
+        {
+            Active = table.Active,
+            Description = table.Description,
+            ExternalId = table.ExternalId,
+            Name = table.Name,
+            SharedKey = table.SharedKey,
+            Tenant = new Tenant()
+            {
+                Id = table.TenantId,
+                Name = table.TenantName,
+            },
+        };
     }
 
     public async Task UpdateAsync(Team updateTeam)
     {
         await databaseFacade.ExecuteAsync(Update, new
         {
+            updateTeam.SharedKey,
             updateTeam.Name,
             NameSh = updateTeam.Name.AsSqlWildCard(),
             updateTeam.Description,

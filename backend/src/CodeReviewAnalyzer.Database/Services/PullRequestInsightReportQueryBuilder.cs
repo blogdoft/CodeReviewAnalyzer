@@ -73,22 +73,22 @@ public static class PullRequestInsightReportQueryBuilder
             """;
 
         public string RepoTeamJoin { get; } =
-            !string.IsNullOrEmpty(filter.RepoTeamId)
+            filter.RepoTeamId is not null && filter.RepoTeamId != Guid.Empty
                 ? RepoTeamJoins
                 : string.Empty;
 
         public string RepoTeamWhere { get; } =
-            !string.IsNullOrEmpty(filter.RepoTeamId)
+            filter.RepoTeamId is not null && filter.RepoTeamId != Guid.Empty
                 ? RepoTeamCondition
                 : string.Empty;
 
         public string UserTeamJoin { get; } =
-            !string.IsNullOrEmpty(filter.UserTeamId)
+            filter.UserTeamId is not null && filter.UserTeamId != Guid.Empty
                 ? UserTeamJoins
                 : string.Empty;
 
         public string UserTeamWhere { get; } =
-            !string.IsNullOrEmpty(filter.UserTeamId)
+            filter.UserTeamId is not null && filter.UserTeamId != Guid.Empty
                 ? RepoUserCondition
                 : string.Empty;
     }

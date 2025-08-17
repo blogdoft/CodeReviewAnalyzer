@@ -9,7 +9,7 @@ public interface IUsers
 {
     Task Upsert(IntegrationUser createdBy);
 
-    Task<PageReturn<IEnumerable<User>>> GetAllAsync(
+    Task<PageReturn<IEnumerable<Person>>> GetAllAsync(
         string? userName,
         bool? status,
         PageFilter pageFilter);

@@ -17,10 +17,10 @@ public class ReportFilter
     /// <summary>
     /// Consider only repositories assigned to this team during KPI evaluation.
     /// </summary>
-    public string? RepoTeamId { get; set; }
+    public Guid? RepoTeamId { get; set; }
 
     /// <summary>
     /// Consider only Users assigned to this team during KPI evaluation.
     /// </summary>
-    public string? UserTeamId { get; set; }
+    public Guid? UserTeamId { get; set; }
 }

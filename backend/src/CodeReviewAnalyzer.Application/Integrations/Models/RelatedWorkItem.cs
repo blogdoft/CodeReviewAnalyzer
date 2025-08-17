@@ -16,5 +16,5 @@ public class RelatedWorkItem
 
     public DateTime? ClosedAt { get; init; }
 
-    public User? User { get; init; }
+    public Person? User { get; init; }
 }
