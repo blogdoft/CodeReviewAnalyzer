@@ -71,11 +71,13 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore 
 
       - name: Test (with coverage)
         run: |
-          dotnet test --no-build --configuration Release \
+          dotnet test --no-build \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx" \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat="opencover" \
             /p:CoverletOutput="TestResults/coverage/"
