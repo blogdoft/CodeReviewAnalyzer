@@ -35,7 +35,7 @@ public class PullRequest
                 .Min() - CreationDate
         : TimeSpan.Zero;
 
-    public required IntegrationUser CreatedBy { get; init; }
+    public required IntegrationPerson CreatedBy { get; init; }
 
     public required int FileCount { get; init; }
 

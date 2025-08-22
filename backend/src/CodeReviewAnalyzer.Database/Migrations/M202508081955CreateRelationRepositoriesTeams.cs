@@ -1,5 +1,4 @@
 using FluentMigrator;
-using FluentMigrator.Postgres;
 using System.Diagnostics.CodeAnalysis;
 
 namespace CodeReviewAnalyzer.Database.Migrations;

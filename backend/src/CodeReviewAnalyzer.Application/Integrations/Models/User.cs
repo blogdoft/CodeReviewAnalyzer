@@ -1,6 +1,6 @@
 namespace CodeReviewAnalyzer.Application.Integrations.Models;
 
-public class IntegrationUser
+public class IntegrationPerson
 {
     public required string Id { get; init; }
 
@@ -15,12 +15,12 @@ public class IntegrationUser
             return false;
         }
 
-        if (obj is not IntegrationUser)
+        if (obj is not IntegrationPerson)
         {
             return false;
         }
 
-        return ((IntegrationUser)obj).Id == Id;
+        return ((IntegrationPerson)obj).Id == Id;
     }
 
     public override int GetHashCode()

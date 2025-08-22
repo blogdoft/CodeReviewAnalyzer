@@ -9,7 +9,7 @@ public class PullRequestMetadataProcessor(
     IPullRequestsClient pullRequestsClient,
     IConfigurations configurationRepository,
     ICodeRepository codeRepository,
-    IUsers users,
+    IPeople users,
     IPullRequests pullRequestRepository)
 {
     public async Task ExecuteAsync(DateOnly begin, DateOnly end)
@@ -43,7 +43,7 @@ public class PullRequestMetadataProcessor(
 
     private async Task ProcessUserAsync(PullRequest pullRequest)
     {
-        await users.Upsert(pullRequest.CreatedBy);
+        await users.UpsertAsync(pullRequest.CreatedBy);
 
         var usersUnion = pullRequest.Reviewers
             .Select(r => r.User)
@@ -51,7 +51,7 @@ public class PullRequestMetadataProcessor(
 
         foreach (var reviewer in usersUnion)
         {
-            await users.Upsert(reviewer);
+            await users.UpsertAsync(reviewer);
         }
     }
 

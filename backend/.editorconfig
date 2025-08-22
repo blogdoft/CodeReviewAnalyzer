@@ -307,6 +307,9 @@ dotnet_diagnostic.RS0037.severity = none
 # RCS1090: Call 'ConfigureAwait(false)'.
 dotnet_diagnostic.RCS1090.severity = none
 
+#RCS1194: Implement exception constructors
+dotnet_diagnostic.RCS1194.severity = none
+
 # XML comment analysis is disabled due to project configuration
 dotnet_diagnostic.SA0001.severity = none
 
