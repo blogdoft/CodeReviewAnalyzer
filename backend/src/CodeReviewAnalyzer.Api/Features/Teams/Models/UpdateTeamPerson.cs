@@ -5,7 +5,7 @@ namespace CodeReviewAnalyzer.Api.Features.Teams.Models;
 
 public class UpdateTeamPerson
 {
-    public Guid PersonId { get; set; }
+    public required Guid PersonId { get; set; }
 
     [Required(AllowEmptyStrings = false)]
     public string? Role { get; set; }

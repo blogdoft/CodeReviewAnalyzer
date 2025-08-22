@@ -10,7 +10,7 @@ internal class OpenApiBearerSecurityRequirement : OpenApiSecurityRequirement
 {
     public OpenApiBearerSecurityRequirement(OpenApiSecurityScheme securityScheme)
     {
-        Add(securityScheme, new[] { "Bearer" });
+        Add(securityScheme, ["Bearer"]);
     }
 
     protected OpenApiBearerSecurityRequirement(
