@@ -15,7 +15,7 @@ public class GetAllTests
 
     public IConnectionFactory ConnectionFactory { get; }
 
-    public IDatabaseFacade DatabaseFacade { get; private set; }
+    public IDatabaseFacade DatabaseFacade { get; }
 
     [Fact]
     public async Task Should_ReturnAllConfigurations_When_ThereIsConfigurationsOnDatabaseAsync()
