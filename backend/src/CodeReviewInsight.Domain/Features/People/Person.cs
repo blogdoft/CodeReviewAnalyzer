@@ -1,7 +1,11 @@
-namespace CodeReviewAnalyzer.Application.Models;
+namespace CodeReviewInsight.Domain.Features.People;
 
 public class Person
 {
+    internal Person()
+    {
+    }
+
     public Guid Id { get; init; }
 
     public string? ExternalId { get; init; }
@@ -9,10 +13,4 @@ public class Person
     public required string Name { get; init; }
 
     public Uri? AvatarUrl { get; init; }
-
-    public static Person CreateAsLookup(Guid id) => new()
-    {
-        Id = id,
-        Name = string.Empty,
-    };
 }

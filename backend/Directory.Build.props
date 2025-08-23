@@ -5,6 +5,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
     <InternalsVisibleTo Include="CodeReviewAnalyzer.Api.Tests" />
+    <InternalsVisibleTo Include="CodeReviewAnalyzer.Domain.Tests" />
     <InternalsVisibleTo Include="CodeReviewAnalyzer.AzureDevopsItg.Tests" />
     <InternalsVisibleTo Include="CodeReviewAnalyzer.Database.Tests" />
   </ItemGroup>

@@ -7,6 +7,8 @@ public class Tenant : BaseEntity<Tenant>
 {
     private readonly List<DataSource> _dataSource = [];
 
+    private bool _active = true;
+
     public Tenant(Guid id, string name, IEnumerable<DataSource> dataSource, bool active = true)
     {
         Id = id;
@@ -15,13 +17,13 @@ public class Tenant : BaseEntity<Tenant>
         Active = active;
     }
 
-    private bool _active = true;
-
     public Guid Id { get; init; }
 
     public string Name { get; init; }
 
+#pragma warning disable S2292 // Trivial properties should be auto-implemented
     public bool Active
+#pragma warning restore S2292 // Trivial properties should be auto-implemented
     {
         get { return _active; }
         init { _active = value; }
@@ -37,7 +39,6 @@ public class Tenant : BaseEntity<Tenant>
 
     public void AddDataSource(IEnumerable<DataSource> dataSource) =>
         _dataSource.AddRange(dataSource);
-
 
     public DataSource RemoveDataSource(DataSource dataSource)
     {

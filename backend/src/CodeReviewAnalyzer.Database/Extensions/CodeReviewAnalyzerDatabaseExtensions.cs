@@ -20,7 +20,7 @@ public static class CodeReviewAnalyzerDatabaseExtensions
             .AddDapperPostgres()
             .AddScoped<IConfigurations, ConfigurationsRepository>()
             .AddScoped<IPullRequests, PullRequestsRepository>()
-            .AddScoped<IUsers, PeopleRepository>()
+            .AddScoped<IPeople, PeopleRepository>()
             .AddScoped<IDayOff, DayOffRepository>()
             .AddScoped<IReport, Report>()
             .AddScoped<ICodeRepository, CodeRepositoryRepository>()

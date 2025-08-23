@@ -70,14 +70,14 @@ internal static class AzureModelsExtension
         },
     };
 
-    public static IntegrationUser ToUser(this IdentityRef identifyRef) => new()
+    public static IntegrationPerson ToUser(this IdentityRef identifyRef) => new()
     {
         Id = identifyRef.Id,
         Name = identifyRef.DisplayName,
         Active = !identifyRef.Inactive,
     };
 
-    public static IntegrationUser ToUser(this IdentityRefWithVote identityRef) => new()
+    public static IntegrationPerson ToUser(this IdentityRefWithVote identityRef) => new()
     {
         Id = identityRef.Id,
         Name = identityRef.DisplayName,

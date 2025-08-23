@@ -54,4 +54,8 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CodeReviewAnalyzer.Api\CodeReviewAnalyzer.Api.csproj" />
+  </ItemGroup>
+
 </Project>

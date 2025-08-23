@@ -38,11 +38,11 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         var info = new OpenApiInfo()
         {
-            Title = "Sample API",
+            Title = "Code review insight API",
             Version = description.ApiVersion.ToString(),
-            Description = "A sample application with Swagger, Swashbuckle, and API versioning.",
-            Contact = new OpenApiContact() { Name = "Bill Mei", Email = "bill.mei@somewhere.com" },
-            License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") },
+            Description = "This API provide information about code review metrics and help to maintain master data.",
+            Contact = new OpenApiContact() { Name = "Bill Mei", Email = "admin@blogdoft.com.br" },
+            License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://raw.githubusercontent.com/blogdoft/CodeReviewAnalyzer/refs/heads/main/LICENSE") },
         };
 
         if (description.IsDeprecated)

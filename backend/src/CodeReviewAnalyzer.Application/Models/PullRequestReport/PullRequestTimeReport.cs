@@ -4,7 +4,7 @@ public class PullRequestTimeReport
 {
     /// <summary>
     /// <para>What is measured: The mean time between the pull request opening and the first
-    /// comment made by a revisor.<para>
+    /// comment made by a revisor.</para>
     /// <pre>Time to start review = First comment date - Pull Request opening date.</pre>
     /// </summary>
     public required IEnumerable<TimeIndex> MeanTimeToStartReview { get; init; }

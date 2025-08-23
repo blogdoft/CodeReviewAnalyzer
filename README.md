@@ -1,5 +1,11 @@
 # README
 
+Backend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=blogdoft_code-review-insights-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=blogdoft_code-review-insights-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=blogdoft_code-review-insights-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=blogdoft_code-review-insights-backend)
+
+Frontend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=blogdoft_code-review-insights-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=blogdoft_code-review-insights-frontend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=blogdoft_code-review-insights-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=blogdoft_code-review-insights-frontend)
+
 ## Aplicações disponíbilizadas:
 
 **Atenção**: A rede do docker compose está definida no modo `host`. Isso quer dizer que todos os containeres utilizarão as portas disponíveis no host. Se as portas que usamos já estiverem ocupadas, você terá problemas na execução.
