@@ -4,9 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
-    <InternalsVisibleTo Include="CodeReviewAnalyzer.Api.Tests" />
-    <InternalsVisibleTo Include="CodeReviewAnalyzer.Domain.Tests" />
-    <InternalsVisibleTo Include="CodeReviewAnalyzer.AzureDevopsItg.Tests" />
-    <InternalsVisibleTo Include="CodeReviewAnalyzer.Database.Tests" />
+    <InternalsVisibleTo Include="CodeReviewInsight.Api.Tests" />
+    <InternalsVisibleTo Include="CodeReviewInsight.Domain.Tests" />
+    <InternalsVisibleTo Include="CodeReviewInsight.AzureDevopsItg.Tests" />
+    <InternalsVisibleTo Include="CodeReviewInsight.Database.Tests" />
   </ItemGroup>
 </Project>
