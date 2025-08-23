@@ -1,0 +1,21 @@
+using Microsoft.OpenApi.Models;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
+
+namespace CodeReviewInsight.Api.Configs;
+
+[Serializable]
+[ExcludeFromCodeCoverage]
+internal class OpenApiBearerSecurityRequirement : OpenApiSecurityRequirement
+{
+    public OpenApiBearerSecurityRequirement(OpenApiSecurityScheme securityScheme)
+    {
+        Add(securityScheme, ["Bearer"]);
+    }
+
+    protected OpenApiBearerSecurityRequirement(
+        SerializationInfo serializationInfo,
+        StreamingContext streamingContext)
+    {
+    }
+}

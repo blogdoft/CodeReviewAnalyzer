@@ -1,0 +1,14 @@
+using BlogDoFT.Libs.DapperUtils.Abstractions;
+using CodeReviewInsight.Application.Models;
+using CodeReviewInsight.Application.Repositories;
+
+namespace CodeReviewInsight.Database.Repositories;
+
+internal sealed class ConfigurationsRepository(IDatabaseFacade databaseFacade) : IConfigurations
+{
+    private readonly IDatabaseFacade _databaseFacade = databaseFacade;
+
+    public async Task<IEnumerable<Configuration>> GetAllAsync() =>
+        await _databaseFacade.QueryAsync<Configuration>(
+            sql: """SELECT "ID", "CONFIGURATION_ID", "ORGANIZATION" as Organization, "PROJECT_NAME" as ProjectName, "PERSONAL_ACCESS_TOKEN" as AccessToken FROM public."CONFIGURATION";""");
+}
