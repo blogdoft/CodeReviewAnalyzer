@@ -9,4 +9,6 @@ public interface ITenantRepository
     Task<Tenant> UpdateAsync(Tenant tenant);
 
     Task<Tenant> GetByIdAsync(Guid tenantId);
+
+    Task<IEnumerable<Tenant>> GetAllAsync();
 }

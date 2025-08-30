@@ -30,6 +30,11 @@ internal class TenantRepository(IDatabaseFacade database) : ITenantRepository
         return tenant.Id;
     }
 
+    public Task<IEnumerable<Tenant>> GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Tenant> GetByIdAsync(Guid tenantId)
     {
         const string SelectTenantId =

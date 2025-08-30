@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeReviewInsight.Application\CodeReviewInsight.Application.csproj" />
+    <ProjectReference Include="..\CodeReviewInsight.Domain\CodeReviewInsight.Domain.csproj" />
   </ItemGroup>
 
 </Project>
