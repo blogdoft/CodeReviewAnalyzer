@@ -25,7 +25,7 @@ public class TenantProcessorTest
             .GetAllAsync()
             .Returns(tenants);
         DataSourceProcessor
-            .ProcessAsync(Arg.Any<IEnumerable<DataSource>>())
+            .ProcessAsync(Arg.Any<Tenant>())
             .Returns(Task.CompletedTask);
 
         var processor = BuildTenantProcessor();
@@ -35,7 +35,7 @@ public class TenantProcessorTest
 
         // Then
         await TenantRepository.Received(1).GetAllAsync();
-        await DataSourceProcessor.Received(totalDataSources).ProcessAsync(Arg.Any<IEnumerable<DataSource>>());
+        await DataSourceProcessor.Received(totalDataSources).ProcessAsync(Arg.Any<Tenant>());
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class TenantProcessorTest
         // Given
         var tenant = TenantFixture.Build();
         DataSourceProcessor
-            .ProcessAsync(Arg.Any<IEnumerable<DataSource>>())
+            .ProcessAsync(Arg.Any<Tenant>())
             .Returns(Task.CompletedTask);
 
         var processor = BuildTenantProcessor();
@@ -54,7 +54,7 @@ public class TenantProcessorTest
 
         // Then
         await TenantRepository.DidNotReceive().GetAllAsync();
-        await DataSourceProcessor.Received(1).ProcessAsync(Arg.Any<IEnumerable<DataSource>>());
+        await DataSourceProcessor.Received(1).ProcessAsync(Arg.Any<Tenant>());
     }
 
     private TenantProcessor BuildTenantProcessor() => new(
