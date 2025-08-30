@@ -1,11 +1,19 @@
+using CodeReviewInsight.Application.Services.Crawlers;
 using CodeReviewInsight.Domain.Features.Configurations.Entities;
 
 namespace CodeReviewInsight.Application.Services.Processors.Impl;
 
-public class DataSourceProcessor : IDataSourceProcessor
+public class DataSourceProcessor(ICrawlerFactory crawlerFactory) : IDataSourceProcessor
 {
-    public Task ProcessAsync(IEnumerable<DataSource> dataSource)
+    private readonly ICrawlerFactory _crawlerFactory = crawlerFactory;
+
+    public async Task ProcessAsync(Tenant tenant)
     {
-        throw new NotImplementedException();
+        foreach (var dataSource in tenant.DataSource)
+        {
+            var crawler = _crawlerFactory.Create(tenant.Id, dataSource);
+
+            await crawler.CrawAsync();
+        }
     }
 }

@@ -21,6 +21,6 @@ public class TenantProcessor(
 
     public async Task ProcessTenantAsync(Tenant tenant)
     {
-        await _dataSourceProcessor.ProcessAsync(tenant.DataSource);
+        await _dataSourceProcessor.ProcessAsync(tenant);
     }
 }

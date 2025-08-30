@@ -14,7 +14,16 @@ public static class TenantFixture
             new TenantBuilder()
                 .WithId(Guid.NewGuid())
                 .WithName(_faker.Company.CompanyName())
-                .WithDataSource(new AutoFaker<AzureDevOps>().Generate(2))
+                .WithDataSource(BuildAzureDataSource(2))
                 .Build())
             .ToList();
+
+    public static DataSource BuildAzureDataSource() => BuildAzureDataSource(1)[0];
+
+    public static List<DataSource> BuildAzureDataSource(int qtd)
+    {
+        var list = new List<DataSource>(qtd);
+        list.AddRange(Enumerable.Range(0, qtd).Select(_ => new AutoFaker<AzureDevOps>().Generate()));
+        return list;
+    }
 }
