@@ -1,9 +1,13 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    <InternalsVisibleTo Include="AutoBogus.AutoFaker" />
+    <InternalsVisibleTo Include="AutoBogus" />
+    <InternalsVisibleTo Include="AutoFaker" />
     <InternalsVisibleTo Include="CodeReviewInsight.Api.Tests" />
     <InternalsVisibleTo Include="CodeReviewInsight.Domain.Tests" />
     <InternalsVisibleTo Include="CodeReviewInsight.AzureDevopsItg.Tests" />
