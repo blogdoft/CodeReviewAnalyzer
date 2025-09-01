@@ -9,10 +9,12 @@ using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace CodeReviewInsight.Database.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class CodeReviewInsightDatabaseExtensions
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services) =>
@@ -28,6 +30,7 @@ public static class CodeReviewInsightDatabaseExtensions
             .AddScoped<ITeamUser, TeamUserRepository>()
             .AddScoped<IWorkItems, WorkItemsRepository>()
             .AddScoped<ITenantRepository, TenantRepository>()
+            .AddScoped<IGitRepositoryRepository, GitRepositoryRepository>()
             .ConfigureMigration();
 
     public static void ExecuteMigration(IServiceProvider provider)

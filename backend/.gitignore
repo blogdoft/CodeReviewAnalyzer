@@ -4,7 +4,7 @@
 ## Get latest from `dotnet new gitignore`
 
 app/**
-
+coverage_report
 # dotenv files
 **/*.env
 
