@@ -16,6 +16,12 @@ public class AzureDevOpsCrawlerTest
         _tenantId = new TenantId(Guid.NewGuid());
         _dataSource = (AzureDevOps)TenantFixture.BuildAzureDataSource();
         AzureProject = Substitute.For<IAzureFacade>();
+        AzureProject
+            .FromProject(Arg.Any<string>())
+            .Returns(AzureProject);
+        AzureProject
+            .SetContext(Arg.Any<TenantId>(), Arg.Any<AzureDevOps>())
+            .Returns(AzureProject);
         GitRepositoryRepository = Substitute.For<IGitRepositoryRepository>();
     }
 
@@ -33,7 +39,9 @@ public class AzureDevOpsCrawlerTest
 
         // Then
         await AzureProject.Received(_dataSource.Projects.Count).GetRepositoriesAsync();
-        await GitRepositoryRepository.Received(_dataSource.Projects.Count).BulkUpsertAsync(Arg.Any<IEnumerable<GitRepository>>());
+        await GitRepositoryRepository
+            .Received(_dataSource.Projects.Count)
+            .BulkUpsertAsync(Arg.Any<IEnumerable<GitRepository>>());
     }
 
     private AzureDevOpsCrawler Build() => new(

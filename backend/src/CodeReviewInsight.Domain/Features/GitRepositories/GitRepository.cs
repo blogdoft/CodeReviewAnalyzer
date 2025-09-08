@@ -10,6 +10,8 @@ public class GitRepository
 
     public required Guid Id { get; init; }
 
+    public string? ExternalId { get; init; }
+
     public required string Name { get; init; }
 
     public required Uri Url { get; init; }

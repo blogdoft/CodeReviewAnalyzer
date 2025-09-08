@@ -60,6 +60,11 @@ public class ApplicationSetupController : ControllerBase
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid tenantId)
     {
         var tenant = await _repository.GetByIdAsync(tenantId);
+        if (tenant is null)
+        {
+            return NotFound();
+        }
+
         return Ok(TenantResponse.From(tenant));
     }
 

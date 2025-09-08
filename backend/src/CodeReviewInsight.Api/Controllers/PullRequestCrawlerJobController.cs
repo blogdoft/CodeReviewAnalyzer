@@ -1,6 +1,7 @@
 using CodeReviewInsight.Application.Models.PullRequestReport;
 using CodeReviewInsight.Application.Services;
 using CodeReviewInsight.Application.Services.Crawlers;
+using CodeReviewInsight.Application.Services.Processors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -76,6 +77,13 @@ public class PullRequestCrawlerJobController(PullRequestMetadataProcessor metada
             To = end ?? DateOnly.FromDateTime(DateTime.Now.AddMonths(1).AddTicks(-1)),
         });
 
+        return Ok();
+    }
+
+    [HttpGet("repositories:import")]
+    public async Task<IActionResult> LoadRepositoriesAsync([FromServices] TenantProcessor tenantProcessor)
+    {
+        await tenantProcessor.ProcessAllTenantsAsync();
         return Ok();
     }
 }

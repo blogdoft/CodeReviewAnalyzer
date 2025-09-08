@@ -232,6 +232,15 @@ dotnet_diagnostic.SA1412.severity=none
 # SA1010: Opening square brackets should not be preceded by a space.
 dotnet_diagnostic.SA1010.severity=none
 
+# Sonar Rules
+
+# S1135 - Complete task associated to this todo
+dotnet_diagnostic.S1135.severity=none
+
+# S2094 - Remove this empty class, write its code or make it an "interface".
+dotnet_diagnostic.S2094.severity=none
+
+
 # CSharp code style settings:
 [*.cs]
 # Newline settings
