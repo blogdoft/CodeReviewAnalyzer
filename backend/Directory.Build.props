@@ -9,6 +9,7 @@
     <InternalsVisibleTo Include="AutoBogus" />
     <InternalsVisibleTo Include="AutoFaker" />
     <InternalsVisibleTo Include="CodeReviewInsight.Api.Tests" />
+    <InternalsVisibleTo Include="CodeReviewInsight.Application.Tests" />
     <InternalsVisibleTo Include="CodeReviewInsight.Domain.Tests" />
     <InternalsVisibleTo Include="CodeReviewInsight.AzureDevopsItg.Tests" />
     <InternalsVisibleTo Include="CodeReviewInsight.Database.Tests" />

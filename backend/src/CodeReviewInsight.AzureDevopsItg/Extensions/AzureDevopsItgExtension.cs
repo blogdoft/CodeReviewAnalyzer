@@ -1,4 +1,5 @@
 using CodeReviewInsight.Application.Integrations;
+using CodeReviewInsight.Application.Services.Crawlers.AzureCrawlers;
 using CodeReviewInsight.AzureDevopsItg.Clients;
 using CodeReviewInsight.AzureDevopsItg.Clients.Impl;
 using CodeReviewInsight.AzureDevopsItg.Services;
@@ -12,5 +13,6 @@ public static class AzureDevopsItgExtension
         services
             .AddTransient<IConnectionFactory, ConnectionFactory>()
             .AddScoped<IPullRequestsClient, PullRequestClient>()
-            .AddScoped<IWorkItemsIntegration, WorkItemIntegration>();
+            .AddScoped<IWorkItemsIntegration, WorkItemIntegration>()
+            .AddScoped<IAzureFacade, AzureFacade>();
 }

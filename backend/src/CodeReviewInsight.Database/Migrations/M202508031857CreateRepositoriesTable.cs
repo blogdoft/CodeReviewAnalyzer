@@ -7,7 +7,8 @@ namespace CodeReviewInsight.Database.Migrations;
 [Migration(202508031857, description: "Create Repository Table")]
 public class M202508031857CreateRepositoriesTable : Migration
 {
-    public override void Up() =>
+    public override void Up()
+    {
         Create.Table("repositories")
             .WithColumn("id")
                 .AsInt64()
@@ -28,6 +29,10 @@ public class M202508031857CreateRepositoriesTable : Migration
                 .NotNullable()
                 .Indexed("idx_uk_repositories__shared_key").Unique()
                 .WithColumnDescription("Key to be shared with domains/urls.")
+            .WithColumn("external_id")
+                .AsString(255)
+                .Nullable()
+                .WithColumnDescription("Identifier as in DataSource.")
             .WithColumn("name")
                 .AsString(255)
                 .NotNullable()
@@ -36,6 +41,14 @@ public class M202508031857CreateRepositoriesTable : Migration
                 .AsString(2048)
                 .Nullable()
                 .WithColumnDescription("URL that refers to GIT repositories.");
+
+        Create.Index("idx_uk_repositories_tenant_external_id")
+            .OnTable("repositories")
+            .OnColumn("tenant_id")
+            .Ascending()
+            .OnColumn("external_id")
+            .Unique();
+    }
 
     public override void Down() =>
         Delete.Table("repositories");

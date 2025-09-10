@@ -23,5 +23,6 @@ public static class ApplicationExtensions
             .AddScoped<ITenantAdd, TenantAdd>()
             .AddScoped<ITenantUpdate, TenantUpdate>()
             .AddScoped<TenantProcessor>()
+            .AddScoped<ICrawlerFactory, CrawlerFactory>()
             .AddScoped<IDataSourceProcessor, DataSourceProcessor>();
 }

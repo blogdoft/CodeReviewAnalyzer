@@ -1,7 +1,7 @@
-using System.Data;
-using CodeReviewInsight.Domain.Features.GitRepositories;
 using CodeReviewInsight.Domain.Features.Configurations;
 using CodeReviewInsight.Domain.Features.Configurations.Entities;
+using CodeReviewInsight.Domain.Features.GitRepositories;
+using System.Data;
 
 namespace CodeReviewInsight.Domain.Tests.Features.GitRepositories;
 

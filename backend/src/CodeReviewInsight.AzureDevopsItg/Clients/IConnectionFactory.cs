@@ -6,4 +6,6 @@ namespace CodeReviewInsight.AzureDevopsItg.Clients;
 public interface IConnectionFactory
 {
     IVssConnection CreateConnection(Configuration configuration);
+
+    IVssConnection CreateConnection(Uri azureDevOpsUri, string pat);
 }

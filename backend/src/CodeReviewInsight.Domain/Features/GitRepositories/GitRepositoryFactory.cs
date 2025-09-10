@@ -10,18 +10,30 @@ public class GitRepositoryFactory
     private Uri? _url;
     private Guid? _id = null;
     private TenantId? _tenantId;
+    private string? _externalId;
 
-    public GitRepository Build() => new()
+    public GitRepository Build()
     {
-        Id = _id ?? Guid.NewGuid(),
-        Name = _name ?? throw new NoNullAllowedException("You must provide a name when creating a repository."),
-        Url = _url ?? throw new NoNullAllowedException("You must provide a URL when creating a repository."),
-        TenantId = _tenantId ?? throw new NoNullAllowedException("You must provide a TenantId when creating a repository."),
-    };
+        var id = _id ?? Guid.NewGuid();
+        return new()
+        {
+            Id = id,
+            ExternalId = _externalId ?? id.ToString(),
+            Name = _name ?? throw new NoNullAllowedException("You must provide a name when creating a repository."),
+            Url = _url ?? throw new NoNullAllowedException("You must provide a URL when creating a repository."),
+            TenantId = _tenantId ?? throw new NoNullAllowedException("You must provide a TenantId when creating a repository."),
+        };
+    }
 
     public GitRepositoryFactory WithId(Guid id)
     {
         _id = id;
+        return this;
+    }
+
+    public GitRepositoryFactory WithExternalId(string externalId)
+    {
+        _externalId = externalId;
         return this;
     }
 

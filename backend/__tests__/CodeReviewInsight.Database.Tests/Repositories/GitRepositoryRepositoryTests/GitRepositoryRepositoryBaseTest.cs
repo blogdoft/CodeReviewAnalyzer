@@ -1,6 +1,5 @@
 using BlogDoFT.Libs.DapperUtils.Abstractions;
 using CodeReviewInsight.Database.Repositories;
-using CodeReviewInsight.Database.Tests.Fixtures;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using NSubstitute.ExceptionExtensions;

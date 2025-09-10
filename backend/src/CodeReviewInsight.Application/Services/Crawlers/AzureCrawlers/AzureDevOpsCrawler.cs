@@ -4,7 +4,7 @@ using CodeReviewInsight.Domain.Features.Configurations.Entities;
 
 namespace CodeReviewInsight.Application.Services.Crawlers.AzureCrawlers;
 
-public class AzureDevOpsCrawler : IDataSourceCrawler
+public class AzureDevOpsCrawler : IAzureDataSourceCrawler
 {
     private readonly TenantId _tenantId;
     private readonly AzureDevOps _dataSource;
@@ -27,7 +27,11 @@ public class AzureDevOpsCrawler : IDataSourceCrawler
     {
         foreach (var project in _dataSource.Projects)
         {
-            var repositories = await _azureFacade.GetRepositoriesAsync();
+            var repositories = await _azureFacade
+                .SetContext(_tenantId, _dataSource)
+                .FromProject(project)
+                .GetRepositoriesAsync();
+
             await _gitRepositoryRepository.BulkUpsertAsync(repositories);
         }
     }

@@ -15,19 +15,22 @@ public class GitRepositoryRepository(
             INSERT INTO public.repositories (
                   tenant_id
                 , shared_key
+                , external_id
                 , "name"
                 , url
             ) VALUES (
                   (select tn.id from tenants tn where tn.shared_key = @tenantId)
                 , @SharedKey
+                , @externalId
                 , @Name
                 , @Url
             )
-            ON CONFLICT (shared_key)
+            ON CONFLICT (tenant_id,external_id)
             DO UPDATE 
             SET 
                   tenant_id=EXCLUDED.tenant_id
                 , shared_key=EXCLUDED.shared_key
+                , external_id=EXCLUDED.external_id
                 , "name"=EXCLUDED."name"
                 , url=EXCLUDED.url;
 
@@ -45,8 +48,9 @@ public class GitRepositoryRepository(
             {
                 await _databaseFacade.ExecuteAsync(Upsert, new
                 {
-                    repository.TenantId,
+                    TenantId = (Guid)repository.TenantId,
                     SharedKey = repository.Id,
+                    ExternalId = repository.ExternalId,
                     repository.Name,
                     Url = repository.Url.ToString(),
                 });

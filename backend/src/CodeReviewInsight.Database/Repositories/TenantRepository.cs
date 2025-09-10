@@ -1,8 +1,11 @@
 using BlogDoFT.Libs.DapperUtils.Abstractions;
 using CodeReviewInsight.Application.TenantFeature;
 using CodeReviewInsight.Database.ResultSets;
+using CodeReviewInsight.Database.TablesViews;
 using CodeReviewInsight.Domain.Enums;
+using CodeReviewInsight.Domain.Features.Configurations;
 using CodeReviewInsight.Domain.Features.Configurations.Entities;
+using Dapper;
 using System.Text.Json;
 
 namespace CodeReviewInsight.Database.Repositories;
@@ -30,12 +33,31 @@ internal class TenantRepository(IDatabaseFacade database) : ITenantRepository
         return tenant.Id;
     }
 
-    public Task<IEnumerable<Tenant>> GetAllAsync()
+    public async Task<IEnumerable<Tenant>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var tenantsTables = await _database.GetDbConnection().QueryAsync<TenantTable>(
+            """
+                SELECT tn.shared_key as id
+                     , tn."name"
+                     , tn.active
+                FROM public.tenants tn
+            """);
+
+        var tenantEntities = tenantsTables.Select(tn =>
+        {
+            var dataSources = GetAzureDevOpsLinkedDataSourcesAsync(tn.Id).GetAwaiter().GetResult();
+            var tenantEntity = new Tenant(
+                id: tn.Id,
+                name: tn.Name,
+                dataSource: dataSources,
+                active: tn.Active);
+            return tenantEntity;
+        });
+
+        return tenantEntities;
     }
 
-    public async Task<Tenant> GetByIdAsync(Guid tenantId)
+    public async Task<Tenant?> GetByIdAsync(Guid tenantId)
     {
         const string SelectTenantId =
             """
@@ -125,5 +147,39 @@ internal class TenantRepository(IDatabaseFacade database) : ITenantRepository
             transaction.Rollback();
             throw;
         }
+    }
+
+    private async Task<IEnumerable<AzureDevOps>> GetAzureDevOpsLinkedDataSourcesAsync(TenantId tenantId)
+    {
+        var dataSourceTable = await _database.QueryAsync<AzureDevOpsTable>(
+            """
+                SELECT ds.id
+                     , ds.tenant_id
+                     , ds."name"
+                     , ds.active
+                     , ds.integration_type as IntegrationType
+                     , ad.devops_url as DevOpsUrl
+                     , ad.pat 
+                     , ad.projects 
+                     , ad.areas 
+                FROM public.data_sources ds
+                  join tenants tn on tn.id = ds.tenant_id 
+                  left join azure_devops ad on ad.id = ds.id
+                where tn.shared_key = @tenantId;
+            """,
+            new
+            {
+                TenantId = (Guid)tenantId,
+            });
+
+        var dataSourceEntity = dataSourceTable.Select(ds => new AzureDevOps(
+            name: ds.Name ?? "undefined",
+            devOpsUrl: new Uri(ds.DevOpsUrl),
+            pat: ds.Pat ?? "undefined",
+            projects: JsonSerializer.Deserialize<IEnumerable<string>>(ds.Projects ?? "[]") ?? [],
+            areas: JsonSerializer.Deserialize<IEnumerable<string>>(ds.Areas ?? "[]") ?? [],
+            active: ds.Active));
+
+        return dataSourceEntity;
     }
 }
