@@ -1,3 +1,4 @@
+using CodeReviewInsight.Application.Integrations.Models;
 using CodeReviewInsight.Domain.Features.Configurations;
 using CodeReviewInsight.Domain.Features.Configurations.Entities;
 using CodeReviewInsight.Domain.Features.GitRepositories;
@@ -11,4 +12,6 @@ public interface IAzureFacade
     IAzureFacade SetContext(TenantId tenantId, AzureDevOps azureDevOps);
 
     Task<IEnumerable<GitRepository>> GetRepositoriesAsync();
+
+    Task<IEnumerable<PullRequest>> GetPullRequestsAsync(DateTime startPeriod, DateTime endPeriod);
 }

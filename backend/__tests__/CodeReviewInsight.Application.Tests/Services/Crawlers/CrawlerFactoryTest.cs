@@ -11,17 +11,22 @@ namespace CodeReviewInsight.Application.Tests.Services.Crawlers;
 public class CrawlerFactoryTest
 {
     private readonly Faker _faker = BogusFixture.Get();
+    public CrawlerFactoryTest()
+    {
+        AzureFacade = Substitute.For<IAzureFacade>();
+        GitRepoRepo = Substitute.For<IGitRepositoryRepository>();
+        PullRequestRepository = Substitute.For<IPullRequests>();
+    }
+
+    internal IAzureFacade AzureFacade { get; }
+    internal IGitRepositoryRepository GitRepoRepo { get; }
+    internal IPullRequests PullRequestRepository { get; }
 
     [Fact]
     public void Should_CreateAzureDevOpsCrawler_When_DataSourceIsAzureDevops()
     {
         // Given
-        var azureFacade = Substitute.For<IAzureFacade>();
-        var gitRepoRepo = Substitute.For<IGitRepositoryRepository>();
-        var sut = new CrawlerFactory(azureFacade, gitRepoRepo);
-
         TenantId tenantId = Guid.NewGuid();
-
         var dataSource = new AzureDevOps(
             name: _faker.Random.Word(),
             devOpsUrl: new Uri(_faker.Internet.Url()),
@@ -30,8 +35,10 @@ public class CrawlerFactoryTest
             areas: _faker.Random.WordsArray(3),
             active: _faker.Random.Bool());
 
+        var crawlerFactory = BuildCrawlerFactory();
+
         // When
-        var crawler = sut.Create(tenantId, dataSource);
+        var crawler = crawlerFactory.Create(tenantId, dataSource);
 
         // Assert
         crawler.ShouldNotBeNull();
@@ -42,21 +49,22 @@ public class CrawlerFactoryTest
     [Fact]
     public void Should_ThrowKeyNotFound_When_DataSourceIsNotAzureDevops()
     {
-        // Given
-        var azureFacade = Substitute.For<IAzureFacade>();
-        var gitRepoRepo = Substitute.For<IGitRepositoryRepository>();
-        var sut = new CrawlerFactory(azureFacade, gitRepoRepo);
-
+        // Given        
         TenantId tenantId = Guid.NewGuid();
-
         // DataSource fake que NÃO é AzureDevops
         var other = new DummyDataSourceNotAzure(
             name: _faker.Person.FullName,
             active: _faker.Random.Bool());
+        var crawlerFactory = BuildCrawlerFactory();
 
         // When + Assert
-        Should.Throw<KeyNotFoundException>(() => sut.Create(tenantId, other));
+        Should.Throw<KeyNotFoundException>(() => crawlerFactory.Create(tenantId, other));
     }
+
+    private CrawlerFactory BuildCrawlerFactory() => new(
+        AzureFacade,
+        GitRepoRepo,
+        PullRequestRepository);
 
     private sealed class DummyDataSourceNotAzure : DataSource
     {

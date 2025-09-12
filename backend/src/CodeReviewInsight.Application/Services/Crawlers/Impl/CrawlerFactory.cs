@@ -10,13 +10,16 @@ public class CrawlerFactory : ICrawlerFactory
 {
     private readonly IAzureFacade _azureFacade;
     private readonly IGitRepositoryRepository _gitRepositoryRepository;
+    private readonly IPullRequests _pullRequestRepository;
 
     public CrawlerFactory(
         IAzureFacade azureFacade,
-        IGitRepositoryRepository gitRepositoryRepository)
+        IGitRepositoryRepository gitRepositoryRepository,
+        IPullRequests pullRequestRepository)
     {
         _azureFacade = azureFacade;
         _gitRepositoryRepository = gitRepositoryRepository;
+        _pullRequestRepository = pullRequestRepository;
     }
 
     public IDataSourceCrawler Create(TenantId tenantId, DataSource dataSource)
@@ -27,7 +30,8 @@ public class CrawlerFactory : ICrawlerFactory
                 tenantId,
                 (AzureDevOps)dataSource,
                 _azureFacade,
-                _gitRepositoryRepository);
+                _gitRepositoryRepository,
+                _pullRequestRepository);
         }
 
         throw new KeyNotFoundException();
