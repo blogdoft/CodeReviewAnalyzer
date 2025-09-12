@@ -1,21 +1,18 @@
 using CodeReviewInsight.AzureDevopsItg.Clients;
-using CodeReviewInsight.Domain.Features.Configurations;
 using CodeReviewInsight.Domain.Features.Configurations.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
-using NSubstitute.ExceptionExtensions;
-using System.Data;
 
 namespace CodeReviewInsight.AzureDevopsItg.Tests.AzureFacadeTests;
 
 public class BaseAzureFacadeTests
 {
-    private readonly Faker _faker = BogusFixture.Get();
-    private readonly string _project;
-    private readonly AzureDevOps _validAzureDevOps;
+    protected readonly Faker _faker = BogusFixture.Get();
+    protected readonly string _project;
+    protected readonly AzureDevOps _validAzureDevOps;
 
     public BaseAzureFacadeTests()
     {
@@ -61,66 +58,5 @@ public class BaseAzureFacadeTests
     protected GitHttpClient GitHttpClient { get; }
     protected ILogger<AzureFacade> Logger { get; }
 
-    [Fact]
-    public async Task Should_ReturnRepositories_When_FacadeIsConfiguredAsync()
-    {
-        // Given
-        TenantId tenantId = Guid.NewGuid();
-        var facade = Build();
-
-        // When
-        var repositories = await facade
-            .SetContext(tenantId, _validAzureDevOps)
-            .FromProject(_project)
-            .GetRepositoriesAsync();
-
-        // Then
-        repositories.ShouldNotBeNull();
-        repositories.Count().ShouldBeGreaterThan(0);
-    }
-
-    [Fact]
-    public async Task Should_ThrowNoNullAllowed_When_DoNotSetTenantIdAsync()
-    {
-        // Given
-        var facade = Build();
-
-        // When
-        Func<Task> act = async () =>
-        {
-            var repo = await facade
-                .FromProject(_project)
-                .GetRepositoriesAsync();
-            _ = repo.ToList();
-        };
-
-        // Then
-        await act.ShouldThrowAsync<NoNullAllowedException>();
-    }
-
-    [Fact]
-    public async Task Should_LogError_When_ProjectDoesNotExistAsync()
-    {
-        // Given
-        ProjectHttpClient
-            .GetProject(_project)
-            .ThrowsAsync<ProjectDoesNotExistWithNameException>();
-        var facade = Build();
-
-        // When
-        await facade
-            .SetContext(Guid.NewGuid(), _validAzureDevOps)
-            .FromProject(_project)
-            .GetRepositoriesAsync();
-
-        // Then
-        Logger.ReceivedWithAnyArgs().Log(
-            LogLevel.Error,
-            0,
-            Arg.Any<object>(),
-            Arg.Any<Exception>(),
-            Arg.Any<Func<object, Exception?, string>>());
-    }
-
-    private AzureFacade Build() => new(Logger, ConnectionFactory);
+    protected AzureFacade Build() => new(Logger, ConnectionFactory);
 }
