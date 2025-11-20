@@ -4,6 +4,11 @@ volumes:
   prometheus-data:
 
 
+networks:
+  public: {}
+  private:
+    driver: bridge
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -12,7 +17,13 @@ services:
       - pg-data:/var/lib/postgresql/data
     env_file:
       - ./postgres/database.env
-    network_mode: "host"
+    networks:
+      - public
+      - private
+    ports:
+      - "5432:5432"
+    mem_limit: 512m
+    cpus: 1
 
   init-db:
     build:
@@ -24,9 +35,10 @@ services:
       - ./postgres/init-sql:/init-sql
       - ./postgres/init.sh:/init.sh
     entrypoint: [ "/init.sh" ]
-    network_mode: "host"
     depends_on:
       - postgres
+    networks:
+      - private
 
   backend:
     build:
@@ -43,9 +55,14 @@ services:
       - ASPNETCORE_BASEURL=/code-review
     env_file:
       - dev.env
-    network_mode: "host"
     depends_on:
       - postgres
+    networks:
+      - private
+    ports:
+      - "5031:5031"
+    mem_limit: 512m
+    cpus: 1
 
   frontend:
     build:
@@ -53,10 +70,12 @@ services:
       dockerfile: ./eng/docker/dockerfile
     container_name: cra_frontend
     mem_limit: 128m
+    ports:
+      - "4300:4300"
     cpus: 1
-    network_mode: host
-    depends_on:
-      - backend
+    networks:
+      - private
+      - public
 
   reverse-proxy:
     build:
@@ -65,10 +84,14 @@ services:
     container_name: cra_reverse-proxy
     mem_limit: 128m
     cpus: 0.5
-    network_mode: "host"
+    ports:
+      - "8080:8080"
     depends_on:
       - backend
       - frontend
+    networks:
+      - public
+      - private
 
   keycloak:
     container_name: cra-keycloak

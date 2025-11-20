@@ -1,29 +1,29 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY CodeReviewAnalyzer.sln .
+COPY CodeReviewInsight.sln .
 
-COPY src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj src/CodeReviewAnalyzer.Api/CodeReviewAnalyzer.Api.csproj
-COPY src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj src/CodeReviewAnalyzer.Application/CodeReviewAnalyzer.Application.csproj
-COPY src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj src/CodeReviewAnalyzer.AzureDevopsItg/CodeReviewAnalyzer.AzureDevopsItg.csproj
-COPY src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj src/CodeReviewAnalyzer.Database/CodeReviewAnalyzer.Database.csproj
+COPY src/CodeReviewInsight.Api/CodeReviewInsight.Api.csproj src/CodeReviewInsight.Api/CodeReviewInsight.Api.csproj
+COPY src/CodeReviewInsight.Application/CodeReviewInsight.Application.csproj src/CodeReviewInsight.Application/CodeReviewInsight.Application.csproj
+COPY src/CodeReviewInsight.AzureDevopsItg/CodeReviewInsight.AzureDevopsItg.csproj src/CodeReviewInsight.AzureDevopsItg/CodeReviewInsight.AzureDevopsItg.csproj
+COPY src/CodeReviewInsight.Database/CodeReviewInsight.Database.csproj src/CodeReviewInsight.Database/CodeReviewInsight.Database.csproj
 COPY src/CodeReviewInsight.Domain/CodeReviewInsight.Domain.csproj src/CodeReviewInsight.Domain/CodeReviewInsight.Domain.csproj
 
 
-COPY __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj __tests__/CodeReviewAnalyzer.Api.Tests/CodeReviewAnalyzer.Api.Tests.csproj
-COPY __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj __tests__/CodeReviewAnalyzer.Application.Tests/CodeReviewAnalyzer.Application.Tests.csproj
-COPY __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj __tests__/CodeReviewAnalyzer.AzureDevopsItg.Tests/CodeReviewAnalyzer.AzureDevopsItg.Tests.csproj
-COPY __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj __tests__/CodeReviewAnalyzer.Database.Tests/CodeReviewAnalyzer.Database.Tests.csproj
+COPY __tests__/CodeReviewInsight.Api.Tests/CodeReviewInsight.Api.Tests.csproj __tests__/CodeReviewInsight.Api.Tests/CodeReviewInsight.Api.Tests.csproj
+COPY __tests__/CodeReviewInsight.Application.Tests/CodeReviewInsight.Application.Tests.csproj __tests__/CodeReviewInsight.Application.Tests/CodeReviewInsight.Application.Tests.csproj
+COPY __tests__/CodeReviewInsight.AzureDevopsItg.Tests/CodeReviewInsight.AzureDevopsItg.Tests.csproj __tests__/CodeReviewInsight.AzureDevopsItg.Tests/CodeReviewInsight.AzureDevopsItg.Tests.csproj
+COPY __tests__/CodeReviewInsight.Database.Tests/CodeReviewInsight.Database.Tests.csproj __tests__/CodeReviewInsight.Database.Tests/CodeReviewInsight.Database.Tests.csproj
 COPY __tests__/CodeReviewInsight.Domain.Tests/CodeReviewInsight.Domain.Tests.csproj __tests__/CodeReviewInsight.Domain.Tests/CodeReviewInsight.Domain.Tests.csproj
 
 RUN dotnet restore
 
 COPY . .
 
-RUN dotnet publish ./src/CodeReviewAnalyzer.Api -o /app -c Release 
+RUN dotnet publish ./src/CodeReviewInsight.Api -o /app -c Release 
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 ARG PUBLISH_FOLDER=app/
 WORKDIR /app
 COPY --from=build /app .
 EXPOSE 5031
-ENTRYPOINT ["dotnet", "CodeReviewAnalyzer.Api.dll"]
+ENTRYPOINT ["dotnet", "CodeReviewInsight.Api.dll"]

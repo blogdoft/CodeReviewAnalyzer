@@ -66,6 +66,11 @@ internal class PullRequestsRepository(IDatabaseFacade databaseFacade) : IPullReq
         }
     }
 
+    public Task AddRange(IEnumerable<PullRequest> pullRequests)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<PullRequestStats?> GetStatsFromAsync(string externalId)
     {
         var stats = await databaseFacade.QuerySingleOrDefaultAsync<PullRequestStats>(
